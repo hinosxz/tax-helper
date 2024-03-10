@@ -1,3 +1,12 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["next/core-web-vitals", "prettier"],
+  "plugins": ["@stylistic/js"],
+  "rules": {
+    "prefer-const": "error",
+    "@stylistic/js/max-len": ["error", { "code": 80, "tabWidth": 2 }],
+    "@stylistic/js/quotes": ["error", "double"],
+    "@stylistic/js/jsx-quotes": ["error", "prefer-double"],
+    "@stylistic/js/semi": ["error", "always"],
+    "no-unused-vars": "error"
+  }
 }
