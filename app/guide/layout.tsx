@@ -21,11 +21,7 @@ export default function Layout({
           Previous
         </div>
       </header>
-      <main
-        className={
-          "flex flex-col items-center justify-around p-24 text-center h-full"
-        }
-      >
+      <main className={"flex flex-col items-center justify-around p-24"}>
         {children}
       </main>
     </div>
