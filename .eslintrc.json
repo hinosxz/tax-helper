@@ -7,6 +7,6 @@
     "@stylistic/js/quotes": ["error", "double"],
     "@stylistic/js/jsx-quotes": ["error", "prefer-double"],
     "@stylistic/js/semi": ["error", "always"],
-    "no-unused-vars": "error"
+    "react/no-unescaped-entities": 0
   }
 }
