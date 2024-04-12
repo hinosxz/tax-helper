@@ -1,6 +1,6 @@
-import { Section } from "@/app/guide/shared/Section";
+import { Section } from "@/app/guide/shared/ui/Section";
 import { Calculator } from "./Calculator";
-import { Link } from "@/app/guide/shared/Link";
+import { Link } from "@/app/guide/shared/ui/Link";
 
 const gainsLossesUrl =
   "https://us.etrade.com/etx/sp/stockplan#/myAccount/gainsLosses";
