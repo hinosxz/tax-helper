@@ -18,7 +18,8 @@ export const Button = ({
 }: ButtonProps) => (
   <button
     className={classNames(
-      "flex px-3 py-1.5 rounded shadow font-semibold",
+      "flex items-center px-3 py-1.5 rounded shadow",
+      "font-semibold text-sm",
       "hover:opacity-75 disabled:opacity-25",
       {
         "bg-green-200 text-base": color === "green",
@@ -29,6 +30,6 @@ export const Button = ({
     type="button"
     disabled={isDisabled}
   >
-    {Icon && <Icon className="h-6 w-6 inline mr-1" />} {label}
+    {Icon && <Icon className="h-4 w-4 inline mr-1" />} {label}
   </button>
 );

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, QueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 const apiUrl =
@@ -52,7 +52,6 @@ export const useFetchExr = (
 
   try {
     if (data) {
-      console.log(data);
       rate = data.dataSets[0].series["0:0:0:0:0"].observations[0][0];
     }
   } catch {

@@ -1,4 +1,6 @@
 import { useFetchExr } from "@/hooks/use-fetch-exr";
+import { relative } from "path/posix";
+import { useEffect } from "react";
 
 interface SaleEventProps {
   maxDate: string;
@@ -17,6 +19,9 @@ interface SaleEventProps {
 
   dateSold: string;
   setDateSold: (value: string) => void;
+
+  setRateAcquired: (value: number) => void;
+  setRateSold: (value: number) => void;
 }
 
 const styles = {
@@ -38,9 +43,23 @@ export const SaleEvent = ({
   setDateAcquired,
   dateSold,
   setDateSold,
+  setRateAcquired,
+  setRateSold,
 }: SaleEventProps) => {
   const dateAcquiredExr = useFetchExr(dateAcquired);
   const dateSoldExr = useFetchExr(dateSold);
+
+  // Store copies in state for parent to access
+  useEffect(() => {
+    if (dateAcquiredExr.rate) {
+      setRateAcquired(dateAcquiredExr.rate);
+    }
+  }, [dateAcquiredExr.rate, setRateAcquired]);
+  useEffect(() => {
+    if (dateSoldExr.rate) {
+      setRateSold(dateSoldExr.rate);
+    }
+  }, [dateSoldExr.rate, setRateSold]);
 
   return (
     <form className="flex gap-4 text-left">

@@ -1,6 +1,7 @@
 import { Section } from "@/app/guide/shared/ui/Section";
 import { Calculator } from "./Calculator";
 import { Link } from "@/app/guide/shared/ui/Link";
+import { Button } from "@/app/guide/shared/ui/Button";
 
 const gainsLossesUrl =
   "https://us.etrade.com/etx/sp/stockplan#/myAccount/gainsLosses";
@@ -31,9 +32,7 @@ export default function Page() {
           </p>
         </div>
       </Section>
-      <Section title="Calculator">
-        <Calculator />
-      </Section>
+      <Calculator />
     </div>
   );
 }
