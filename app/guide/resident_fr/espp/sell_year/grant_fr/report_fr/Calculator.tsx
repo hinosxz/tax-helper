@@ -3,16 +3,10 @@ import { ONE_DAY } from "@/lib/constants";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { useMemo, useState } from "react";
 import { SaleEvent } from "./SaleEvent";
+import { Button } from "@/app/guide/shared/ui/Button";
 
 const styles = {
   title: "font-semibold text-lg",
-  addButton:
-    "flex bg-green-200 px-3 py-1.5 rounded shadow " +
-    "hover:opacity-75 text-base font-semibold",
-  removeButton:
-    "flex bg-red-400 text-white " +
-    "px-3 py-1.5 rounded disabled:opacity-25 " +
-    "hover:opacity-75 text-base font-semibold",
 };
 
 // On Saturday:
@@ -55,16 +49,13 @@ export const Calculator = () => {
         <div key={`sale-id-${i}`}>
           <div className="flex justify-between">
             <span className={styles.title}>Sale event #{i + 1}</span>
-
-            <button
-              className={styles.removeButton}
+            <Button
+              color="red"
+              label="Remove"
+              icon={MinusIcon}
               onClick={() => setEvents(events.filter((_, idx) => idx !== i))}
-              type="button"
-              disabled={events.length <= 1}
-            >
-              <MinusIcon className="h-6 w-6 inline mr-1" />
-              Remove
-            </button>
+              isDisabled={events.length <= 1}
+            />
           </div>
           <SaleEvent
             maxDate={lastWeekDay}
@@ -102,14 +93,12 @@ export const Calculator = () => {
         </div>
       ))}
       <div className="flex justify-end">
-        <button
-          className={styles.addButton}
+        <Button
+          color="green"
+          label="New sale"
+          icon={PlusIcon}
           onClick={() => setEvents([...events, getDefaultState(lastWeekDay)])}
-          type="button"
-        >
-          <PlusIcon className="h-6 w-6 inline mr-1" />
-          New sale
-        </button>
+        />
       </div>
     </div>
   );
