@@ -1,8 +1,13 @@
+import classNames from "classnames";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="flex h-screen flex-col items-center justify-around p-24">
+    <main
+      className={classNames(
+        "min-h-screen flex flex-col items-center justify-around p-24"
+      )}
+    >
       <header className="text-4xl font-semibold">Tax Helper</header>
       <Link
         className={`
