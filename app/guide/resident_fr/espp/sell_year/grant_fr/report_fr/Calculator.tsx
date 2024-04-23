@@ -1,7 +1,6 @@
 "use client";
 import { ONE_DAY } from "@/lib/constants";
 import {
-  ArrowUpOnSquareIcon,
   ArrowUpTrayIcon,
   MinusIcon,
   PlusIcon,
@@ -16,8 +15,11 @@ import {
 import { SaleEvent } from "./SaleEvent";
 import { Button } from "@/app/guide/shared/ui/Button";
 import { Section } from "@/app/guide/shared/ui/Section";
-import { SaleEventData } from "./types";
 import { exportToCsv } from "./export-to-csv";
+import { FileInput } from "@/app/guide/shared/ui/FileInput";
+import { SaleEventData, getDefaultData } from "@/app/guide/shared/lib/data";
+import { parseEtradeGL } from "./parse-etrade-gl";
+import { getDateString } from "@/app/guide/shared/lib/date";
 
 // On Saturday:
 // date.getDay() = 6 => date.getDay() / 6 = 1 => numDaysSinceLastFriday = 1
@@ -27,18 +29,6 @@ const getNumDaysSinceLastFriday = (date: Date) =>
   2 - Math.floor(date.getDay() / 6);
 
 const isWeekendDay = (date: Date) => date.getDay() % 6 === 0;
-
-const getDateString = (date: Date) => date.toISOString().substring(0, 10);
-
-const getDefaultState = (defaultDate: string): SaleEventData => ({
-  quantity: 1,
-  proceeds: 0,
-  dateSold: defaultDate,
-  dateAcquired: defaultDate,
-  adjustedCost: 0,
-  rateAcquired: 1,
-  rateSold: 1,
-});
 
 interface EventBodyProps {
   events: SaleEventData[];
@@ -144,18 +134,36 @@ export const Calculator = () => {
     return getDateString(new Date(yesterday));
   }, []);
 
-  const [events, setEvents] = useState([getDefaultState(lastWeekDay)]);
+  const [events, setEvents] = useState([getDefaultData(lastWeekDay)]);
 
   return (
     <Section
       className="grid grid-cols-1 gap-4"
       actions={
-        <Button
-          icon={ArrowUpTrayIcon}
-          color="green"
-          label="Export to CSV"
-          onClick={() => exportToCsv(events)}
-        />
+        <div className="flex gap-2">
+          <FileInput
+            accept=".xlsx"
+            id="import_etrade_g&l"
+            label="Import from ETrade G&L"
+            onUpload={async (file) => {
+              if (!file) {
+                return console.error("couldn't import file");
+              }
+              try {
+                const data = await parseEtradeGL(file, "ESPP");
+                setEvents(data);
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+          />
+          <Button
+            icon={ArrowUpTrayIcon}
+            color="green"
+            label="Export to CSV"
+            onClick={() => exportToCsv(events)}
+          />
+        </div>
       }
       title="Calculator"
     >
@@ -175,7 +183,7 @@ export const Calculator = () => {
             color="green"
             label="New sale"
             icon={PlusIcon}
-            onClick={() => setEvents([...events, getDefaultState(lastWeekDay)])}
+            onClick={() => setEvents([...events, getDefaultData(lastWeekDay)])}
           />
         </div>
       </div>

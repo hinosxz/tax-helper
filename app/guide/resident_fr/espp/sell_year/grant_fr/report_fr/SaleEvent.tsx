@@ -1,5 +1,5 @@
+import { LoadingIndicator } from "@/app/guide/shared/ui/LoadingIndicator";
 import { useFetchExr } from "@/hooks/use-fetch-exr";
-import { relative } from "path/posix";
 import { useEffect } from "react";
 
 interface SaleEventProps {
@@ -61,6 +61,14 @@ export const SaleEvent = ({
     }
   }, [dateSoldExr.rate, setRateSold]);
 
+  if (!dateAcquiredExr?.rate || !dateSoldExr?.rate) {
+    return (
+      <div className="flex justify-center">
+        <LoadingIndicator />
+      </div>
+    );
+  }
+
   return (
     <form className="flex gap-4 text-left">
       <div>
@@ -94,7 +102,7 @@ export const SaleEvent = ({
             <input
               className={styles.input}
               type="number"
-              value={dateAcquiredExr.rate ?? undefined}
+              value={dateAcquiredExr.rate}
               readOnly
             />
           </div>
@@ -118,11 +126,7 @@ export const SaleEvent = ({
             <input
               className={styles.input}
               type="number"
-              value={
-                dateAcquiredExr.rate
-                  ? (adjustedCost / dateAcquiredExr.rate).toFixed(2)
-                  : undefined
-              }
+              value={(adjustedCost / dateAcquiredExr.rate).toFixed(2)}
               readOnly
               step={0.01}
             />
@@ -146,7 +150,7 @@ export const SaleEvent = ({
             <input
               className={styles.input}
               type="number"
-              value={dateSoldExr.rate ?? undefined}
+              value={dateSoldExr.rate}
               readOnly
             />
           </div>
@@ -168,11 +172,7 @@ export const SaleEvent = ({
             <input
               className={styles.input}
               type="number"
-              value={
-                dateSoldExr.rate
-                  ? (proceeds / dateSoldExr.rate).toFixed(2)
-                  : undefined
-              }
+              value={(proceeds / dateSoldExr.rate).toFixed(2)}
               readOnly
               step={0.01}
             />
@@ -186,13 +186,9 @@ export const SaleEvent = ({
             <input
               className={styles.input}
               type="number"
-              value={
-                dateAcquiredExr.rate
-                  ? ((adjustedCost * quantity) / dateAcquiredExr.rate).toFixed(
-                      2
-                    )
-                  : undefined
-              }
+              value={((adjustedCost * quantity) / dateAcquiredExr.rate).toFixed(
+                2
+              )}
               readOnly
               step={0.01}
             />
@@ -202,11 +198,7 @@ export const SaleEvent = ({
             <input
               className={styles.input}
               type="number"
-              value={
-                dateSoldExr.rate
-                  ? ((proceeds * quantity) / dateSoldExr.rate).toFixed(2)
-                  : undefined
-              }
+              value={((proceeds * quantity) / dateSoldExr.rate).toFixed(2)}
               readOnly
               step={0.01}
             />
@@ -218,14 +210,10 @@ export const SaleEvent = ({
             <input
               className={styles.input}
               type="number"
-              value={
-                dateAcquiredExr.rate && dateSoldExr.rate
-                  ? (
-                      (proceeds * quantity) / dateSoldExr.rate -
-                      (adjustedCost * quantity) / dateAcquiredExr.rate
-                    ).toFixed(2)
-                  : undefined
-              }
+              value={(
+                (proceeds * quantity) / dateSoldExr.rate -
+                (adjustedCost * quantity) / dateAcquiredExr.rate
+              ).toFixed(2)}
               readOnly
               step={0.01}
             />
