@@ -2,7 +2,7 @@
 
 Tax Helper is an open-source project aiming at helping French or US citizens file their French and US taxes. This tool is targeted at people holding company equity (RSU, ISO, ESPP).
 
-DISCLAIMER: the information shared in this app is based on the personal experience and knowledge of its contributors and most probably contains inaccurate information. Please don't take all of it for granted and confirm with a professional tax advisor if you have any doubts or questions. Pull Requests and Issues and more than welcome if you notice anything wrong about the information provided.
+**DISCLAIMER:** the information shared in this app is based on the personal experience and knowledge of its contributors and most probably contains inaccurate information. Please don't take all of it for granted, verify calculations and / or confirm with a professional tax advisor if you have any doubts or questions. Pull Requests and Issues and more than welcome if you notice anything wrong about the information provided.
 
 ## Contribute
 
