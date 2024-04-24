@@ -20,6 +20,7 @@ import { FileInput } from "@/app/guide/shared/ui/FileInput";
 import { SaleEventData, getDefaultData } from "@/app/guide/shared/lib/data";
 import { parseEtradeGL } from "./parse-etrade-gl";
 import { getDateString } from "@/app/guide/shared/lib/date";
+import { sendErrorToast } from "@/app/guide/shared/ui/Toast";
 
 // On Saturday:
 // date.getDay() = 6 => date.getDay() / 6 = 1 => numDaysSinceLastFriday = 1
@@ -153,7 +154,8 @@ export const Calculator = () => {
                 const data = await parseEtradeGL(file, "ESPP");
                 setEvents(data);
               } catch (e) {
-                console.error(e);
+                sendErrorToast(`Failed to import,
+                please verify you imported the correct file.`);
               }
             }}
           />

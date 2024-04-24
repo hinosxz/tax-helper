@@ -46,6 +46,7 @@ export const SaleEvent = ({
   setRateAcquired,
   setRateSold,
 }: SaleEventProps) => {
+  // TODO handle errors with `sendErrorToast`
   const dateAcquiredExr = useFetchExr(dateAcquired);
   const dateSoldExr = useFetchExr(dateSold);
 
