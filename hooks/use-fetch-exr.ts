@@ -1,4 +1,4 @@
-import { useQuery, QueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 const apiUrl =
@@ -41,6 +41,7 @@ export const useFetchExr = (
     queryKey: ["USD_EUR_EXCHANGE_RATE", date],
     queryFn: (): Promise<Response> =>
       fetch(`${apiUrl}?${searchParams.toString()}`).then((res) => res.json()),
+    retry: 1,
   });
 
   let rate: number | null = null;
