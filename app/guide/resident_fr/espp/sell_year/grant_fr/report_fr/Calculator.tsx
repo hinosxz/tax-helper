@@ -16,14 +16,17 @@ import { SaleEvent } from "./SaleEvent";
 import { Button } from "@/app/guide/shared/ui/Button";
 import { Section } from "@/app/guide/shared/ui/Section";
 import { exportToCsv } from "./export-to-csv";
-import { FileInput } from "@/app/guide/shared/ui/FileInput";
-import { SaleEventData, getDefaultData } from "@/lib/data";
-import { parseEtradeGL } from "./parse-etrade-gl";
+import {
+  SaleEventData,
+  getDefaultData,
+  saleEventFromGainAndLossEvent,
+} from "@/lib/data";
+import { createEtradeGLFilter } from "@/lib/etrade/parse-etrade-gl";
 import { getDateString } from "@/lib/date";
-import { sendErrorToast } from "@/app/guide/shared/ui/Toast";
 import { ExchangeRate } from "@/hooks/use-fetch-exr";
 import { calcTotalGainLoss } from "./calc-total-gain-loss";
 import { Currency } from "@/app/guide/shared/ui/Currency";
+import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
 
 // On Saturday:
 // date.getDay() = 6 => date.getDay() / 6 = 1 => numDaysSinceLastFriday = 1
@@ -116,6 +119,11 @@ const EventBody = ({
   );
 };
 
+const isFrQualifiedEspp = createEtradeGLFilter({
+  planType: "ESPP",
+  isPlanFrQualified: true,
+});
+
 export const Calculator = () => {
   // Exchange rates are only available on weekdays
   const lastWeekDay = useMemo(() => {
@@ -138,21 +146,14 @@ export const Calculator = () => {
     <Section
       actions={
         <div className="flex gap-2">
-          <FileInput
-            accept=".xlsx"
+          <EtradeGainAndLossesFileInput
             id="import_etrade_g&l"
-            label="Import from ETrade G&L"
-            onUpload={async (file) => {
-              if (!file) {
-                return console.error("couldn't import file");
-              }
-              try {
-                const data = await parseEtradeGL(file, "ESPP");
-                setEvents(data);
-              } catch (e) {
-                sendErrorToast(`Failed to import,
-                please verify you imported the correct file.`);
-              }
+            setData={(lines) => {
+              setEvents(
+                lines
+                  .filter(isFrQualifiedEspp)
+                  .map(saleEventFromGainAndLossEvent),
+              );
             }}
           />
           <Button
