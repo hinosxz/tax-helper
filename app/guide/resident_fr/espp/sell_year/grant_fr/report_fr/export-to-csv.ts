@@ -1,5 +1,4 @@
 import { SaleEventData } from "@/app/guide/shared/lib/data";
-import { QueryClient } from "@tanstack/react-query";
 
 const SEPARATOR = ",";
 const COLUMNS = [

@@ -1,7 +1,11 @@
 "use client";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import { useMemo } from "react";
 import classNames from "classnames";
 
@@ -11,7 +15,19 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
-  const queryClient = useMemo(() => new QueryClient(), []);
+  const queryClient = useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: 1,
+            placeholderData: keepPreviousData,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+    []
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

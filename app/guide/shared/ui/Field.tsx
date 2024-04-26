@@ -1,12 +1,6 @@
 import classNames from "classnames";
-import { ReactNode } from "react";
-
-const getInputClassName = (validationError?: string | null) =>
-  classNames("border text-sm rounded-md block p-1.5", {
-    "bg-red-50 border border-red-500 text-red-900": !!validationError,
-    "border-gray-300 read-only:bg-gray-100 disabled:bg-gray-100":
-      !validationError,
-  });
+import { InputHTMLAttributes, ReactNode } from "react";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 interface LabelProps {
   children: ReactNode;
@@ -16,42 +10,65 @@ const Label = ({ children }: LabelProps) => (
   <label className="block mb-2 text-sm font-medium">{children}</label>
 );
 
-interface PlaceholderInputProps {
-  validationError?: string | null;
+interface InputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "className" | "value"> {
   isLoading?: boolean;
+  validationError?: string | null;
+  value: string | number | null | undefined;
 }
 
-/**
- * TODO
- * 1. Add loading indicator when loading
- * 2. Properly display error message
- */
-const PlaceholderInput = ({ validationError }: PlaceholderInputProps) => (
-  <input
-    className={getInputClassName(validationError)}
-    disabled
-    readOnly
-    placeholder={validationError ? "–" : undefined}
-  />
-);
+const Input = ({
+  isLoading,
+  validationError,
+  value,
+  ...htmlInputProps
+}: InputProps) => {
+  return (
+    <div className="relative">
+      {isLoading ? (
+        <div
+          className={classNames(
+            "absolute inset-y-0 end-0 flex items-center ps-3",
+            "pointer-events-none"
+          )}
+        >
+          <LoadingIndicator />
+        </div>
+      ) : null}
+      <input
+        className={classNames("border text-sm rounded-md block p-1.5", {
+          "bg-red-50 border border-red-500 text-red-900": !!validationError,
+          "border-gray-300 read-only:bg-gray-100 disabled:bg-gray-100":
+            !validationError,
+          "pe-10": isLoading,
+        })}
+        {...htmlInputProps}
+        disabled={isLoading}
+        value={validationError || !value ? "–" : value}
+        placeholder={validationError ? "–" : htmlInputProps.placeholder}
+      />
+    </div>
+  );
+};
 
-interface InputProps<T extends string | number> {
+interface BaseInputProps<T extends string | number> {
+  isLoading?: boolean;
   isRequired?: boolean;
   isReadOnly?: boolean;
-  value: T;
+  value: T | null;
   onChange?: (value: T) => void;
   min?: T;
   max?: T;
   placeholder?: string;
-  validationError?: string;
+  validationError?: string | null;
 }
 
-interface NumberInputProps extends InputProps<number> {
-  type: "number";
+interface NumberInputProps extends BaseInputProps<number> {
   maxDecimals?: 0 | 1 | 2;
 }
 
 const NumberInput = ({
+  isLoading,
   isReadOnly,
   isRequired,
   value,
@@ -59,29 +76,28 @@ const NumberInput = ({
   min,
   max,
   placeholder,
-  type,
   maxDecimals = 2,
   validationError,
 }: NumberInputProps) => (
-  <input
+  <Input
     required={isRequired}
     readOnly={isReadOnly}
-    type={type}
-    className={getInputClassName(validationError)}
+    type="number"
     placeholder={placeholder}
-    value={value.toFixed(maxDecimals)}
+    value={isReadOnly ? value?.toFixed(2) : value}
     onChange={(event) => onChange?.(event.target.valueAsNumber)}
     min={min}
     max={max}
     step={1 / 10 ** maxDecimals}
+    validationError={validationError}
+    isLoading={isLoading}
   />
 );
 
-interface DateInputProps extends InputProps<string> {
-  type: "date";
-}
+interface DateInputProps extends BaseInputProps<string> {}
 
 const DateInput = ({
+  isLoading,
   isReadOnly,
   isRequired,
   value,
@@ -89,19 +105,19 @@ const DateInput = ({
   min,
   max,
   placeholder,
-  type,
   validationError,
 }: DateInputProps) => (
-  <input
+  <Input
     required={isRequired}
     readOnly={isReadOnly}
-    type={type}
-    className={getInputClassName(validationError)}
+    type="date"
     placeholder={placeholder}
     value={value}
     onChange={(event) => onChange?.(event.target.value)}
     min={min}
     max={max}
+    validationError={validationError}
+    isLoading={isLoading}
   />
 );
 
@@ -120,17 +136,5 @@ export const DateField = ({ label, ...inputProps }: DateFieldProps) => (
   <div>
     <Label>{label}</Label>
     <DateInput {...inputProps} />
-  </div>
-);
-
-type PlaceholderFieldProps = PlaceholderInputProps & { label: string };
-
-export const PlaceholderField = ({
-  label,
-  ...inputProps
-}: PlaceholderFieldProps) => (
-  <div>
-    <Label>{label}</Label>
-    <PlaceholderInput {...inputProps} />
   </div>
 );

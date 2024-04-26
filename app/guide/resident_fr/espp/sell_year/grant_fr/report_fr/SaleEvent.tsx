@@ -1,9 +1,4 @@
-import {
-  NumberField,
-  DateField,
-  PlaceholderField,
-} from "@/app/guide/shared/ui/Field";
-import { LoadingIndicator } from "@/app/guide/shared/ui/LoadingIndicator";
+import { NumberField, DateField } from "@/app/guide/shared/ui/Field";
 import { useFetchExr } from "@/hooks/use-fetch-exr";
 import { useEffect } from "react";
 
@@ -44,7 +39,6 @@ export const SaleEvent = ({
   setRateAcquired,
   setRateSold,
 }: SaleEventProps) => {
-  // TODO handle errors with `sendErrorToast`
   const dateAcquiredExr = useFetchExr(dateAcquired);
   const dateSoldExr = useFetchExr(dateSold);
 
@@ -68,7 +62,6 @@ export const SaleEvent = ({
         isRequired
         min={1}
         onChange={(value) => setQuantity(value)}
-        type="number"
         maxDecimals={0}
       />
       <div className="border border-gray-300" />
@@ -81,24 +74,17 @@ export const SaleEvent = ({
             max={maxDate}
             onChange={(value) => setDateAcquired(value)}
             placeholder="Select date"
-            type="date"
           />
-          {dateAcquiredExr.rate ? (
-            <NumberField
-              value={dateAcquiredExr.rate}
-              label="$ / €"
-              type="number"
-              isReadOnly
-            />
-          ) : (
-            <PlaceholderField
-              label="$ / €"
-              validationError={
-                dateAcquiredExr.errorMessage &&
-                "failed fetching currency rate for date acquired"
-              }
-            />
-          )}
+          <NumberField
+            value={dateAcquiredExr.rate}
+            label="$ / €"
+            isReadOnly
+            validationError={
+              dateAcquiredExr.errorMessage &&
+              "failed fetching currency rate for date acquired"
+            }
+            isLoading={dateAcquiredExr.isFetching}
+          />
         </div>
         <div className="flex gap-2">
           <NumberField
@@ -106,24 +92,17 @@ export const SaleEvent = ({
             label="Adjusted Cost Basis / Share"
             isRequired
             onChange={(value) => setAdjustedCost(value)}
-            type="number"
           />
-          {dateAcquiredExr.rate ? (
-            <NumberField
-              value={adjustedCost / dateAcquiredExr.rate}
-              label="Adjusted Cost Basis / Share (€) (520)"
-              isReadOnly
-              type="number"
-            />
-          ) : (
-            <PlaceholderField
-              label="Adjusted Cost Basis / Share (€) (520)"
-              validationError={
-                dateAcquiredExr.errorMessage &&
-                "failed fetching currency rate for date acquired"
-              }
-            />
-          )}
+          <NumberField
+            value={dateAcquiredExr.rate && adjustedCost / dateAcquiredExr.rate}
+            label="Adjusted Cost Basis / Share (€) (520)"
+            isReadOnly
+            validationError={
+              dateAcquiredExr.errorMessage &&
+              "failed fetching currency rate for date acquired"
+            }
+            isLoading={dateAcquiredExr.isFetching}
+          />
         </div>
         <div className="flex gap-2">
           <DateField
@@ -133,24 +112,17 @@ export const SaleEvent = ({
             max={maxDate}
             onChange={(value) => setDateSold(value)}
             placeholder="Select date"
-            type="date"
           />
-          {dateSoldExr.rate ? (
-            <NumberField
-              value={dateSoldExr.rate}
-              label="$ / €"
-              type="number"
-              isReadOnly
-            />
-          ) : (
-            <PlaceholderField
-              label="$ / €"
-              validationError={
-                dateSoldExr.errorMessage &&
-                "failed fetching currency rate for date sold"
-              }
-            />
-          )}
+          <NumberField
+            value={dateSoldExr.rate}
+            label="$ / €"
+            isReadOnly
+            validationError={
+              dateSoldExr.errorMessage &&
+              "failed fetching currency rate for date sold"
+            }
+            isLoading={dateSoldExr.isFetching}
+          />
         </div>
         <div className="flex gap-2">
           <NumberField
@@ -158,80 +130,60 @@ export const SaleEvent = ({
             label="Proceeds / Share"
             isRequired
             onChange={(value) => setProceeds(value)}
-            type="number"
           />
-          {dateSoldExr.rate ? (
-            <NumberField
-              value={proceeds / dateSoldExr.rate}
-              label="Proceeds / Share (€) (514)"
-              isReadOnly
-              type="number"
-            />
-          ) : (
-            <PlaceholderField
-              label="Proceeds / Share (€) (514)"
-              validationError={
-                dateSoldExr.errorMessage &&
-                "failed fetching currency rate for date sold"
-              }
-            />
-          )}
+          <NumberField
+            value={dateSoldExr.rate && proceeds / dateSoldExr.rate}
+            label="Proceeds / Share (€) (514)"
+            isReadOnly
+            validationError={
+              dateSoldExr.errorMessage &&
+              "failed fetching currency rate for date sold"
+            }
+            isLoading={dateSoldExr.isFetching}
+          />
         </div>
         <div className="flex gap-2">
-          {dateAcquiredExr.rate ? (
-            <NumberField
-              value={(adjustedCost * quantity) / dateAcquiredExr.rate}
-              label="Adjusted Cost Basis (€) (521)"
-              isReadOnly
-              type="number"
-            />
-          ) : (
-            <PlaceholderField
-              label="Adjusted Cost Basis (€) (521)"
-              validationError={
-                dateAcquiredExr.errorMessage &&
-                "failed fetching currency rate for date acquired"
-              }
-            />
-          )}
-          {dateSoldExr.rate ? (
-            <NumberField
-              value={(proceeds * quantity) / dateSoldExr.rate}
-              label="Proceeds (€) (516)"
-              isReadOnly
-              type="number"
-            />
-          ) : (
-            <PlaceholderField
-              label="Proceeds (€) (516)"
-              validationError={
-                dateSoldExr.errorMessage &&
-                "failed fetching currency rate for date sold"
-              }
-            />
-          )}
-          {dateAcquiredExr.rate && dateSoldExr.rate ? (
-            <NumberField
-              value={
-                (proceeds * quantity) / dateSoldExr.rate -
-                (adjustedCost * quantity) / dateAcquiredExr.rate
-              }
-              label="Adjusted Gain / Loss (€) (524)"
-              isReadOnly
-              type="number"
-            />
-          ) : (
-            <PlaceholderField
-              label="Adjusted Gain / Loss (€) (524)"
-              validationError={
-                dateAcquiredExr.rate
-                  ? dateSoldExr.errorMessage &&
-                    "failed fetching currency rate for date sold"
-                  : dateAcquiredExr.errorMessage &&
-                    "failed fetching currency rate for date acquired"
-              }
-            />
-          )}
+          <NumberField
+            value={
+              dateAcquiredExr.rate &&
+              (adjustedCost * quantity) / dateAcquiredExr.rate
+            }
+            label="Adjusted Cost Basis (€) (521)"
+            isReadOnly
+            validationError={
+              dateAcquiredExr.errorMessage &&
+              "failed fetching currency rate for date acquired"
+            }
+            isLoading={dateAcquiredExr.isFetching}
+          />
+          <NumberField
+            value={dateSoldExr.rate && (proceeds * quantity) / dateSoldExr.rate}
+            label="Proceeds (€) (516)"
+            isReadOnly
+            validationError={
+              dateSoldExr.errorMessage &&
+              "failed fetching currency rate for date sold"
+            }
+            isLoading={dateSoldExr.isFetching}
+          />
+          <NumberField
+            value={
+              dateAcquiredExr.rate && dateSoldExr.rate
+                ? (proceeds * quantity) / dateSoldExr.rate -
+                  (adjustedCost * quantity) / dateAcquiredExr.rate
+                : null
+            }
+            label="Adjusted Gain / Loss (€) (524)"
+            isReadOnly
+            validationError={
+              dateAcquiredExr.rate
+                ? dateSoldExr.errorMessage &&
+                  "failed fetching currency rate for date sold"
+                : dateAcquiredExr.errorMessage &&
+                  "failed fetching currency rate for date acquired"
+            }
+            isLoading={dateAcquiredExr.isFetching || dateSoldExr.isFetching}
+          />
         </div>
       </div>
     </form>
