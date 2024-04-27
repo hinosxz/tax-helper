@@ -26,7 +26,7 @@ export default function Layout({
           },
         },
       }),
-    []
+    [],
   );
 
   return (
@@ -36,7 +36,7 @@ export default function Layout({
           <div
             className={classNames(
               "w-fit flex p-4 items-center gap-2",
-              "hover:opacity-75 cursor-pointer"
+              "hover:opacity-75 cursor-pointer",
             )}
             onClick={() => router.back()}
           >

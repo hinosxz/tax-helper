@@ -22,7 +22,7 @@ export const FileInput = ({
         "flex items-center px-3 py-1.5 rounded shadow",
         "font-semibold text-sm",
         "hover:opacity-75 disabled:opacity-25",
-        "bg-green-200 text-base cursor-pointer"
+        "bg-green-200 text-base cursor-pointer",
       )}
       htmlFor={id}
     >

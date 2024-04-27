@@ -49,16 +49,16 @@ const EventBody = ({
   const setRateAcquired = useCallback(
     (v: number) =>
       setEvents((events) =>
-        events.map((e, idx) => (idx === index ? { ...e, rateAcquired: v } : e))
+        events.map((e, idx) => (idx === index ? { ...e, rateAcquired: v } : e)),
       ),
-    [index, setEvents]
+    [index, setEvents],
   );
   const setRateSold = useCallback(
     (v: number) =>
       setEvents((events) =>
-        events.map((e, idx) => (idx === index ? { ...e, rateSold: v } : e))
+        events.map((e, idx) => (idx === index ? { ...e, rateSold: v } : e)),
       ),
-    [index, setEvents]
+    [index, setEvents],
   );
 
   return (
@@ -82,36 +82,36 @@ const EventBody = ({
           setQuantity={(v) =>
             setEvents(
               events.map((e, idx) =>
-                idx === index ? { ...e, quantity: v } : e
-              )
+                idx === index ? { ...e, quantity: v } : e,
+              ),
             )
           }
           setAdjustedCost={(v) =>
             setEvents(
               events.map((e, idx) =>
-                idx === index ? { ...e, adjustedCost: v } : e
-              )
+                idx === index ? { ...e, adjustedCost: v } : e,
+              ),
             )
           }
           setProceeds={(v) =>
             setEvents(
               events.map((e, idx) =>
-                idx === index ? { ...e, proceeds: v } : e
-              )
+                idx === index ? { ...e, proceeds: v } : e,
+              ),
             )
           }
           setDateAcquired={(v) =>
             setEvents(
               events.map((e, idx) =>
-                idx === index ? { ...e, dateAcquired: v } : e
-              )
+                idx === index ? { ...e, dateAcquired: v } : e,
+              ),
             )
           }
           setDateSold={(v) =>
             setEvents(
               events.map((e, idx) =>
-                idx === index ? { ...e, dateSold: v } : e
-              )
+                idx === index ? { ...e, dateSold: v } : e,
+              ),
             )
           }
           setRateAcquired={setRateAcquired}

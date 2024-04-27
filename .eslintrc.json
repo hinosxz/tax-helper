@@ -8,6 +8,7 @@
   "plugins": ["@stylistic/js"],
   "rules": {
     "prefer-const": "error",
+    "indent": ["error", 2],
     "@stylistic/js/quotes": ["error", "double"],
     "@stylistic/js/jsx-quotes": ["error", "prefer-double"],
     "@stylistic/js/semi": ["error", "always"],

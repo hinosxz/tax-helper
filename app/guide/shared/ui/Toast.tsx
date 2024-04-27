@@ -27,7 +27,7 @@ export const Toast = ({
       "flex items-center w-full max-w-xs p-4",
       "rounded-lg shadow",
       "bg-gray-700 text-white",
-      { "animate-enter": isVisible, "animate-leave": !isVisible }
+      { "animate-enter": isVisible, "animate-leave": !isVisible },
     )}
   >
     {LeftIcon && (
@@ -43,7 +43,7 @@ export const Toast = ({
       className={classNames(
         "inline-flex items-center justify-center h-8 w-8",
         "ms-auto -mx-1.5 -my-1.5 p-1.5 rounded-lg",
-        "hover:opacity-50"
+        "hover:opacity-50",
       )}
       onClick={onDismiss}
     >

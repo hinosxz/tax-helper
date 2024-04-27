@@ -21,7 +21,7 @@ interface Response {
 }
 
 export const useFetchExr = (
-  date: string
+  date: string,
 ): {
   rate: number | null;
   isFetching: boolean;

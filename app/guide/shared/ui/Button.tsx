@@ -24,7 +24,7 @@ export const Button = ({
       {
         "bg-green-200 text-base": color === "green",
         "bg-red-400 text-white": color === "red",
-      }
+      },
     )}
     onClick={onClick}
     type="button"

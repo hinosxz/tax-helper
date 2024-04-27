@@ -42,7 +42,7 @@ const Input = ({
           <div
             className={classNames(
               "absolute inset-y-0 end-0 flex items-center ps-3",
-              "pointer-events-none"
+              "pointer-events-none",
             )}
           >
             <LoadingIndicator />

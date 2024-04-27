@@ -18,7 +18,7 @@ const toDateString = (rawDate: string) =>
 
 export const parseEtradeGL = async (
   file: File,
-  stockType: PlanType
+  stockType: PlanType,
 ): Promise<SaleEventData[]> => {
   const data: SaleEventData[] = [];
   const fileAsArrayBuffer = await file.arrayBuffer();

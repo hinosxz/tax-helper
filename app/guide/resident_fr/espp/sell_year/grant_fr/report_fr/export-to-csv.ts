@@ -49,7 +49,7 @@ export const exportToCsv = (data: SaleEventData[]): void => {
           event.proceeds / event.rateSold -
           (event.adjustedCost / event.rateAcquired) * event.quantity
         ).toString(),
-      ].join(SEPARATOR)
+      ].join(SEPARATOR),
     );
   }
   const blob = new Blob([csvData.join("\n")], { type: "text/csv" });
