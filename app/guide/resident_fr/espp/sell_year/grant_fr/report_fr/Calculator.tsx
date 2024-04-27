@@ -17,9 +17,9 @@ import { Button } from "@/app/guide/shared/ui/Button";
 import { Section } from "@/app/guide/shared/ui/Section";
 import { exportToCsv } from "./export-to-csv";
 import { FileInput } from "@/app/guide/shared/ui/FileInput";
-import { SaleEventData, getDefaultData } from "@/app/guide/shared/lib/data";
+import { SaleEventData, getDefaultData } from "@/lib/data";
 import { parseEtradeGL } from "./parse-etrade-gl";
-import { getDateString } from "@/app/guide/shared/lib/date";
+import { getDateString } from "@/lib/date";
 import { sendErrorToast } from "@/app/guide/shared/ui/Toast";
 
 // On Saturday:

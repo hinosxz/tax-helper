@@ -1,4 +1,4 @@
-import { SaleEventData } from "@/app/guide/shared/lib/data";
+import { SaleEventData } from "@/lib/data";
 
 const SEPARATOR = ",";
 const COLUMNS = [

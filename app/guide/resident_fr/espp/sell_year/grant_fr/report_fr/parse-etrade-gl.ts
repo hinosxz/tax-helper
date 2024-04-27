@@ -1,5 +1,5 @@
-import { SaleEventData } from "@/app/guide/shared/lib/data";
-import { getDateString } from "@/app/guide/shared/lib/date";
+import { SaleEventData } from "@/lib/data";
+import { getDateString } from "@/lib/date";
 import XLSX from "xlsx";
 
 type PlanType = "ESPP" | "RS";
