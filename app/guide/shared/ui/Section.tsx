@@ -15,13 +15,13 @@ export const Section = ({
 }: SectionProps) => (
   <div className={className}>
     {actions ? (
-      <div className="flex justify-between align-center">
+      <div className="flex justify-between align-center mb-4">
         <div className="text-lg font-bold my-auto">{title}</div>
         <div className="my-auto">{actions}</div>
       </div>
     ) : (
-      <div className="text-lg font-bold">{title}</div>
+      <div className="text-lg font-bold mb-2">{title}</div>
     )}
-    <div>{children}</div>
+    {children}
   </div>
 );

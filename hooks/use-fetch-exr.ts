@@ -20,13 +20,13 @@ interface Response {
   dataSets: DataSet[];
 }
 
-export const useFetchExr = (
-  date: string,
-): {
+export interface ExchangeRate {
   rate: number | null;
   isFetching: boolean;
   errorMessage: string | null;
-} => {
+}
+
+export const useFetchExr = (date: string): ExchangeRate => {
   const searchParams = useMemo(() => {
     const p = new URLSearchParams({
       format: "jsondata",

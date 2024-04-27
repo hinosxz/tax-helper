@@ -36,8 +36,8 @@ export const parseEtradeGL = async (
           adjustedCost: row["Adjusted Cost Basis Per Share"],
           dateAcquired: toDateString(row["Date Acquired"]),
           dateSold: toDateString(row["Date Sold"]),
-          rateAcquired: 1,
-          rateSold: 1,
+          rateAcquired: { isFetching: true, errorMessage: null, rate: null },
+          rateSold: { isFetching: true, errorMessage: null, rate: null },
         });
       }
     } catch {

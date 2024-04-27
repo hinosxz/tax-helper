@@ -21,6 +21,9 @@ import { SaleEventData, getDefaultData } from "@/lib/data";
 import { parseEtradeGL } from "./parse-etrade-gl";
 import { getDateString } from "@/lib/date";
 import { sendErrorToast } from "@/app/guide/shared/ui/Toast";
+import { ExchangeRate } from "@/hooks/use-fetch-exr";
+import { calcTotalGainLoss } from "./calc-total-gain-loss";
+import { Currency } from "@/app/guide/shared/ui/Currency";
 
 // On Saturday:
 // date.getDay() = 6 => date.getDay() / 6 = 1 => numDaysSinceLastFriday = 1
@@ -47,14 +50,14 @@ const EventBody = ({
   index,
 }: EventBodyProps) => {
   const setRateAcquired = useCallback(
-    (v: number) =>
+    (v: ExchangeRate) =>
       setEvents((events) =>
         events.map((e, idx) => (idx === index ? { ...e, rateAcquired: v } : e)),
       ),
     [index, setEvents],
   );
   const setRateSold = useCallback(
-    (v: number) =>
+    (v: ExchangeRate) =>
       setEvents((events) =>
         events.map((e, idx) => (idx === index ? { ...e, rateSold: v } : e)),
       ),
@@ -62,63 +65,54 @@ const EventBody = ({
   );
 
   return (
-    <div>
-      <Section
-        className="grid grid-cols-1 gap-4"
-        title={`Sale event #${index + 1}`}
-        actions={
-          <Button
-            color="red"
-            label="Remove"
-            icon={MinusIcon}
-            onClick={() => setEvents(events.filter((_, idx) => idx !== index))}
-            isDisabled={events.length <= 1}
-          />
-        }
-      >
-        <SaleEvent
-          maxDate={lastWeekDay}
-          {...data}
-          setQuantity={(v) =>
-            setEvents(
-              events.map((e, idx) =>
-                idx === index ? { ...e, quantity: v } : e,
-              ),
-            )
-          }
-          setAdjustedCost={(v) =>
-            setEvents(
-              events.map((e, idx) =>
-                idx === index ? { ...e, adjustedCost: v } : e,
-              ),
-            )
-          }
-          setProceeds={(v) =>
-            setEvents(
-              events.map((e, idx) =>
-                idx === index ? { ...e, proceeds: v } : e,
-              ),
-            )
-          }
-          setDateAcquired={(v) =>
-            setEvents(
-              events.map((e, idx) =>
-                idx === index ? { ...e, dateAcquired: v } : e,
-              ),
-            )
-          }
-          setDateSold={(v) =>
-            setEvents(
-              events.map((e, idx) =>
-                idx === index ? { ...e, dateSold: v } : e,
-              ),
-            )
-          }
-          setRateAcquired={setRateAcquired}
-          setRateSold={setRateSold}
+    <Section
+      title={`Sale event #${index + 1}`}
+      actions={
+        <Button
+          color="red"
+          label="Remove"
+          icon={MinusIcon}
+          onClick={() => setEvents(events.filter((_, idx) => idx !== index))}
+          isDisabled={events.length <= 1}
         />
-      </Section>
-    </div>
+      }
+    >
+      <SaleEvent
+        maxDate={lastWeekDay}
+        {...data}
+        setQuantity={(v) =>
+          setEvents(
+            events.map((e, idx) => (idx === index ? { ...e, quantity: v } : e)),
+          )
+        }
+        setAdjustedCost={(v) =>
+          setEvents(
+            events.map((e, idx) =>
+              idx === index ? { ...e, adjustedCost: v } : e,
+            ),
+          )
+        }
+        setProceeds={(v) =>
+          setEvents(
+            events.map((e, idx) => (idx === index ? { ...e, proceeds: v } : e)),
+          )
+        }
+        setDateAcquired={(v) =>
+          setEvents(
+            events.map((e, idx) =>
+              idx === index ? { ...e, dateAcquired: v } : e,
+            ),
+          )
+        }
+        setDateSold={(v) =>
+          setEvents(
+            events.map((e, idx) => (idx === index ? { ...e, dateSold: v } : e)),
+          )
+        }
+        setRateAcquired={setRateAcquired}
+        setRateSold={setRateSold}
+      />
+    </Section>
   );
 };
 
@@ -137,9 +131,11 @@ export const Calculator = () => {
 
   const [events, setEvents] = useState([getDefaultData(lastWeekDay)]);
 
+  const capitalGainLoss = useMemo(() => calcTotalGainLoss(events), [events]);
+  const [capitalGain, capitalLoss] = capitalGainLoss;
+
   return (
     <Section
-      className="grid grid-cols-1 gap-4"
       actions={
         <div className="flex gap-2">
           <FileInput
@@ -188,6 +184,25 @@ export const Calculator = () => {
             onClick={() => setEvents([...events, getDefaultData(lastWeekDay)])}
           />
         </div>
+        <Section title="Summary">
+          <div className="grid gap-2">
+            <div>
+              <span>Capital Gain (1133-A): </span>
+              <Currency value={capitalGain} unit="eur" />
+            </div>
+            <div>
+              <span>Capital Loss (1133-B): </span>
+              <Currency value={capitalLoss} unit="eur" />
+            </div>
+            <div>
+              <span>Capital Gain / Loss: </span>
+              <Currency
+                value={capitalGain && capitalLoss && capitalGain + capitalLoss}
+                unit="eur"
+              />
+            </div>
+          </div>
+        </Section>
       </div>
     </Section>
   );

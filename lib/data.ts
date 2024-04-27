@@ -1,11 +1,13 @@
+import { ExchangeRate } from "@/hooks/use-fetch-exr";
+
 export interface SaleEventData {
   quantity: number;
   proceeds: number;
   adjustedCost: number;
   dateAcquired: string;
   dateSold: string;
-  rateAcquired: number;
-  rateSold: number;
+  rateAcquired: ExchangeRate;
+  rateSold: ExchangeRate;
 }
 
 export const getDefaultData = (defaultDate: string): SaleEventData => ({
@@ -14,6 +16,6 @@ export const getDefaultData = (defaultDate: string): SaleEventData => ({
   dateSold: defaultDate,
   dateAcquired: defaultDate,
   adjustedCost: 0,
-  rateAcquired: 1,
-  rateSold: 1,
+  rateAcquired: { isFetching: true, rate: null, errorMessage: null },
+  rateSold: { isFetching: true, rate: null, errorMessage: null },
 });

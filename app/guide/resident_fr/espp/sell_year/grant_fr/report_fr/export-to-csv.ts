@@ -1,3 +1,4 @@
+import { sendErrorToast } from "@/app/guide/shared/ui/Toast";
 import { SaleEventData } from "@/lib/data";
 
 const SEPARATOR = ",";
@@ -32,22 +33,29 @@ const downloadBlob = (blob: Blob, fileName?: string) => {
 export const exportToCsv = (data: SaleEventData[]): void => {
   const csvData: string[] = [COLUMNS];
   for (const event of data) {
+    if (!event.rateAcquired.rate || !event.rateSold.rate) {
+      sendErrorToast("can't export to CSV if exchange rates are unavailable");
+      return;
+    }
+
+    const rateAcquired = event.rateAcquired.rate;
+    const rateSold = event.rateSold.rate;
     csvData.push(
       [
         event.quantity.toString(),
         event.dateAcquired,
-        event.rateAcquired.toString(),
+        rateAcquired.toString(),
         event.adjustedCost.toString(),
-        (event.adjustedCost / event.rateAcquired).toString(),
+        (event.adjustedCost / rateAcquired).toString(),
         event.dateSold,
-        event.rateSold.toString(),
+        rateSold.toString(),
         event.proceeds.toString(),
-        (event.proceeds / event.rateSold).toString(),
-        ((event.adjustedCost * event.quantity) / event.rateAcquired).toString(),
-        ((event.proceeds * event.quantity) / event.rateSold).toString(),
+        (event.proceeds / rateSold).toString(),
+        ((event.adjustedCost * event.quantity) / rateAcquired).toString(),
+        ((event.proceeds * event.quantity) / rateSold).toString(),
         (
-          event.proceeds / event.rateSold -
-          (event.adjustedCost / event.rateAcquired) * event.quantity
+          event.proceeds / rateSold -
+          (event.adjustedCost / rateAcquired) * event.quantity
         ).toString(),
       ].join(SEPARATOR),
     );

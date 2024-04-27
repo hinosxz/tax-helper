@@ -1,6 +1,7 @@
 import { NumberField, DateField } from "@/app/guide/shared/ui/Field";
-import { useFetchExr } from "@/hooks/use-fetch-exr";
+import { ExchangeRate, useFetchExr } from "@/hooks/use-fetch-exr";
 import { useEffect } from "react";
+import { getAdjustedGainLoss } from "./get-adjusted-gain-loss";
 
 interface SaleEventProps {
   maxDate: string;
@@ -20,8 +21,8 @@ interface SaleEventProps {
   dateSold: string;
   setDateSold: (value: string) => void;
 
-  setRateAcquired: (value: number) => void;
-  setRateSold: (value: number) => void;
+  setRateAcquired: (value: ExchangeRate) => void;
+  setRateSold: (value: ExchangeRate) => void;
 }
 
 export const SaleEvent = ({
@@ -45,14 +46,14 @@ export const SaleEvent = ({
   // Store copies in state for parent to access
   useEffect(() => {
     if (dateAcquiredExr.rate) {
-      setRateAcquired(dateAcquiredExr.rate);
+      setRateAcquired(dateAcquiredExr);
     }
-  }, [dateAcquiredExr.rate, setRateAcquired]);
+  }, [dateAcquiredExr, setRateAcquired]);
   useEffect(() => {
     if (dateSoldExr.rate) {
-      setRateSold(dateSoldExr.rate);
+      setRateSold(dateSoldExr);
     }
-  }, [dateSoldExr.rate, setRateSold]);
+  }, [dateSoldExr, setRateSold]);
 
   return (
     <form className="flex gap-4 text-left">
@@ -167,12 +168,13 @@ export const SaleEvent = ({
             isLoading={dateSoldExr.isFetching}
           />
           <NumberField
-            value={
-              dateAcquiredExr.rate && dateSoldExr.rate
-                ? (proceeds * quantity) / dateSoldExr.rate -
-                  (adjustedCost * quantity) / dateAcquiredExr.rate
-                : null
-            }
+            value={getAdjustedGainLoss(
+              quantity,
+              adjustedCost,
+              proceeds,
+              dateAcquiredExr,
+              dateSoldExr,
+            )}
             label="Adjusted Gain / Loss (€) (524)"
             isReadOnly
             validationError={
