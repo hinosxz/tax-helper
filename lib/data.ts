@@ -1,4 +1,5 @@
 import { ExchangeRate } from "@/hooks/use-fetch-exr";
+import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
 
 export interface SaleEventData {
   quantity: number;
@@ -16,6 +17,18 @@ export const getDefaultData = (defaultDate: string): SaleEventData => ({
   dateSold: defaultDate,
   dateAcquired: defaultDate,
   adjustedCost: 0,
+  rateAcquired: { isFetching: true, rate: null, errorMessage: null },
+  rateSold: { isFetching: true, rate: null, errorMessage: null },
+});
+
+export const saleEventFromGainAndLossEvent = (
+  data: GainAndLossEvent,
+): SaleEventData => ({
+  quantity: data.quantity,
+  proceeds: data.proceeds,
+  dateSold: data.dateSold,
+  dateAcquired: data.dateAcquired,
+  adjustedCost: data.adjustedCost,
   rateAcquired: { isFetching: true, rate: null, errorMessage: null },
   rateSold: { isFetching: true, rate: null, errorMessage: null },
 });

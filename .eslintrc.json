@@ -9,6 +9,15 @@
   "rules": {
     "prefer-const": "error",
     "indent": ["error", 2],
+    "@stylistic/js/max-len": [
+      "error",
+      {
+        "code": 80,
+        "tabWidth": 2,
+        "ignoreComments": true,
+        "ignorePattern": "^import\\s.+\\sfrom\\s.+;$"
+      }
+    ],
     "@stylistic/js/quotes": ["error", "double"],
     "@stylistic/js/jsx-quotes": ["error", "prefer-double"],
     "@stylistic/js/semi": ["error", "always"],
