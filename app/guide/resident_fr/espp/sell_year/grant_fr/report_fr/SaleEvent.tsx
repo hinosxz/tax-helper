@@ -1,6 +1,6 @@
 import { NumberField, DateField } from "@/app/guide/shared/ui/Field";
-import { ExchangeRate, useFetchExr } from "@/hooks/use-fetch-exr";
-import { useEffect } from "react";
+import { ExchangeRate, useExchangeRates } from "@/hooks/use-fetch-exr";
+import { useEffect, useMemo } from "react";
 import { getAdjustedGainLoss } from "./get-adjusted-gain-loss";
 
 interface SaleEventProps {
@@ -40,8 +40,27 @@ export const SaleEvent = ({
   setRateAcquired,
   setRateSold,
 }: SaleEventProps) => {
-  const dateAcquiredExr = useFetchExr(dateAcquired);
-  const dateSoldExr = useFetchExr(dateSold);
+  const { responses } = useExchangeRates([dateAcquired, dateSold]);
+
+  // Shape response in the ExchangeRate format
+  const { dateAcquiredExr, dateSoldExr } = useMemo(() => {
+    const dateAcquiredExr = {
+      rate: responses[dateAcquired]?.data ?? null,
+      isFetching: responses[dateAcquired]?.isFetching ?? true,
+      errorMessage: responses[dateAcquired]?.isError
+        ? "failed extracting rate from api response"
+        : null,
+    };
+    const dateSoldExr = {
+      rate: responses[dateSold]?.data ?? null,
+      isFetching: responses[dateSold]?.isFetching ?? true,
+      errorMessage: responses[dateSold]?.isError
+        ? "failed extracting rate from api response"
+        : null,
+    };
+
+    return { dateAcquiredExr, dateSoldExr };
+  }, [dateAcquired, dateSold, responses]);
 
   // Store copies in state for parent to access
   useEffect(() => {

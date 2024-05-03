@@ -1,5 +1,5 @@
 import { ONE_DAY } from "@/lib/constants";
-import { UseQueryResult, useQueries, useQuery } from "@tanstack/react-query";
+import { UseQueryResult, useQueries } from "@tanstack/react-query";
 
 const apiUrl =
   "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A";
@@ -20,6 +20,7 @@ interface Response {
   dataSets: DataSet[];
 }
 
+// @deprecated use useExchangeRates instead
 export interface ExchangeRate {
   rate: number | null;
   isFetching: boolean;
@@ -42,33 +43,9 @@ const fetchExchangeRate = async (date: string): Promise<number> => {
     );
 };
 
-export const useFetchExr = (
-  date: string,
-): {
-  rate: number | null;
-  isFetching: boolean;
-  errorMessage: string | null;
-} => {
-  const {
-    data: rate,
-    isFetching,
-    error,
-  } = useQuery({
-    queryKey: ["USD_EUR_EXCHANGE_RATE", date],
-    queryFn: () => fetchExchangeRate(date),
-    retry: 1,
-    staleTime: ONE_DAY,
-  });
-
-  return {
-    rate: rate ?? null,
-    isFetching,
-    errorMessage: error ? "failed extracting rate from api response" : null,
-  };
-};
-
 interface UseExchangeRateResponse {
   isFetching: boolean;
+  isError: boolean;
   responses: {
     [date: string]: UseQueryResult<number, unknown>;
   };
@@ -91,6 +68,7 @@ export const useExchangeRates = (dates: string[]): UseExchangeRateResponse => {
   });
 
   const data: UseExchangeRateResponse = {
+    isError: false,
     isFetching: false,
     responses: {},
     values: {},
@@ -104,6 +82,7 @@ export const useExchangeRates = (dates: string[]): UseExchangeRateResponse => {
     } as UseQueryResult<number, unknown>;
 
     data.isFetching = data.isFetching || result.isFetching;
+    data.isError = data.isError || result.isError;
     if (fetchResponse) {
       data.responses[fetchResponse.date] = query;
       data.values[fetchResponse.date] = fetchResponse.rate;
