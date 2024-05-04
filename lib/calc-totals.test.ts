@@ -1,18 +1,18 @@
 import { getDefaultData } from "@/lib/data";
 import type { SaleEventData } from "@/lib/data";
-import { calcTotalGainLoss } from "./calc-total-gain-loss";
+import { Totals, calcTotals } from "./calc-totals";
 
-describe("calcTotalGainLoss", () => {
+describe("calcTotals", () => {
   const date = "2024-01-01";
   const testCases: {
     description: string;
     events: SaleEventData[];
-    expected: [number | null, number | null];
+    expected: Totals | null;
   }[] = [
     {
       description: "return [null, null] when default state",
-      events: [getDefaultData(date)],
-      expected: [null, null],
+      events: [getDefaultData(date, true)],
+      expected: null,
     },
     {
       description: "return [null, null] when rates loading",
@@ -25,9 +25,10 @@ describe("calcTotalGainLoss", () => {
           adjustedCost: 10,
           rateAcquired: { isFetching: true, rate: null, errorMessage: null },
           rateSold: { isFetching: true, rate: null, errorMessage: null },
+          fractionFr: 1,
         },
       ],
-      expected: [null, null],
+      expected: null,
     },
     {
       description: "return [gain, 0] when only gain",
@@ -40,9 +41,10 @@ describe("calcTotalGainLoss", () => {
           adjustedCost: 0,
           rateAcquired: { isFetching: false, rate: 1, errorMessage: null },
           rateSold: { isFetching: false, rate: 1, errorMessage: null },
+          fractionFr: 1,
         },
       ],
-      expected: [1000, 0],
+      expected: { gain: 1000, loss: 0, income: 0, incomeFr: 0, proceeds: 1000 },
     },
     {
       description: "return [0, loss] when only loss",
@@ -55,9 +57,16 @@ describe("calcTotalGainLoss", () => {
           adjustedCost: 200,
           rateAcquired: { isFetching: false, rate: 1, errorMessage: null },
           rateSold: { isFetching: false, rate: 1, errorMessage: null },
+          fractionFr: 1,
         },
       ],
-      expected: [0, -1000],
+      expected: {
+        gain: 0,
+        loss: -1000,
+        income: 2000,
+        incomeFr: 2000,
+        proceeds: 1000,
+      },
     },
     {
       description: "return [gain, loss] when both gain and loss",
@@ -70,6 +79,7 @@ describe("calcTotalGainLoss", () => {
           adjustedCost: 200,
           rateAcquired: { isFetching: false, rate: 1, errorMessage: null },
           rateSold: { isFetching: false, rate: 1, errorMessage: null },
+          fractionFr: 1,
         },
         {
           quantity: 10,
@@ -79,12 +89,19 @@ describe("calcTotalGainLoss", () => {
           adjustedCost: 0,
           rateAcquired: { isFetching: false, rate: 1, errorMessage: null },
           rateSold: { isFetching: false, rate: 1, errorMessage: null },
+          fractionFr: 1,
         },
       ],
-      expected: [1000, -1000],
+      expected: {
+        gain: 1000,
+        loss: -1000,
+        income: 2000,
+        incomeFr: 2000,
+        proceeds: 2000,
+      },
     },
   ];
   it.each(testCases)("$description", ({ events, expected }) => {
-    expect(calcTotalGainLoss(events)).toEqual(expected);
+    expect(calcTotals(events)).toEqual(expected);
   });
 });

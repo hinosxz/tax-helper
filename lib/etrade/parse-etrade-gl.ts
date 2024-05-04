@@ -28,9 +28,7 @@ export const parseEtradeGL = async (
         adjustedCost: row["Adjusted Cost Basis Per Share"],
         dateAcquired: toDateString(row["Date Acquired"]),
         dateSold: toDateString(row["Date Sold"]),
-        isPlanUsQualified: row["Qualified Plan"] === "Qualified",
-        // For now consider that non-US qualified plan is FR
-        // qualified.
+        // For now consider that a non-US qualified plan is FR qualified.
         isPlanFrQualified: row["Qualified Plan"] !== "Qualified",
       });
     } catch {
@@ -57,7 +55,6 @@ export const parseEtradeGL = async (
  */
 export const createEtradeGLFilter = (filter: {
   planType?: PlanType;
-  isPlanUsQualified?: boolean;
   isPlanFrQualified?: boolean;
 }) => {
   const filterKeys = Object.keys(filter) as (keyof typeof filter)[];

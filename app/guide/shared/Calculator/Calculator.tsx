@@ -25,9 +25,10 @@ import {
 import { createEtradeGLFilter } from "@/lib/etrade/parse-etrade-gl";
 import { getDateString } from "@/lib/date";
 import { ExchangeRate } from "@/hooks/use-fetch-exr";
-import { calcTotalGainLoss } from "@/lib/calc-total-gain-loss";
+import { calcTotals as calcTotals } from "@/lib/calc-totals";
 import { Currency } from "@/app/guide/shared/ui/Currency";
 import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
+import { PlanType } from "@/lib/etrade/etrade.types";
 
 // On Saturday:
 // date.getDay() = 6 => date.getDay() / 6 = 1 => numDaysSinceLastFriday = 1
@@ -44,6 +45,7 @@ interface EventBodyProps {
   lastWeekDay: string;
   index: number;
   data: SaleEventData;
+  hasIncome: boolean;
 }
 
 const EventBody = ({
@@ -52,6 +54,7 @@ const EventBody = ({
   setEvents,
   lastWeekDay,
   index,
+  hasIncome,
 }: EventBodyProps) => {
   const setRateAcquired = useCallback(
     (v: ExchangeRate) =>
@@ -83,10 +86,18 @@ const EventBody = ({
     >
       <SaleEvent
         maxDate={lastWeekDay}
+        hasIncome={hasIncome}
         {...data}
         setQuantity={(v) =>
           setEvents(
             events.map((e, idx) => (idx === index ? { ...e, quantity: v } : e)),
+          )
+        }
+        setFractionFr={(v) =>
+          setEvents(
+            events.map((e, idx) =>
+              idx === index ? { ...e, fractionFr: v } : e,
+            ),
           )
         }
         setAdjustedCost={(v) =>
@@ -120,12 +131,15 @@ const EventBody = ({
   );
 };
 
-const isFrQualifiedEspp = createEtradeGLFilter({
-  planType: "ESPP",
-  isPlanFrQualified: true,
-});
+interface CalculatorProps {
+  isPlanUsQualified: false;
+  planType?: Extract<PlanType, "ESPP" | "RS">; // TODO support SO
+}
 
-export const Calculator = () => {
+export const Calculator = ({
+  isPlanUsQualified,
+  planType,
+}: CalculatorProps) => {
   // Exchange rates are only available on weekdays
   const lastWeekDay = useMemo(() => {
     const yesterday = new Date(Date.now() - ONE_DAY);
@@ -138,10 +152,16 @@ export const Calculator = () => {
     return getDateString(new Date(yesterday));
   }, []);
 
-  const [events, setEvents] = useState([getDefaultData(lastWeekDay)]);
+  const eTradeGLFilter = createEtradeGLFilter({
+    planType,
+    isPlanFrQualified: !isPlanUsQualified,
+  });
 
-  const capitalGainLoss = useMemo(() => calcTotalGainLoss(events), [events]);
-  const [capitalGain, capitalLoss] = capitalGainLoss;
+  const [events, setEvents] = useState([
+    getDefaultData(lastWeekDay, !isPlanUsQualified),
+  ]);
+
+  const totals = useMemo(() => calcTotals(events), [events]);
 
   return (
     <Section
@@ -151,9 +171,7 @@ export const Calculator = () => {
             id="import_etrade_g&l"
             setData={(lines) => {
               setEvents(
-                lines
-                  .filter(isFrQualifiedEspp)
-                  .map(saleEventFromGainAndLossEvent),
+                lines.filter(eTradeGLFilter).map(saleEventFromGainAndLossEvent),
               );
             }}
           />
@@ -176,6 +194,7 @@ export const Calculator = () => {
             events={events}
             setEvents={setEvents}
             lastWeekDay={lastWeekDay}
+            hasIncome={planType === "RS"}
           />
         ))}
         <div className="flex justify-end">
@@ -183,26 +202,63 @@ export const Calculator = () => {
             color="green"
             label="New sale"
             icon={PlusIcon}
-            onClick={() => setEvents([...events, getDefaultData(lastWeekDay)])}
+            onClick={() =>
+              setEvents([
+                ...events,
+                getDefaultData(lastWeekDay, !isPlanUsQualified),
+              ])
+            }
           />
         </div>
         <Section title="Summary">
-          <div className="grid gap-2">
+          <div className="grid grid-cols-1 gap-2">
+            {planType === "RS" ? (
+              <>
+                <div>
+                  <span>Income: </span>
+                  <Currency value={totals?.income ?? null} unit="eur" />
+                </div>
+                <div>
+                  <span>Income From French Origin: </span>
+                  <Currency value={totals?.incomeFr ?? null} unit="eur" />
+                </div>
+                <div className="border border-gray-300" />
+              </>
+            ) : null}
             <div>
               <span>Capital Gain (1133-A): </span>
-              <Currency value={capitalGain} unit="eur" />
+              <Currency value={totals?.gain ?? null} unit="eur" />
             </div>
             <div>
               <span>Capital Loss (1133-B): </span>
-              <Currency value={capitalLoss} unit="eur" />
+              <Currency value={totals?.loss ?? null} unit="eur" />
             </div>
             <div>
               <span>Capital Gain / Loss: </span>
               <Currency
-                value={capitalGain && capitalLoss && capitalGain + capitalLoss}
+                value={totals && totals.gain + totals.loss}
                 unit="eur"
               />
             </div>
+            {planType === "RS" ? (
+              <>
+                <div className="border border-gray-300" />
+                <div>
+                  <span>Taxable Income (1TZ): </span>
+                  <Currency
+                    value={totals ? (totals.incomeFr + totals.loss) / 2 : null}
+                    unit="eur"
+                  />
+                </div>
+                <div>
+                  <span>Abatement (1WZ): </span>
+                  <Currency
+                    value={totals ? (totals.incomeFr + totals.loss) / 2 : null}
+                    unit="eur"
+                  />
+                </div>
+              </>
+            ) : null}
           </div>
         </Section>
       </div>

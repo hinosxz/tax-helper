@@ -1,13 +1,36 @@
-import type { ExchangeRate } from "@/hooks/use-fetch-exr";
-
-export const getAdjustedGainLoss = (
+export function getAdjustedGainLoss(
   quantity: number,
   adjustedCost: number,
   proceeds: number,
-  dateAcquiredExr: ExchangeRate,
-  dateSoldExr: ExchangeRate,
-) =>
-  dateAcquiredExr.rate && dateSoldExr.rate
-    ? (proceeds * quantity) / dateSoldExr.rate -
-      (adjustedCost * quantity) / dateAcquiredExr.rate
-    : null;
+  rateAcquired: null,
+  rateSold: null,
+): number | null;
+export function getAdjustedGainLoss(
+  quantity: number,
+  adjustedCost: number,
+  proceeds: number,
+  rateAcquired: number,
+  rateSold: number,
+): number;
+export function getAdjustedGainLoss(
+  quantity: number,
+  adjustedCost: number,
+  proceeds: number,
+  rateAcquired: number | null,
+  rateSold: number | null,
+): number | null;
+export function getAdjustedGainLoss(
+  quantity: number,
+  adjustedCost: number,
+  proceeds: number,
+  rateAcquired: number | null,
+  rateSold: number | null,
+): number | null {
+  if (rateAcquired && rateSold) {
+    return (
+      (proceeds * quantity) / rateSold -
+      (adjustedCost * quantity) / rateAcquired
+    );
+  }
+  return null;
+}

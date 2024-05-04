@@ -9,9 +9,14 @@ export interface SaleEventData {
   dateSold: string;
   rateAcquired: ExchangeRate;
   rateSold: ExchangeRate;
+  /** Fraction of the adjusted cost from French source */
+  fractionFr: number;
 }
 
-export const getDefaultData = (defaultDate: string): SaleEventData => ({
+export const getDefaultData = (
+  defaultDate: string,
+  isPlanFrQualified: boolean,
+): SaleEventData => ({
   quantity: 1,
   proceeds: 0,
   dateSold: defaultDate,
@@ -19,6 +24,7 @@ export const getDefaultData = (defaultDate: string): SaleEventData => ({
   adjustedCost: 0,
   rateAcquired: { isFetching: true, rate: null, errorMessage: null },
   rateSold: { isFetching: true, rate: null, errorMessage: null },
+  fractionFr: isPlanFrQualified ? 1 : 0,
 });
 
 export const saleEventFromGainAndLossEvent = (
@@ -31,4 +37,5 @@ export const saleEventFromGainAndLossEvent = (
   adjustedCost: data.adjustedCost,
   rateAcquired: { isFetching: true, rate: null, errorMessage: null },
   rateSold: { isFetching: true, rate: null, errorMessage: null },
+  fractionFr: data.isPlanFrQualified ? 1 : 0,
 });

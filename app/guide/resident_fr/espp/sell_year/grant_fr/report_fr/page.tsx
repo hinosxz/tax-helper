@@ -10,12 +10,12 @@ export default function Page() {
         <div className="grid cols-1 gap-2">
           <p>
             In your tax report, if you haven't already, please select form{" "}
-            <span className="text-bold">2074</span>. The following calculator
-            will help you determine how you should fill it out for ESPP sales.
-            For each sale, you will have to fill a new section of the form
-            (fields 512, 514, 515, 520, 521 and 524). Once you've filled out the
-            form for all sale events, field 3VG should be pre-filled with your
-            total adjusted gain / loss (in euros).
+            <span className="italic">2074</span>. The following calculator will
+            help you determine how you should fill it out for ESPP sales. For
+            each sale, you will have to fill a new section of the form (fields
+            512, 514, 515, 520, 521 and 524). Once you've filled out the form
+            for all sale events, field 3VG should be pre-filled with your total
+            adjusted gain / loss (in euros).
           </p>
           <p>
             For ETrade users, the name of the inputs below should match the
@@ -29,7 +29,7 @@ export default function Page() {
           </p>
         </div>
       </Section>
-      <Calculator />
+      <Calculator isPlanUsQualified={false} planType="ESPP" />
     </div>
   );
 }
