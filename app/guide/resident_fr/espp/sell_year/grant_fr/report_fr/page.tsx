@@ -1,9 +1,7 @@
 import { Section } from "@/app/guide/shared/ui/Section";
-import { Calculator } from "./Calculator";
+import { Calculator } from "@/app/guide/shared/Calculator";
 import { Link } from "@/app/guide/shared/ui/Link";
-
-const gainsLossesUrl =
-  "https://us.etrade.com/etx/sp/stockplan#/myAccount/gainsLosses";
+import { eTradeGainsLossesUrl } from "@/lib/constants";
 
 export default function Page() {
   return (
@@ -23,7 +21,7 @@ export default function Page() {
             For ETrade users, the name of the inputs below should match the
             columns in your "Gains and Losses" spreadsheet. You can download
             that Spreadsheet in the{" "}
-            <Link href={gainsLossesUrl} isExternal>
+            <Link href={eTradeGainsLossesUrl} isExternal>
               Gains and Losses
             </Link>{" "}
             page after selecting your tax year and clicking "Download" and

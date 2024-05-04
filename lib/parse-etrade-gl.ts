@@ -1,4 +1,4 @@
-import { SaleEventData } from "@/lib/data";
+import type { SaleEventData } from "@/lib/data";
 import { getDateString } from "@/lib/date";
 import XLSX from "xlsx";
 

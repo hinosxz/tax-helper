@@ -1,7 +1,7 @@
 import { NumberField, DateField } from "@/app/guide/shared/ui/Field";
 import { ExchangeRate, useExchangeRates } from "@/hooks/use-fetch-exr";
 import { useEffect, useMemo } from "react";
-import { getAdjustedGainLoss } from "./get-adjusted-gain-loss";
+import { getAdjustedGainLoss } from "@/lib/get-adjusted-gain-loss";
 
 interface SaleEventProps {
   maxDate: string;

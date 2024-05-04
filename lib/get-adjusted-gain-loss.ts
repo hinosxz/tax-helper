@@ -1,4 +1,4 @@
-import { ExchangeRate } from "@/hooks/use-fetch-exr";
+import type { ExchangeRate } from "@/hooks/use-fetch-exr";
 
 export const getAdjustedGainLoss = (
   quantity: number,

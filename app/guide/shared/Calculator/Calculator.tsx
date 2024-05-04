@@ -1,5 +1,4 @@
 "use client";
-import { ONE_DAY } from "@/lib/constants";
 import {
   ArrowUpTrayIcon,
   MinusIcon,
@@ -12,10 +11,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import { SaleEvent } from "./SaleEvent";
+
+import { SaleEvent } from "./_SaleEvent";
+import { ONE_DAY } from "@/lib/constants";
 import { Button } from "@/app/guide/shared/ui/Button";
 import { Section } from "@/app/guide/shared/ui/Section";
-import { exportToCsv } from "./export-to-csv";
+import { exportToCsv } from "@/lib/export-to-csv";
 import {
   SaleEventData,
   getDefaultData,
@@ -24,7 +25,7 @@ import {
 import { createEtradeGLFilter } from "@/lib/etrade/parse-etrade-gl";
 import { getDateString } from "@/lib/date";
 import { ExchangeRate } from "@/hooks/use-fetch-exr";
-import { calcTotalGainLoss } from "./calc-total-gain-loss";
+import { calcTotalGainLoss } from "@/lib/calc-total-gain-loss";
 import { Currency } from "@/app/guide/shared/ui/Currency";
 import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
 

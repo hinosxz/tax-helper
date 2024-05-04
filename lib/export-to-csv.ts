@@ -1,5 +1,5 @@
 import { sendErrorToast } from "@/app/guide/shared/ui/Toast";
-import { SaleEventData } from "@/lib/data";
+import type { SaleEventData } from "@/lib/data";
 
 const SEPARATOR = ",";
 const COLUMNS = [

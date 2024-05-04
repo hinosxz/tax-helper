@@ -1,4 +1,5 @@
-import { SaleEventData, getDefaultData } from "@/lib/data";
+import { getDefaultData } from "@/lib/data";
+import type { SaleEventData } from "@/lib/data";
 import { calcTotalGainLoss } from "./calc-total-gain-loss";
 
 describe("calcTotalGainLoss", () => {

@@ -1,4 +1,4 @@
-import { SaleEventData } from "@/lib/data";
+import type { SaleEventData } from "@/lib/data";
 import { getAdjustedGainLoss } from "./get-adjusted-gain-loss";
 
 export const calcTotalGainLoss = (events: SaleEventData[]) =>
