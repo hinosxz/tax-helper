@@ -1,4 +1,3 @@
-import { ExchangeRate } from "@/hooks/use-fetch-exr";
 import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
 
 export interface SaleEventData {
@@ -7,8 +6,8 @@ export interface SaleEventData {
   adjustedCost: number;
   dateAcquired: string;
   dateSold: string;
-  rateAcquired: ExchangeRate;
-  rateSold: ExchangeRate;
+  rateAcquired: number | null;
+  rateSold: number | null;
   /** Fraction of the adjusted cost from French source */
   fractionFr: number;
 }
@@ -22,8 +21,8 @@ export const getDefaultData = (
   dateSold: defaultDate,
   dateAcquired: defaultDate,
   adjustedCost: 0,
-  rateAcquired: { isFetching: true, rate: null, errorMessage: null },
-  rateSold: { isFetching: true, rate: null, errorMessage: null },
+  rateAcquired: null,
+  rateSold: null,
   fractionFr: isPlanFrQualified ? 1 : 0,
 });
 
@@ -35,7 +34,7 @@ export const saleEventFromGainAndLossEvent = (
   dateSold: data.dateSold,
   dateAcquired: data.dateAcquired,
   adjustedCost: data.adjustedCost,
-  rateAcquired: { isFetching: true, rate: null, errorMessage: null },
-  rateSold: { isFetching: true, rate: null, errorMessage: null },
+  rateAcquired: null,
+  rateSold: null,
   fractionFr: data.isPlanFrQualified ? 1 : 0,
 });

@@ -11,7 +11,7 @@ export interface Totals {
 
 export const calcTotals = (events: SaleEventData[]): Totals | null =>
   events.reduce<Totals | null>((acc, e) => {
-    if (e.rateAcquired.rate === null || e.rateSold.rate === null) {
+    if (e.rateAcquired === null || e.rateSold === null) {
       return acc;
     }
 
@@ -26,18 +26,18 @@ export const calcTotals = (events: SaleEventData[]): Totals | null =>
           }
         : { ...acc };
 
-    totals.income += (e.adjustedCost * e.quantity) / e.rateAcquired.rate;
+    totals.income += (e.adjustedCost * e.quantity) / e.rateAcquired;
     totals.incomeFr +=
-      (e.adjustedCost * e.quantity * e.fractionFr) / e.rateAcquired.rate;
-    totals.proceeds += (e.proceeds * e.quantity) / e.rateSold.rate;
+      (e.adjustedCost * e.quantity * e.fractionFr) / e.rateAcquired;
+    totals.proceeds += (e.proceeds * e.quantity) / e.rateSold;
 
     // Compute gain / loss
     const gainLoss = getAdjustedGainLoss(
       e.quantity,
       e.adjustedCost,
       e.proceeds,
-      e.rateAcquired.rate,
-      e.rateSold.rate,
+      e.rateAcquired,
+      e.rateSold,
     );
     if (gainLoss > 0) {
       totals.gain += gainLoss;

@@ -24,7 +24,6 @@ import {
 } from "@/lib/data";
 import { createEtradeGLFilter } from "@/lib/etrade/parse-etrade-gl";
 import { getDateString } from "@/lib/date";
-import { ExchangeRate } from "@/hooks/use-fetch-exr";
 import { calcTotals as calcTotals } from "@/lib/calc-totals";
 import { Currency } from "@/app/guide/shared/ui/Currency";
 import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
@@ -57,14 +56,14 @@ const EventBody = ({
   hasIncome,
 }: EventBodyProps) => {
   const setRateAcquired = useCallback(
-    (v: ExchangeRate) =>
+    (v: number | null) =>
       setEvents((events) =>
         events.map((e, idx) => (idx === index ? { ...e, rateAcquired: v } : e)),
       ),
     [index, setEvents],
   );
   const setRateSold = useCallback(
-    (v: ExchangeRate) =>
+    (v: number | null) =>
       setEvents((events) =>
         events.map((e, idx) => (idx === index ? { ...e, rateSold: v } : e)),
       ),

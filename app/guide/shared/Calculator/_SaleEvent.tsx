@@ -1,5 +1,5 @@
 import { NumberField, DateField } from "@/app/guide/shared/ui/Field";
-import { ExchangeRate, useExchangeRates } from "@/hooks/use-fetch-exr";
+import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { useEffect, useMemo } from "react";
 import { getAdjustedGainLoss } from "@/lib/get-adjusted-gain-loss";
 
@@ -25,8 +25,8 @@ interface SaleEventProps {
   dateSold: string;
   setDateSold: (value: string) => void;
 
-  setRateAcquired: (value: ExchangeRate) => void;
-  setRateSold: (value: ExchangeRate) => void;
+  setRateAcquired: (value: number | null) => void;
+  setRateSold: (value: number | null) => void;
 }
 
 export const SaleEvent = ({
@@ -72,14 +72,14 @@ export const SaleEvent = ({
   // Store copies in state for parent to access
   useEffect(() => {
     if (dateAcquiredExr.rate) {
-      setRateAcquired(dateAcquiredExr);
+      setRateAcquired(dateAcquiredExr.rate);
     }
-  }, [dateAcquiredExr, setRateAcquired]);
+  }, [dateAcquiredExr.rate, setRateAcquired]);
   useEffect(() => {
     if (dateSoldExr.rate) {
-      setRateSold(dateSoldExr);
+      setRateSold(dateSoldExr.rate);
     }
-  }, [dateSoldExr, setRateSold]);
+  }, [dateSoldExr.rate, setRateSold]);
 
   return (
     <form className="flex gap-4 text-left">
