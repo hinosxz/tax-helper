@@ -24,3 +24,17 @@ export const floorNumber = (value: number, digits: number = 2): number => {
   const factor = Math.pow(10, digits);
   return Math.floor(value * factor) / factor;
 };
+
+/**
+ * Ceils a number with `digits` digits.
+ *
+ * ```
+ * ceilNumber(1.234) // 1.24
+ * ceilNumber(1.234, 3) // 1.234
+ * ceilNumber(1, 2) // 1
+ * ```
+ */
+export const ceilNumber = (value: number, digits: number = 2): number => {
+  const factor = Math.pow(10, digits);
+  return Math.ceil(value * factor) / factor;
+};
