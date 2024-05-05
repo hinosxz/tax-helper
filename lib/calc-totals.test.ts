@@ -10,12 +10,12 @@ describe("calcTotals", () => {
     expected: Totals | null;
   }[] = [
     {
-      description: "return [null, null] when default state",
-      events: [getDefaultData(date, true)],
+      description: "return null when default state",
+      events: [getDefaultData(date, "fr")],
       expected: null,
     },
     {
-      description: "return [null, null] when rates loading",
+      description: "return null when rates loading",
       events: [
         {
           quantity: 10,
@@ -64,7 +64,7 @@ describe("calcTotals", () => {
         gain: 0,
         loss: -1000,
         income: 2000,
-        incomeFr: 2000,
+        incomeFr: 1000, // income - loss because total gain / loss is < 0
         proceeds: 1000,
       },
     },

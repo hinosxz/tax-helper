@@ -36,7 +36,7 @@ export default function Page() {
           </p>
         </div>
       </Section>
-      <Calculator isPlanUsQualified={false} planType="RS" />
+      <Calculator qualifiedIn="fr" planType="RS" />
     </div>
   );
 }

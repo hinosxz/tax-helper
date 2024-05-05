@@ -38,6 +38,18 @@ const getNumDaysSinceLastFriday = (date: Date) =>
 
 const isWeekendDay = (date: Date) => date.getDay() % 6 === 0;
 
+/**
+ * Compute value of the abatement for income taxes based on the income value.
+ * Abatement is 50% of the income up to 300k euros,
+ * c.f. https://bofip.impots.gouv.fr/bofip/5654-PGP.html/identifiant%3DBOI-RSA-ES-20-20-20-20170724#:~:text=30%C2%A0d%C3%A9cembre%C2%A02016-,49,-Conform%C3%A9ment%20aux%20dispositions
+ */
+const getAbatement = (income: number) =>
+  (income - getAboveAbatementThreshold(income)) / 2;
+
+/** Get income value above 300k euros. */
+const getAboveAbatementThreshold = (value: number) =>
+  Math.max(value, 300e3) - 300e3;
+
 interface EventBodyProps {
   events: SaleEventData[];
   setEvents: Dispatch<SetStateAction<SaleEventData[]>>;
@@ -131,14 +143,11 @@ const EventBody = ({
 };
 
 interface CalculatorProps {
-  isPlanUsQualified: false;
+  qualifiedIn: "fr"; // this calculator only supports French plans as of now
   planType?: Extract<PlanType, "ESPP" | "RS">; // TODO support SO
 }
 
-export const Calculator = ({
-  isPlanUsQualified,
-  planType,
-}: CalculatorProps) => {
+export const Calculator = ({ qualifiedIn, planType }: CalculatorProps) => {
   // Exchange rates are only available on weekdays
   const lastWeekDay = useMemo(() => {
     const yesterday = new Date(Date.now() - ONE_DAY);
@@ -153,11 +162,11 @@ export const Calculator = ({
 
   const eTradeGLFilter = createEtradeGLFilter({
     planType,
-    isPlanFrQualified: !isPlanUsQualified,
+    qualifiedIn,
   });
 
   const [events, setEvents] = useState([
-    getDefaultData(lastWeekDay, !isPlanUsQualified),
+    getDefaultData(lastWeekDay, qualifiedIn),
   ]);
 
   const totals = useMemo(() => calcTotals(events), [events]);
@@ -202,10 +211,7 @@ export const Calculator = ({
             label="New sale"
             icon={PlusIcon}
             onClick={() =>
-              setEvents([
-                ...events,
-                getDefaultData(lastWeekDay, !isPlanUsQualified),
-              ])
+              setEvents([...events, getDefaultData(lastWeekDay, qualifiedIn)])
             }
           />
         </div>
@@ -243,16 +249,31 @@ export const Calculator = ({
               <>
                 <div className="border border-gray-300" />
                 <div>
+                  <span>Taxable Income above 300k€ (1TT): </span>
+                  <Currency
+                    value={
+                      totals
+                        ? getAboveAbatementThreshold(totals.incomeFr)
+                        : null
+                    }
+                    unit="eur"
+                  />
+                </div>
+                <div>
                   <span>Taxable Income (1TZ): </span>
                   <Currency
-                    value={totals ? (totals.incomeFr + totals.loss) / 2 : null}
+                    value={
+                      totals
+                        ? totals.incomeFr - getAbatement(totals.incomeFr)
+                        : null
+                    }
                     unit="eur"
                   />
                 </div>
                 <div>
                   <span>Abatement (1WZ): </span>
                   <Currency
-                    value={totals ? (totals.incomeFr + totals.loss) / 2 : null}
+                    value={totals ? getAbatement(totals.incomeFr) : null}
                     unit="eur"
                   />
                 </div>

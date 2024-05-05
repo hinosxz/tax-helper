@@ -14,7 +14,7 @@ export interface SaleEventData {
 
 export const getDefaultData = (
   defaultDate: string,
-  isPlanFrQualified: boolean,
+  qualifiedIn: "fr" | "us",
 ): SaleEventData => ({
   quantity: 1,
   proceeds: 0,
@@ -23,7 +23,7 @@ export const getDefaultData = (
   adjustedCost: 0,
   rateAcquired: null,
   rateSold: null,
-  fractionFr: isPlanFrQualified ? 1 : 0,
+  fractionFr: qualifiedIn === "fr" ? 1 : 0,
 });
 
 export const saleEventFromGainAndLossEvent = (
@@ -36,5 +36,5 @@ export const saleEventFromGainAndLossEvent = (
   adjustedCost: data.adjustedCost,
   rateAcquired: null,
   rateSold: null,
-  fractionFr: data.isPlanFrQualified ? 1 : 0,
+  fractionFr: data.qualifiedIn === "fr" ? 1 : 0,
 });

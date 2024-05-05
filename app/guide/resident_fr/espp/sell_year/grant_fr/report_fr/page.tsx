@@ -29,7 +29,7 @@ export default function Page() {
           </p>
         </div>
       </Section>
-      <Calculator isPlanUsQualified={false} planType="ESPP" />
+      <Calculator qualifiedIn="fr" planType="ESPP" />
     </div>
   );
 }

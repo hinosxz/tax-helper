@@ -24,5 +24,5 @@ export interface GainAndLossEvent {
   adjustedCost: number;
   dateAcquired: string;
   dateSold: string;
-  isPlanFrQualified: boolean;
+  qualifiedIn: "fr" | "us";
 }

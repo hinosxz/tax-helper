@@ -9,8 +9,8 @@ export interface Totals {
   proceeds: number;
 }
 
-export const calcTotals = (events: SaleEventData[]): Totals | null =>
-  events.reduce<Totals | null>((acc, e) => {
+export const calcTotals = (events: SaleEventData[]): Totals | null => {
+  const totals = events.reduce<Totals | null>((acc, e) => {
     if (e.rateAcquired === null || e.rateSold === null) {
       return acc;
     }
@@ -47,3 +47,15 @@ export const calcTotals = (events: SaleEventData[]): Totals | null =>
 
     return totals;
   }, null);
+
+  // Remove potential loss from French fraction of income to report,
+  // c.f. https://bofip.impots.gouv.fr/bofip/5654-PGP.html/identifiant%3DBOI-RSA-ES-20-20-20-20170724#:~:text=de%20cession%20r%C3%A9alis%C3%A9e.-,190,-La%20moins%2Dvalue
+  if (totals) {
+    const gainLoss = totals.gain + totals.loss;
+    if (gainLoss < 0) {
+      totals.incomeFr += gainLoss;
+    }
+  }
+
+  return totals;
+};
