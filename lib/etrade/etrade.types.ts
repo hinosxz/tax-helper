@@ -45,3 +45,11 @@ export interface GainAndLossEvent {
   /** What kind of qualified plan is it? */
   qualifiedIn: "fr" | "us";
 }
+
+export interface BenefitHistoryEvent {
+  planType: PlanType;
+  dateVested: string;
+  quantity: number;
+  /** What kind of qualified plan is it? */
+  qualified: "FR" | "US";
+}
