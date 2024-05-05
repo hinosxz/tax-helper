@@ -1,4 +1,4 @@
-import { floorNumber, formatNumber } from "./format-number";
+import { floorNumber, ceilNumber, formatNumber } from "./format-number";
 
 describe("formatNumber", () => {
   it("should add 2 decimal places", () => {
@@ -16,10 +16,28 @@ describe("floorNumber", () => {
   it("should floor a number with 2 decimal places", () => {
     expect(floorNumber(1.234)).toBe(1.23);
   });
+  it("should work on number with 3 decimal places", () => {
+    expect(floorNumber(1.2342, 3)).toBe(1.234);
+  });
   it("should floor a number with 3 decimal places", () => {
-    expect(floorNumber(1.234, 3)).toBe(1.234);
+    expect(floorNumber(1.2347, 3)).toBe(1.234);
   });
   it("should floor a number with no decimals", () => {
     expect(floorNumber(1, 2)).toBe(1);
+  });
+});
+
+describe("ceilNumber", () => {
+  it("should ceil a number with 2 decimal places", () => {
+    expect(ceilNumber(1.234)).toBe(1.24);
+  });
+  it("should work on number with 3 decimal places", () => {
+    expect(ceilNumber(1.2342, 3)).toBe(1.235);
+  });
+  it("should ceil a number with 3 decimal places", () => {
+    expect(ceilNumber(1.2347, 3)).toBe(1.235);
+  });
+  it("should ceil a number with no decimals", () => {
+    expect(ceilNumber(1, 2)).toBe(1);
   });
 });
