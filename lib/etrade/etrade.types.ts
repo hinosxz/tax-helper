@@ -26,7 +26,7 @@ export interface GainAndLossEvent {
   /** Proceeds per share in USD: sell price. */
   proceeds: number;
   /**
-   * Value when the share has been acquired for US taxes.
+   * Value when the share was acquired for US taxes.
    * Usually SYMBOL price at closing on time of acquisition.
    *
    * For French taxes, it should be the opening price of the day.
