@@ -1,3 +1,8 @@
+import {
+  getDateString,
+  isWeekendDay,
+  getNumDaysSinceLastFriday,
+} from "@/lib/date";
 import { ONE_DAY } from "@/lib/constants";
 import { UseQueryResult, useQueries } from "@tanstack/react-query";
 
@@ -27,13 +32,26 @@ export interface ExchangeRate {
   errorMessage: string | null;
 }
 
+// Exchange rates are only available on weekdays
+//TODO : Missing Bank Holidays
+const lastDayWithAvailableRates = (date: string) => {
+  const dateAsked = new Date(date);
+  if (isWeekendDay(dateAsked)) {
+    const numDaysSinceLastFriday = getNumDaysSinceLastFriday(dateAsked);
+    const lastFridayTs = dateAsked.valueOf() - numDaysSinceLastFriday * ONE_DAY;
+    return getDateString(new Date(lastFridayTs));
+  }
+  return date;
+};
 const fetchExchangeRate = async (date: string): Promise<number> => {
   const searchParams = new URLSearchParams({
     format: "jsondata",
     detail: "dataonly",
   });
-  searchParams.set("startPeriod", date);
-  searchParams.set("endPeriod", date);
+
+  const rateDate = lastDayWithAvailableRates(date);
+  searchParams.set("startPeriod", rateDate);
+  searchParams.set("endPeriod", rateDate);
 
   return fetch(`${apiUrl}?${searchParams.toString()}`)
     .then((res) => res.json())

@@ -23,20 +23,15 @@ import {
   saleEventFromGainAndLossEvent,
 } from "@/lib/data";
 import { createEtradeGLFilter } from "@/lib/etrade/parse-etrade-gl";
-import { getDateString } from "@/lib/date";
+import {
+  getDateString,
+  isWeekendDay,
+  getNumDaysSinceLastFriday,
+} from "@/lib/date";
 import { calcTotals as calcTotals } from "@/lib/calc-totals";
 import { Currency } from "@/app/guide/shared/ui/Currency";
 import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
 import { PlanType } from "@/lib/etrade/etrade.types";
-
-// On Saturday:
-// date.getDay() = 6 => date.getDay() / 6 = 1 => numDaysSinceLastFriday = 1
-// On Sunday:
-// date.getDay() = 0 => date.getDay() / 6 = 0 => numDaysSinceLastFriday = 2
-const getNumDaysSinceLastFriday = (date: Date) =>
-  2 - Math.floor(date.getDay() / 6);
-
-const isWeekendDay = (date: Date) => date.getDay() % 6 === 0;
 
 /**
  * Compute value of the abatement for income taxes based on the income value.
