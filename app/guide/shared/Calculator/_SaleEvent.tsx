@@ -150,7 +150,7 @@ export const SaleEvent = ({
               dateAcquiredExr.rate &&
               (adjustedCost * fractionFr) / dateAcquiredExr.rate
             }
-            label="Adjusted Cost Basis / Share (€) From French Origin"
+            label="Adjusted Cost Basis From French Origin / Share (€)"
             isReadOnly
             validationError={
               dateAcquiredExr.errorMessage &&
@@ -247,7 +247,7 @@ export const SaleEvent = ({
               dateAcquiredExr.rate &&
               (quantity * adjustedCost * fractionFr) / dateAcquiredExr.rate
             }
-            label="Adjusted Cost Basis (€) From French Origin"
+            label="Adjusted Cost Basis From French Origin (€)"
             isReadOnly
             validationError={
               dateAcquiredExr.errorMessage &&
