@@ -6,10 +6,12 @@ export type PlanQualification = "Qualified" | "Non-Qualified";
  */
 export interface GainAndLossEventXlsxRow {
   "Plan Type": PlanType;
+  Symbol: string;
   "Qty.": number;
   "Date Acquired": string;
   "Date Sold": string;
   "Adjusted Cost Basis Per Share": number;
+  "Acquisition Cost Per Share": number;
   "Proceeds Per Share": number;
   "Qualified Plan": PlanQualification;
 }
@@ -19,10 +21,27 @@ export interface GainAndLossEventXlsxRow {
  */
 export interface GainAndLossEvent {
   planType: PlanType;
+  symbol: string;
   quantity: number;
+  /** Proceeds per share in USD: sell price. */
   proceeds: number;
+  /**
+   * Value when the share has been acquired for US taxes.
+   * Usually SYMBOL price at closing on time of acquisition.
+   *
+   * For French taxes, it should be the opening price of the day.
+   * See https://bofip.impots.gouv.fr/bofip/5654-PGP.html/identifiant%3DBOI-RSA-ES-20-20-20-20170724#:~:text=120,au%20m%C3%AAme%20jour.
+   */
   adjustedCost: number;
+  /**
+   * Acquisition cost per share in USD.
+   * The price, in USD at which the share was acquired.
+   *
+   * This is 0 for RSUs, adjustedCost for ESPP and the grant price for SO.
+   */
+  acquisitionCost: number;
   dateAcquired: string;
   dateSold: string;
+  /** What kind of qualified plan is it? */
   qualifiedIn: "fr" | "us";
 }
