@@ -1,4 +1,4 @@
-import { NumberField, DateField } from "@/app/guide/shared/ui/Field";
+import { NumberField, DateField, RateField } from "@/app/guide/shared/ui/Field";
 import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { useEffect, useMemo } from "react";
 import { getAdjustedGainLoss } from "@/lib/get-adjusted-gain-loss";
@@ -115,7 +115,7 @@ export const SaleEvent = ({
             onChange={(value) => setDateAcquired(value)}
             placeholder="Select date"
           />
-          <NumberField
+          <RateField
             value={dateAcquiredExr.rate}
             label="$ / €"
             isReadOnly
@@ -168,7 +168,7 @@ export const SaleEvent = ({
             onChange={(value) => setDateSold(value)}
             placeholder="Select date"
           />
-          <NumberField
+          <RateField
             value={dateSoldExr.rate}
             label="$ / €"
             isReadOnly

@@ -136,6 +136,34 @@ const DateInput = ({
   />
 );
 
+interface RateInputProps extends BaseInputProps<number> {}
+
+const RateInput = ({
+  isLoading,
+  isReadOnly,
+  isRequired,
+  value,
+  onChange,
+  min,
+  max,
+  placeholder,
+  validationError,
+}: NumberInputProps) => (
+  <Input
+    required={isRequired}
+    readOnly={isReadOnly}
+    type="number"
+    placeholder={placeholder}
+    value={value}
+    onChange={(event) => onChange?.(event.target.valueAsNumber)}
+    min={min}
+    max={max}
+    step={1 / 10 ** 4}
+    validationError={validationError}
+    isLoading={isLoading}
+  />
+);
+
 type NumberFieldProps = NumberInputProps & { label: string };
 
 export const NumberField = ({ label, ...inputProps }: NumberFieldProps) => (
@@ -151,5 +179,14 @@ export const DateField = ({ label, ...inputProps }: DateFieldProps) => (
   <div>
     <Label>{label}</Label>
     <DateInput {...inputProps} />
+  </div>
+);
+
+type RateFieldProps = RateInputProps & { label: string };
+
+export const RateField = ({ label, ...inputProps }: RateFieldProps) => (
+  <div>
+    <Label>{label}</Label>
+    <RateInput {...inputProps} />
   </div>
 );
