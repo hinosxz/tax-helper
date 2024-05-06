@@ -3,11 +3,11 @@ import {
   GainAndLossEventXlsxRow,
   PlanType,
 } from "./etrade.types";
-import { getDateString } from "@/lib/date";
+import { getDateString, parseEtradeDate } from "@/lib/date";
 import XLSX from "xlsx";
 
 const toDateString = (rawDate: string) =>
-  getDateString(new Date(Date.parse(rawDate)));
+  getDateString(parseEtradeDate(rawDate));
 
 export const parseEtradeGL = async (
   file: File,
