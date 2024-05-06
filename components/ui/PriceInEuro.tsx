@@ -5,7 +5,7 @@ export interface PriceInEuroProps {
   /**
    * Optionally provide a value in EUR to use instead of the computed one.
    *
-   * This is usefull to avoid rounding differencess when the value is computed
+   * This is useful to avoid rounding differences when the value is computed
    * from USD.
    */
   eur?: number;
@@ -40,7 +40,7 @@ export const PriceInEuro: React.FunctionComponent<PriceInEuroProps> = ({
         <Currency value={priceInEuro} unit="eur" />
         <span className="hidden print:inline">
           {" "}
-          (<Currency value={usd} unit="usd" /> at {rate} on {date})
+          (<Currency value={usd} unit="usd" /> at {rate} $/€ on {date})
         </span>
       </span>
     </Tooltip>
