@@ -4,6 +4,7 @@ import { LoadingIndicator } from "./LoadingIndicator";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
+
 interface LabelProps {
   children: ReactNode;
 }
@@ -57,7 +58,7 @@ const Input = ({
           })}
           {...htmlInputProps}
           disabled={isLoading}
-          value={validationError || !value ? "–" : value}
+          value={value ?? undefined}
           placeholder={validationError ? "–" : htmlInputProps.placeholder}
         />
       </div>
