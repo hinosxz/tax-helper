@@ -27,7 +27,7 @@ export default function Page() {
               Gains and Losses
             </Link>{" "}
             page after selecting your tax year and clicking "Download" and
-            "Download Collapsed" or "Download Expanded".
+            "Download Expanded".
           </p>
         </div>
       </Section>
