@@ -1,13 +1,17 @@
 import { NumberField, DateField } from "@/app/guide/shared/ui/Field";
-import { ExchangeRate, useExchangeRates } from "@/hooks/use-fetch-exr";
+import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { useEffect, useMemo } from "react";
-import { getAdjustedGainLoss } from "./get-adjusted-gain-loss";
+import { getAdjustedGainLoss } from "@/lib/get-adjusted-gain-loss";
 
 interface SaleEventProps {
+  hasIncome: boolean;
   maxDate: string;
 
   quantity: number;
   setQuantity: (value: number) => void;
+
+  fractionFr: number;
+  setFractionFr: (value: number) => void;
 
   adjustedCost: number;
   setAdjustedCost: (value: number) => void;
@@ -21,14 +25,17 @@ interface SaleEventProps {
   dateSold: string;
   setDateSold: (value: string) => void;
 
-  setRateAcquired: (value: ExchangeRate) => void;
-  setRateSold: (value: ExchangeRate) => void;
+  setRateAcquired: (value: number | null) => void;
+  setRateSold: (value: number | null) => void;
 }
 
 export const SaleEvent = ({
   maxDate,
+  hasIncome,
   quantity,
   setQuantity,
+  fractionFr,
+  setFractionFr,
   adjustedCost,
   setAdjustedCost,
   proceeds,
@@ -65,25 +72,38 @@ export const SaleEvent = ({
   // Store copies in state for parent to access
   useEffect(() => {
     if (dateAcquiredExr.rate) {
-      setRateAcquired(dateAcquiredExr);
+      setRateAcquired(dateAcquiredExr.rate);
     }
-  }, [dateAcquiredExr, setRateAcquired]);
+  }, [dateAcquiredExr.rate, setRateAcquired]);
   useEffect(() => {
     if (dateSoldExr.rate) {
-      setRateSold(dateSoldExr);
+      setRateSold(dateSoldExr.rate);
     }
-  }, [dateSoldExr, setRateSold]);
+  }, [dateSoldExr.rate, setRateSold]);
 
   return (
     <form className="flex gap-4 text-left">
-      <NumberField
-        value={quantity}
-        label="Quantity (515)"
-        isRequired
-        min={1}
-        onChange={(value) => setQuantity(value)}
-        maxDecimals={0}
-      />
+      <div className="grid grid-cols-1 gap-2 content-start">
+        <NumberField
+          value={quantity}
+          label="Quantity (515)"
+          isRequired
+          min={1}
+          onChange={(value) => setQuantity(value)}
+          maxDecimals={0}
+        />
+        {hasIncome ? (
+          <NumberField
+            value={fractionFr * 100}
+            label="% Cost From French Origin"
+            isRequired
+            min={0}
+            max={100}
+            onChange={(value) => setFractionFr(value / 100)}
+            maxDecimals={2}
+          />
+        ) : null}
+      </div>
       <div className="border border-gray-300" />
       <div className="grid gap-4">
         <div className="flex gap-2">
@@ -124,6 +144,21 @@ export const SaleEvent = ({
             isLoading={dateAcquiredExr.isFetching}
           />
         </div>
+        {hasIncome ? (
+          <NumberField
+            value={
+              dateAcquiredExr.rate &&
+              (adjustedCost * fractionFr) / dateAcquiredExr.rate
+            }
+            label="Adjusted Cost Basis From French Origin / Share (€)"
+            isReadOnly
+            validationError={
+              dateAcquiredExr.errorMessage &&
+              "failed fetching currency rate for date acquired"
+            }
+            isLoading={dateAcquiredExr.isFetching}
+          />
+        ) : null}
         <div className="flex gap-2">
           <DateField
             value={dateSold}
@@ -191,8 +226,8 @@ export const SaleEvent = ({
               quantity,
               adjustedCost,
               proceeds,
-              dateAcquiredExr,
-              dateSoldExr,
+              dateAcquiredExr.rate,
+              dateSoldExr.rate,
             )}
             label="Adjusted Gain / Loss (€) (524)"
             isReadOnly
@@ -206,6 +241,21 @@ export const SaleEvent = ({
             isLoading={dateAcquiredExr.isFetching || dateSoldExr.isFetching}
           />
         </div>
+        {hasIncome ? (
+          <NumberField
+            value={
+              dateAcquiredExr.rate &&
+              (quantity * adjustedCost * fractionFr) / dateAcquiredExr.rate
+            }
+            label="Adjusted Cost Basis From French Origin (€)"
+            isReadOnly
+            validationError={
+              dateAcquiredExr.errorMessage &&
+              "failed fetching currency rate for date acquired"
+            }
+            isLoading={dateAcquiredExr.isFetching}
+          />
+        ) : null}
       </div>
     </form>
   );
