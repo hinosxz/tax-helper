@@ -26,6 +26,7 @@ export interface ReportResidencyFrTaxesFrProps {}
 export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   ReportResidencyFrTaxesFrProps
 > = () => {
+  const [isPrintMode, setIsPrintMode] = useState(false);
   const [gainsAndLosses, setGainsAndLosses] = useState<GainAndLossEvent[]>([]);
   const { values: rates, isFetching: isFetchingExr } = useExchangeRates(
     gainsAndLosses.flatMap((event) => [event.dateSold, event.dateAcquired]),
@@ -60,31 +61,33 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
 
   return (
     <div className="container">
-      <MessageBox level="warning" title="Disclaimer">
-        <p>
-          These calculations are for informational purposes only and should not
-          be considered financial advice.
-        </p>
-        <p>
-          Despite all the efforts that were put in creating this tool, it is
-          your responsibility to verify the results.
-        </p>
-        <p>
-          This{" "}
-          <a
-            href="/2021_mc-kenzie-taxes-presentation.pdf"
-            target="_blank"
-            className="underline"
-          >
-            guide
-          </a>{" "}
-          sent by equity team in 2021 was used to create this calculator
-        </p>
-      </MessageBox>
-      <div className="my-2">
-        Based on the <b>expanded</b> exports both for Gain And Losses (My
-        Account &gt; Gains and losses) and Benefit History (My Account &gt;
-        Benefit History) from Etrade.
+      <div className="print:hidden">
+        <MessageBox level="warning" title="Disclaimer">
+          <p>
+            These calculations are for informational purposes only and should
+            not be considered financial advice.
+          </p>
+          <p>
+            Despite all the efforts that were put in creating this tool, it is
+            your responsibility to verify the results.
+          </p>
+          <p>
+            This{" "}
+            <a
+              href="/2021_mc-kenzie-taxes-presentation.pdf"
+              target="_blank"
+              className="underline"
+            >
+              guide
+            </a>{" "}
+            sent by equity team in 2021 was used to create this calculator
+          </p>
+        </MessageBox>
+        <div className="my-2">
+          Based on the <b>expanded</b> exports both for Gain And Losses (My
+          Account &gt; Gains and losses) and Benefit History (My Account &gt;
+          Benefit History) from Etrade.
+        </div>
       </div>
       {gainsAndLosses.length === 0 ? (
         <div className="flex items-baseline justify-center gap-3">
@@ -95,13 +98,22 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
         <p>Loading...</p>
       ) : (
         <div className="container">
-          <div className="flex items-baseline justify-between gap-3">
+          <div className="flex items-baseline justify-between gap-3 print:hidden">
             <span>Gains and Losses</span>
             <Button
               label="Clear"
               color="red"
               onClick={() => setGainsAndLosses([])}
             />
+          </div>
+          <div className="flex gap-2 items-baseline justify-items-start print:hidden">
+            <input
+              type="checkbox"
+              id="printMode"
+              checked={isPrintMode}
+              onChange={() => setIsPrintMode(!isPrintMode)}
+            />
+            <label htmlFor="printMode">Print mode</label>
           </div>
           <Section title="Summary">
             <div className="px-6">
@@ -127,6 +139,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                 amount={taxes["1AJ"]}
                 explanations={taxes.explanations}
                 gainType="acquisition"
+                forceOpen={isPrintMode}
               />
               <TaxReportBox
                 id="1TT"
@@ -134,6 +147,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                 amount={taxes["1TT"]}
                 explanations={taxes.explanations}
                 gainType="acquisition"
+                forceOpen={isPrintMode}
               />
               <TaxReportBox
                 id="1TZ"
@@ -141,6 +155,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                 amount={taxes["1TZ"]}
                 explanations={taxes.explanations}
                 gainType="acquisition"
+                forceOpen={isPrintMode}
               />
               <TaxReportBox
                 id="1WZ"
@@ -148,6 +163,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                 amount={taxes["1WZ"]}
                 explanations={taxes.explanations}
                 gainType="acquisition"
+                forceOpen={isPrintMode}
               />
               <TaxReportBox
                 id="3VG"
@@ -155,6 +171,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                 amount={taxes["3VG"]}
                 explanations={taxes.explanations}
                 gainType="capital"
+                forceOpen={isPrintMode}
               />
               <TaxReportBox
                 id="3VH"
@@ -162,6 +179,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                 amount="???"
                 explanations={taxes.explanations}
                 gainType="capital"
+                forceOpen={isPrintMode}
               />
               <p>Form 2074 details will be displayed soon.</p>
             </div>
@@ -186,7 +204,8 @@ const TaxReportBox: React.FunctionComponent<{
     taxableEvents: TaxableEventFrProps[];
   }[];
   gainType: "acquisition" | "capital";
-}> = ({ id, title, amount, explanations, gainType }) => {
+  forceOpen?: boolean;
+}> = ({ id, title, amount, explanations, gainType, forceOpen }) => {
   const relatedExplanations = explanations.filter(({ box }) => box === id);
   return (
     <div className="bg-sky-200 mb-2 py-1 px-2">
@@ -206,18 +225,22 @@ const TaxReportBox: React.FunctionComponent<{
         </Tooltip>
       </div>
       {relatedExplanations.length > 0 && (
-        <Drawer title="Details">
+        <Drawer title="Details" forceOpen={forceOpen}>
           <div className="bg-slate-200 m-1 p-1">
             {relatedExplanations.map((explanation) => (
               <div key={explanation.description}>
                 {explanation.taxableEvents.length > 0 ? (
-                  <Drawer title={<span>{explanation.description}</span>}>
+                  <Drawer
+                    title={<span>{explanation.description}</span>}
+                    forceOpen={forceOpen}
+                  >
                     {explanation.taxableEvents.map((taxableEvent, index) => (
                       <TaxableEventFr
                         key={index}
                         event={taxableEvent}
                         showCapitalGains={gainType === "capital"}
                         showAcquisitionGains={gainType === "acquisition"}
+                        forceOpen={forceOpen}
                       />
                     ))}
                   </Drawer>
