@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
 import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { Button } from "@/app/guide/shared/ui/Button";
@@ -131,7 +132,67 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
               </dl>
             </div>
           </Section>
-          <Section title="Taxes">
+          <Section title="Select Income Source and Anexes">
+            <div className="flex gap-2 justify-items-center items-start">
+              <div>
+                {taxes["3VG"] !== 0 &&
+                (taxes["1TT"] !== 0 || taxes["1TZ"] !== 0) ? (
+                  <Image
+                    alt="select 'Salaires, gains d'actionnariat salarié' and 'Plus-values et gains divers'"
+                    src="/images/fr-taxes/select-income-capital-gains-and-acquisition-gains.png"
+                    width={400}
+                    height={500}
+                  />
+                ) : taxes["3VG"] !== 0 ? (
+                  <Image
+                    alt="select 'Plus-values et gains divers'"
+                    src="/images/fr-taxes/select-income-capital-gains-only.png"
+                    width={400}
+                    height={500}
+                  />
+                ) : taxes["1TT"] !== 0 || taxes["1TZ"] !== 0 ? (
+                  <Image
+                    alt="select 'Salaires, gains d'actionnariat salarié'"
+                    src="/images/fr-taxes/select-income-acquisition-gains-only.png"
+                    width={400}
+                    height={500}
+                  />
+                ) : (
+                  <Image
+                    alt="No specific income selection"
+                    src="/images/fr-taxes/select-income-no-shares.png"
+                    width={400}
+                    height={500}
+                  />
+                )}
+                <Image
+                  className="mt-1"
+                  alt="Compte a l'etranger"
+                  src="/images/fr-taxes/comptes-a-l-etranger.png"
+                  width={400}
+                  height={500}
+                />
+              </div>
+              <div>
+                {gainsAndLosses.length > 0 ? (
+                  <Image
+                    alt="Select Anexes N° 2074 and N° 3916 - 3916 bis"
+                    src="/images/fr-taxes/select-anexes-with-share-sales.png"
+                    width={400}
+                    height={500}
+                  />
+                ) : (
+                  <Image
+                    alt="Select Anexes N° 3916 - 3916 bis"
+                    src="/images/fr-taxes/select-anexes-with-no-share-sales.png"
+                    width={400}
+                    height={500}
+                  />
+                )}
+              </div>
+            </div>
+          </Section>
+          <Section title="French Taxes">
             <div>
               <TaxReportBox
                 id="1AJ"
