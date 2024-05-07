@@ -9,7 +9,13 @@ export const TaxableEventFr: React.FunctionComponent<{
   event: TaxableEventFrProps;
   showAcquisitionGains?: boolean;
   showCapitalGains?: boolean;
-}> = ({ event, showCapitalGains = false, showAcquisitionGains = false }) => {
+  forceOpen?: boolean;
+}> = ({
+  event,
+  showCapitalGains = false,
+  showAcquisitionGains = false,
+  forceOpen,
+}) => {
   const asset = match(event.planType)
     .with("ESPP", () => "ESPP")
     .with("RS", () => "RSU")
@@ -24,6 +30,7 @@ export const TaxableEventFr: React.FunctionComponent<{
 
   return (
     <Drawer
+      forceOpen={forceOpen}
       title={
         <div className="flex items-baseline justify-start gap-2">
           <h2 className="font-bold text-lg">
@@ -51,33 +58,6 @@ export const TaxableEventFr: React.FunctionComponent<{
         </div>
       }
     >
-      <TaxableEventFrLine title="Acquisition value">
-        <Drawer
-          title={
-            <>
-              <p>
-                <PriceInEuro
-                  eur={event.acquisition.valueEur}
-                  usd={event.acquisition.valueUsd}
-                  rate={event.acquisition.rate}
-                  date={event.acquisition.date}
-                />{" "}
-                per share ({event.acquisition.description})
-              </p>
-            </>
-          }
-        >
-          <TaxableEventFrLine title={`${event.symbol} price at opening:`}>
-            <PriceInEuro
-              eur={event.acquisition.symbolPriceEur}
-              usd={event.acquisition.symbolPrice}
-              rate={event.acquisition.rate}
-              date={event.acquisition.date}
-            />{" "}
-            per share.
-          </TaxableEventFrLine>
-        </Drawer>
-      </TaxableEventFrLine>
       <TaxableEventFrLine title="Acquisition cost">
         <PriceInEuro
           eur={event.acquisition.costEur}
@@ -87,11 +67,37 @@ export const TaxableEventFr: React.FunctionComponent<{
         />{" "}
         per share.
       </TaxableEventFrLine>
+      <TaxableEventFrLine title="Acquisition value">
+        <PriceInEuro
+          eur={event.acquisition.valueEur}
+          usd={event.acquisition.valueUsd}
+          rate={event.acquisition.rate}
+          date={event.acquisition.date}
+        />{" "}
+        per share ({event.acquisition.description})
+      </TaxableEventFrLine>
       {event.sell && (
-        <TaxableEventFrLine title="Sell">
-          <Currency value={event.sell.eur} unit="eur" /> per share on{" "}
-          {formatDateFr(event.sell.date)}
+        <TaxableEventFrLine title="Sell price">
+          <PriceInEuro
+            eur={event.sell.eur}
+            usd={event.sell.usd}
+            rate={event.sell.rate}
+            date={event.sell.date}
+          />{" "}
+          per share on {formatDateFr(event.sell.date)}
         </TaxableEventFrLine>
+      )}
+      <TaxableEventFrLine title={`${event.symbol} price:`}>
+        <PriceInEuro
+          eur={event.acquisition.symbolPriceEur}
+          usd={event.acquisition.symbolPrice}
+          rate={event.acquisition.rate}
+          date={event.acquisition.date}
+        />{" "}
+        at opening on acquisition day.
+      </TaxableEventFrLine>
+      {(showAcquisitionGains || showCapitalGains) && (
+        <hr className="h-px my-1 mx-auto w-1/3 border-0 bg-gray-400" />
       )}
       {showAcquisitionGains && (
         <TaxableEventFrLine title="Acquisition gain">
