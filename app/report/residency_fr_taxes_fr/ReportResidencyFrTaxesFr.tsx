@@ -6,7 +6,6 @@ import { Button } from "@/app/guide/shared/ui/Button";
 import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
 import { applyFrTaxes, getEmptyTaxes } from "@/lib/taxes/taxes-rules-fr";
 import { Section } from "@/app/guide/shared/ui/Section";
-import { Currency } from "@/app/guide/shared/ui/Currency";
 import {
   isEspp,
   isFrQualifiedRsu,
@@ -272,12 +271,10 @@ const TaxReportBox: React.FunctionComponent<{
     <div className="bg-sky-200 mb-2 py-1 px-2">
       <div className="flex items-center gap-3 py-2">
         <h2 className="font-bold text-lg">{id}</h2>
-        <span className="p-2 bg-gray-200 border border-gray-500 border-solid w-32 text-right">
-          {typeof amount === "number" ? (
-            <Currency value={amount} unit="eur" />
-          ) : (
-            amount
-          )}
+        <span className="p-2 bg-gray-200 border border-gray-500 border-solid w-32 text-right font-bold">
+          {typeof amount === "number"
+            ? `${Math.floor(amount) /* Tax form only accepts integers */} €`
+            : amount}
         </span>
         <Tooltip content={title}>
           <span className="text-blue-600 inline-block">
