@@ -4,7 +4,11 @@ import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLo
 import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { Button } from "@/app/guide/shared/ui/Button";
 import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
-import { applyFrTaxes, getEmptyTaxes } from "@/lib/taxes/taxes-rules-fr";
+import {
+  FrTaxes,
+  applyFrTaxes,
+  getEmptyTaxes,
+} from "@/lib/taxes/taxes-rules-fr";
 import { Section } from "@/app/guide/shared/ui/Section";
 import {
   isEspp,
@@ -18,7 +22,11 @@ import { MessageBox } from "@/components/ui/MessageBox";
 import { Drawer } from "@/components/ui/Drawer";
 import { TaxableEventFr } from "@/components/TaxableEventFr";
 import { TaxableEventFr as TaxableEventFrProps } from "@/lib/taxes/taxable-event-fr";
-import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import {
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/solid";
 import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
 
 export interface ReportResidencyFrTaxesFrProps {}
@@ -241,8 +249,24 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                 gainType="capital"
                 forceOpen={isPrintMode}
               />
-              <p>Form 2074 details will be displayed soon.</p>
             </div>
+          </Section>
+          <Section title="Form 2074">
+            <div>
+              <p>
+                You must report{" "}
+                <strong>{taxes["Form 2074"]["Page 510"].length}</strong> in this
+                form.
+              </p>
+              <Image
+                alt="Form 2074 - Page 1"
+                src="/images/fr-taxes/form-2074-page-1.png"
+                width={800}
+                height={500}
+                className="print:hidden"
+              />
+            </div>
+            <Page510 taxes={taxes} isPrintMode={isPrintMode} />
           </Section>
         </div>
       )}
@@ -268,10 +292,10 @@ const TaxReportBox: React.FunctionComponent<{
 }> = ({ id, title, amount, explanations, gainType, forceOpen }) => {
   const relatedExplanations = explanations.filter(({ box }) => box === id);
   return (
-    <div className="bg-sky-200 mb-2 py-1 px-2">
+    <div className="bg-blue-200 mb-2 py-1 px-2">
       <div className="flex items-center gap-3 py-2">
         <h2 className="font-bold text-lg">{id}</h2>
-        <span className="p-2 bg-gray-200 border border-gray-500 border-solid w-32 text-right font-bold">
+        <span className="p-2 bg-white border border-gray-500 border-solid w-32 text-right font-bold">
           {typeof amount === "number"
             ? `${Math.floor(amount) /* Tax form only accepts integers */} €`
             : amount}
@@ -309,6 +333,102 @@ const TaxReportBox: React.FunctionComponent<{
             ))}
           </div>
         </Drawer>
+      )}
+    </div>
+  );
+};
+
+const PAGE_510_LABELS = {
+  "511": "Désignation des titres et des intermédiaires financiers",
+  "512": "Date d'acquisitionDate de la cession ou du rachat jj/mm/aaaa",
+  "513":
+    "Nombre de titres cédés ou rachetésDétermination du prix de cession des titres",
+  "514": "PrixValeur unitaire de cession",
+  "515": "dNombre de titres cédés",
+  "516": "Montant global lignes (514 x 515)",
+  "517": "PrixFrais de cession cf. notice",
+  "518": "Prix de cession net lignes (516 - 517)",
+  "519": "Détermination du prix de revient des titres",
+  "520": "Prix ou valeur d’acquisition unitaire cf. notice",
+  "521": "Prix d'acquisition global cf. notice",
+  "522": "Frais d'acquisition",
+  "523": "Prix de revient lignes (521 + 522)",
+  "524": "Résultat précédé du signe + ou - lignes (518 - 523)",
+  "525":
+    "Je demande expressément à bénéficier de l'imputation des moins-values préalablement à l'annulation des titres cf. notice",
+  "526": "Montant des moins-values imputées pour les titres concernés",
+};
+
+const Page510: React.FunctionComponent<{
+  taxes: FrTaxes;
+  isPrintMode?: boolean;
+}> = ({ taxes, isPrintMode }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  if (!taxes["Form 2074"]["Page 510"].length) {
+    return <p>No taxable events to report.</p>;
+  }
+  const pagesToDisplay = isPrintMode
+    ? taxes["Form 2074"]["Page 510"]
+    : [taxes["Form 2074"]["Page 510"][currentIndex]];
+  return (
+    <div>
+      {pagesToDisplay.map((currentPage, index) => (
+        <div key={index} className="m-t-2">
+          <h2 className="text-lg text-center">
+            Page {(isPrintMode ? index : currentIndex) + 1}
+          </h2>
+          <table className="my-2 border-collapse text-sm">
+            <tbody>
+              {Object.keys(currentPage).map((key) => (
+                <tr
+                  key={key}
+                  className="border-y-2 border-white bg-blue-200 *:p-2"
+                >
+                  <th>{key}</th>
+                  <td>{PAGE_510_LABELS[key as keyof typeof currentPage]}</td>
+                  <td>
+                    {typeof currentPage[key as keyof typeof currentPage] ===
+                    "boolean" ? (
+                      <input
+                        type="checkbox"
+                        checked={
+                          currentPage[
+                            key as keyof typeof currentPage
+                          ] as boolean
+                        }
+                      />
+                    ) : typeof currentPage[key as keyof typeof currentPage] !==
+                      "undefined" ? (
+                      <span className="inline-block w-32 p-1 bg-white border border-black">
+                        {currentPage[key as keyof typeof currentPage]}
+                      </span>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+      {!isPrintMode && (
+        <div className="flex justify-between print:hidden">
+          <Button
+            label="Previous"
+            icon={ChevronDoubleLeftIcon}
+            onClick={() => setCurrentIndex(currentIndex - 1)}
+            isDisabled={currentIndex === 0}
+            color={"green"}
+          />
+          <Button
+            label="Next"
+            icon={ChevronDoubleRightIcon}
+            onClick={() => setCurrentIndex(currentIndex + 1)}
+            isDisabled={
+              currentIndex === taxes["Form 2074"]["Page 510"].length - 1
+            }
+            color={"green"}
+          />
+        </div>
       )}
     </div>
   );
