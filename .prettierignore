@@ -4,3 +4,4 @@ public/
 .husky/
 .next/
 node_modules/
+.env*
