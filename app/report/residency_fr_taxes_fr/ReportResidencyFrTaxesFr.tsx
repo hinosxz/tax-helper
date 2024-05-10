@@ -39,22 +39,22 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   const { values: rates, isFetching: isFetchingExr } = useExchangeRates(
     gainsAndLosses.flatMap((event) => [event.dateSold, event.dateAcquired]),
   );
-  const { data: ddogPrices, isFetching: isFetchingDDOG } =
-    useFetchSymbolDaily("DDOG");
+  const { values: symbolPrices, isFetching: isFetchingSymbols } =
+    useFetchSymbolDaily(gainsAndLosses.map((event) => event.symbol));
 
-  const isFetching = isFetchingExr || isFetchingDDOG;
+  const isFetching = isFetchingExr || isFetchingSymbols;
 
   const taxes = useMemo(() => {
-    if (gainsAndLosses.length === 0 || !ddogPrices || !rates) {
+    if (gainsAndLosses.length === 0 || isFetching || !rates) {
       return getEmptyTaxes();
     }
     return applyFrTaxes({
       gainsAndLosses,
       benefits: [],
       rates,
-      symbolPrices: ddogPrices,
+      symbolPrices,
     });
-  }, [gainsAndLosses, rates, ddogPrices]);
+  }, [gainsAndLosses, rates, symbolPrices, isFetching]);
 
   const counts = useMemo(
     () => ({
