@@ -598,7 +598,7 @@ export const getFrTaxesForFrQualifiedRsu = (
     taxes["1WZ"] += floorNumber6Digits(discountableAcquisitionGainEur / 2);
     explanations.push({
       box: "1WZ",
-      description: `Tax acquisition discount for RSU acquisition gains below 300k€ (${formatNumber(discountableAcquisitionGainEur)} * 50%, see 1TZ for calculation details)`,
+      description: `50% Tax acquisition discount for RSU acquisition gains below 300k€ (${formatNumber(discountableAcquisitionGainEur)} * 50%, see 1TZ for calculation details)`,
       taxableEvents: [],
     });
   }
