@@ -30,11 +30,14 @@ import {
 import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
 import Link from "next/link";
 
-export interface ReportResidencyFrTaxesFrProps {}
+export interface ReportResidencyFrTaxesFrProps {
+  isUsCitizen: boolean;
+  precentTimeSpendInCountry: number;
+}
 
 export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   ReportResidencyFrTaxesFrProps
-> = () => {
+> = ({ isUsCitizen, precentTimeSpendInCountry }) => {
   const [isPrintMode, setIsPrintMode] = useState(false);
   const [gainsAndLosses, setGainsAndLosses] = useState<GainAndLossEvent[]>([]);
   const { values: rates, isFetching: isFetchingExr } = useExchangeRates(
@@ -71,7 +74,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   return (
     <div className="container">
       <div className="print:hidden">
-        <MessageBox level="warning" title="Disclaimer">
+        <MessageBox level="warning" title="Disclaimer" className="mb-4">
           <p>
             These calculations are for informational purposes only and should
             not be considered financial advice.
@@ -92,6 +95,28 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
             sent by equity team in 2021 was used to create this calculator
           </p>
         </MessageBox>
+        {isUsCitizen && (
+          <MessageBox level="warning" title="US Citizen" className="mb-4">
+            <p>
+              This is tool does not yet know how to handle US citizenship. If
+              you know how to handle this, please get in touch with us and
+              consider contributing.
+            </p>
+          </MessageBox>
+        )}
+        {precentTimeSpendInCountry !== 100 && (
+          <MessageBox
+            level="warning"
+            title="Partial Fiscal Year"
+            className="mb-4"
+          >
+            <p>
+              This is tool does not yet know how to handle partial fiscal years.
+              If you know how to handle this, please get in touch with us and
+              consider contributing.
+            </p>
+          </MessageBox>
+        )}
         <div className="my-2">
           Based on the <b>expanded</b> exports both for Gain And Losses (My
           Account &gt; Gains and losses) and Benefit History (My Account &gt;
