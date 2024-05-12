@@ -29,6 +29,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
+import Link from "next/link";
 
 export interface ReportResidencyFrTaxesFrProps {}
 
@@ -219,6 +220,42 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                     height={500}
                   />
                 )}
+              </div>
+            </div>
+          </Section>
+          <Section title="Foreign accounts">
+            <div className="flex justify-between">
+              <div className="flex flex-col justify-between">
+                <div>
+                  <p>
+                    Make sure you check <strong>8UU</strong>
+                  </p>
+                  <Image
+                    src="/images/fr-taxes/foreign-account-8uu.png"
+                    alt="Check 8UU"
+                    width={400}
+                    height={500}
+                  />
+                </div>
+                <div className="flex gap-1 items-start justify-start">
+                  <span>Find your Morgan Stanley's accounts details in </span>
+                  <Link href="https://us.etrade.com/etx/pxy/my-profile/account-preferences">
+                    <Image
+                      src="/images/fr-taxes/etrade-account-details.png"
+                      alt="profile > account preferences"
+                      width={150}
+                      height={150}
+                    />
+                  </Link>
+                </div>
+              </div>
+              <div>
+                <Image
+                  alt="Compte a l'etranger"
+                  src="/images/fr-taxes/foreign-account-form.png"
+                  width={400}
+                  height={500}
+                />
               </div>
             </div>
           </Section>
