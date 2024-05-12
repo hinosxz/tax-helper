@@ -2,6 +2,7 @@ export interface MessageBoxProps {
   level: "info" | "success" | "warning" | "error";
   title: string;
   children: React.ReactNode;
+  className?: string;
 }
 
 const MAP_LEVEL_TO_COLOR = {
@@ -23,10 +24,11 @@ export const MessageBox: React.FunctionComponent<MessageBoxProps> = ({
   level,
   title,
   children,
+  className,
 }) => {
   return (
     <div
-      className={`border-l-4 p-4 ${MAP_LEVEL_TO_COLOR[level].bg} ${MAP_LEVEL_TO_COLOR[level].border} ${MAP_LEVEL_TO_COLOR[level].text}`}
+      className={`border-l-4 p-4 ${MAP_LEVEL_TO_COLOR[level].bg} ${MAP_LEVEL_TO_COLOR[level].border} ${MAP_LEVEL_TO_COLOR[level].text} ${className}`}
       role="alert"
     >
       {title && <h3 className="font-bold pb-2">{title}</h3>}
