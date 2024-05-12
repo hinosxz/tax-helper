@@ -32,12 +32,15 @@ import Link from "next/link";
 
 export interface ReportResidencyFrTaxesFrProps {
   isUsCitizen: boolean;
-  precentTimeSpendInCountry: number;
+  /** Percentage of time spent in France the year of declaration. From 0 to 100 */
+  percentTimeSpentInFrance: number;
+  /** Is the user a French tax resident? */
+  isFrenchTaxResident: boolean;
 }
 
 export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   ReportResidencyFrTaxesFrProps
-> = ({ isUsCitizen, precentTimeSpendInCountry }) => {
+> = ({ isUsCitizen, percentTimeSpentInFrance, isFrenchTaxResident }) => {
   const [isPrintMode, setIsPrintMode] = useState(false);
   const [gainsAndLosses, setGainsAndLosses] = useState<GainAndLossEvent[]>([]);
   const { values: rates, isFetching: isFetchingExr } = useExchangeRates(
@@ -57,8 +60,17 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
       benefits: [],
       rates,
       symbolPrices,
+      percentTimeSpentInFrance: percentTimeSpentInFrance,
+      isFrenchTaxResident,
     });
-  }, [gainsAndLosses, rates, symbolPrices, isFetching]);
+  }, [
+    gainsAndLosses,
+    rates,
+    symbolPrices,
+    isFetching,
+    percentTimeSpentInFrance,
+    isFrenchTaxResident,
+  ]);
 
   const counts = useMemo(
     () => ({
@@ -104,7 +116,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
             </p>
           </MessageBox>
         )}
-        {precentTimeSpendInCountry !== 100 && (
+        {percentTimeSpentInFrance !== 100 && (
           <MessageBox
             level="warning"
             title="Partial Fiscal Year"

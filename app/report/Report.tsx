@@ -101,10 +101,11 @@ export const Report: React.FunctionComponent<ReportProps> = () => {
         <main className="flex flex-col items-center justify-around p-24">
           {!residency || !taxesCountry ? (
             <p>Please select a residency and taxes country</p>
-          ) : residency === "fr" && taxesCountry === "fr" ? (
+          ) : taxesCountry === "fr" ? (
             <ReportResidencyFrTaxesFr
               isUsCitizen={isUsCitizen}
-              precentTimeSpendInCountry={precentTimeSpendInCountry}
+              percentTimeSpentInFrance={precentTimeSpendInCountry}
+              isFrenchTaxResident={residency === "fr"}
             />
           ) : (
             <p>Not yet implemented</p>
