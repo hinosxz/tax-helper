@@ -421,6 +421,7 @@ const getFrTaxableEventFromGainsAndLossEvent = (
       rate: event.rateAcquired,
       date: event.dateAcquired,
       description: explainAcquisitionValue,
+      dateSymbolPriceAcquired: event.dateSymbolPriceAcquired,
     },
     capitalGain: {
       perShare: sellPriceEur - acquisitionValueEur,

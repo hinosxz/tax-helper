@@ -32,6 +32,13 @@ export interface TaxableEventFr {
     symbolPrice: number;
     /** Symbol price at opening price on time of exercise (in EUR). */
     symbolPriceEur: number;
+    /**
+     * Last cotation of the stock at the time of acquisition.
+     * Sometimes grant date is on a weekend or a holiday.
+     * If this is filled then the symbolPrice was not available on grant date
+     * and the last known cotation is used.
+     */
+    dateSymbolPriceAcquired?: string;
     /** USD rate at time of acquisition */
     rate: number;
     /**
