@@ -5,6 +5,7 @@ import { Currency } from "@/app/guide/shared/ui/Currency";
 import { PriceInEuro } from "./ui/PriceInEuro";
 import { formatDateFr } from "@/lib/date";
 import { Tooltip } from "./ui/Tooltip";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 
 export const TaxableEventFr: React.FunctionComponent<{
   event: TaxableEventFrProps;
@@ -101,13 +102,27 @@ export const TaxableEventFr: React.FunctionComponent<{
         </TaxableEventFrLine>
       )}
       <TaxableEventFrLine title={`${event.symbol} price:`}>
-        <PriceInEuro
-          eur={event.acquisition.symbolPriceEur}
-          usd={event.acquisition.symbolPrice}
-          rate={event.acquisition.rate}
-          date={event.acquisition.date}
-        />{" "}
-        at opening on acquisition day.
+        <p>
+          <PriceInEuro
+            eur={event.acquisition.symbolPriceEur}
+            usd={event.acquisition.symbolPrice}
+            rate={event.acquisition.rate}
+            date={
+              event.acquisition.dateSymbolPriceAcquired ||
+              event.acquisition.date
+            }
+          />{" "}
+          at opening on acquisition day.
+        </p>
+        {event.acquisition.dateSymbolPriceAcquired && (
+          <p>
+            <ExclamationTriangleIcon className="h-4 w-4 text-yellow-500" />
+            {event.symbol} price was not available on{" "}
+            {formatDateFr(event.acquisition.date)}, last known price (on{" "}
+            {formatDateFr(event.acquisition.dateSymbolPriceAcquired)}) was used
+            instead.
+          </p>
+        )}
       </TaxableEventFrLine>
       {(showAcquisitionGains || showCapitalGains) && (
         <hr className="h-px my-1 mx-auto w-1/3 border-0 bg-gray-400" />
