@@ -4,6 +4,7 @@ import { Drawer } from "./ui/Drawer";
 import { Currency } from "@/app/guide/shared/ui/Currency";
 import { PriceInEuro } from "./ui/PriceInEuro";
 import { formatDateFr } from "@/lib/date";
+import { Tooltip } from "./ui/Tooltip";
 
 export const TaxableEventFr: React.FunctionComponent<{
   event: TaxableEventFrProps;
@@ -58,6 +59,18 @@ export const TaxableEventFr: React.FunctionComponent<{
         </div>
       }
     >
+      <TaxableEventFrLine title="Dates">
+        <div className="flex gap-4">
+          <p>
+            <strong>Acquired:</strong> {formatDateFr(event.acquisition.date)}.
+          </p>
+          {event.sell && (
+            <p>
+              <strong>Sold:</strong> {formatDateFr(event.sell.date)}.
+            </p>
+          )}
+        </div>
+      </TaxableEventFrLine>
       <TaxableEventFrLine title="Acquisition cost">
         <PriceInEuro
           eur={event.acquisition.costEur}
@@ -84,7 +97,7 @@ export const TaxableEventFr: React.FunctionComponent<{
             rate={event.sell.rate}
             date={event.sell.date}
           />{" "}
-          per share on {formatDateFr(event.sell.date)}
+          per share.
         </TaxableEventFrLine>
       )}
       <TaxableEventFrLine title={`${event.symbol} price:`}>
@@ -100,13 +113,19 @@ export const TaxableEventFr: React.FunctionComponent<{
         <hr className="h-px my-1 mx-auto w-1/3 border-0 bg-gray-400" />
       )}
       {showAcquisitionGains && (
-        <TaxableEventFrLine title="Acquisition gain">
+        <TaxableEventFrLine
+          title="Acquisition gain"
+          tooltip={`acq. value - acq. cost: ${event.acquisition.valueEur} - ${event.acquisition.costEur}`}
+        >
           <Currency value={event.acquisitionGain.perShare} unit="eur" /> per
           share.
         </TaxableEventFrLine>
       )}
       {showCapitalGains && (
-        <TaxableEventFrLine title="Capital gain">
+        <TaxableEventFrLine
+          title="Capital gain"
+          tooltip={`sell price - acq. cession: ${event.sell?.eur} - ${event.acquisition.valueEur}`}
+        >
           <Currency value={event.capitalGain.perShare} unit="eur" /> per share.
         </TaxableEventFrLine>
       )}
@@ -116,13 +135,23 @@ export const TaxableEventFr: React.FunctionComponent<{
 interface TaxableEventFrLineProps {
   title: React.ReactNode;
   children: React.ReactNode;
+  tooltip?: React.ReactNode;
 }
 const TaxableEventFrLine: React.FunctionComponent<TaxableEventFrLineProps> = ({
   title,
+  tooltip,
   children,
 }) => (
   <div className="flex items-start justify-stretch">
-    <h4 className="w-1/3">{title}</h4>
+    <h4 className="w-1/3">
+      {tooltip ? (
+        <Tooltip content={tooltip}>
+          <span>{title}</span>
+        </Tooltip>
+      ) : (
+        title
+      )}
+    </h4>
     <div className="grow">{children}</div>
   </div>
 );

@@ -534,11 +534,11 @@ export const getFrTaxesForFrQualifiedRsu = (
                 "Acquistion value is the sell price given the plan is qualified and the sale is at loss.",
             }
           : {
-              // Just use symbol price at opening the day of exercise.
+              // Just use symbol price at opening the vesting day.
               acquisitionValueUsd: event.symbolPriceAcquired,
               acquisitionValueRate: event.rateAcquired,
               acquisitionCostUsd: event.acquisitionCost,
-              explainAcquisitionValue: `Use ${event.symbol} price at opening on day of exercise.`,
+              explainAcquisitionValue: `Use ${event.symbol} price at opening on vesting day.`,
             },
     );
 
