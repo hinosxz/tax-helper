@@ -461,6 +461,7 @@ const Page510: React.FunctionComponent<{
                             key as keyof typeof currentPage
                           ] as boolean
                         }
+                        readOnly
                       />
                     ) : typeof currentPage[key as keyof typeof currentPage] !==
                       "undefined" ? (
