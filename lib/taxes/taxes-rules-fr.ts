@@ -17,6 +17,13 @@ export interface GainAndLossEventWithRates extends GainAndLossEvent {
   rateAcquired: number;
   rateSold: number;
   symbolPriceAcquired: number;
+  /**
+   * Sometimes grant date is on a weekend.
+   * This leads to a missing symbol price since markets are closed.
+   * If the symbol price for dateAcquired is available, this field is undefined.
+   * Otherwise it is the date of the symbol price used.
+   */
+  dateSymbolPriceAcquired?: string;
 }
 
 export interface BenefitEventWithRates extends BenefitHistoryEvent {}
@@ -53,6 +60,25 @@ const ceilNumber0Digits = (value: number): number => ceilNumber(value, 0);
 // payslip, hence there is nothing needed here.
 // - capital gain =>
 
+/** Sometimes grant date is on a weekend, we need to adjust the date */
+const getAdjustedSymbolDate = (
+  date: string,
+  symbolPrices: SymbolDailyResponse,
+): string => {
+  const symbolDate = symbolPrices[date];
+  if (!symbolDate) {
+    // try the day before
+    const [dateYear, dateMonth, dateDay] = date.split("-");
+    const previousDate = new Date(
+      Date.UTC(Number(dateYear), Number(dateMonth) - 1, Number(dateDay) - 1),
+    )
+      .toISOString()
+      .substring(0, 10);
+    return getAdjustedSymbolDate(previousDate, symbolPrices);
+  }
+  return date;
+};
+
 export const enrichEtradeGlFrFr = (
   data: GainAndLossEvent[],
   {
@@ -73,14 +99,22 @@ export const enrichEtradeGlFrFr = (
     .map((event) => {
       const rateAcquired = rates[event.dateAcquired];
       const rateSold = rates[event.dateSold];
+      const dateSymbolPriceAcquired = getAdjustedSymbolDate(
+        event.dateAcquired,
+        symbolPrices[event.symbol],
+      );
       const symbolPriceAcquired =
-        symbolPrices[event.symbol][event.dateAcquired].opening;
+        symbolPrices[event.symbol][dateSymbolPriceAcquired].opening;
 
       return {
         ...event,
         rateAcquired: rateAcquired,
         rateSold: rateSold,
         symbolPriceAcquired,
+        dateSymbolPriceAcquired:
+          dateSymbolPriceAcquired !== event.dateAcquired
+            ? dateSymbolPriceAcquired
+            : undefined,
       };
     });
 };
