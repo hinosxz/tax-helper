@@ -25,5 +25,5 @@ const months = [
  */
 export const formatDateFr = (/** format YYYY-MM-DD */ date: string) => {
   const [year, monthNumber, day] = date.split("-").map(Number);
-  return `${day} ${months[monthNumber]} ${year}`;
+  return `${day} ${months[monthNumber - 1]} ${year}`;
 };
