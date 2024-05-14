@@ -29,7 +29,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
-import Link from "next/link";
+import { Link } from "@/app/guide/shared/ui/Link";
 
 export interface ReportResidencyFrTaxesFrProps {}
 
@@ -83,13 +83,9 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
           </p>
           <p>
             This{" "}
-            <a
-              href="/2021_mc-kenzie-taxes-presentation.pdf"
-              target="_blank"
-              className="underline"
-            >
+            <Link href="/2021_mc-kenzie-taxes-presentation.pdf" isExternal>
               guide
-            </a>{" "}
+            </Link>{" "}
             sent by equity team in 2021 was used to create this calculator
           </p>
         </MessageBox>
@@ -329,6 +325,38 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
             <div className="mt-6">
               <Page510 taxes={taxes} isPrintMode={isPrintMode} />
             </div>
+          </Section>
+          <Section title="Source of information">
+            <div>Some external sources are used to compute data:</div>
+            <ul className="list-disc pl-6 mt-2">
+              <li>
+                <Link href="https://us.etrade.com/etx/pxy/my-account/export">
+                  Etrade Gains and Losses <strong>Expanded</strong>
+                </Link>
+              </li>
+              <li>
+                The exchange rates are fetched from the{" "}
+                <Link href="https://data.ecb.europa.eu/help/api/data">
+                  European Central Bank API
+                </Link>
+                <Tooltip
+                  content={
+                    "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A"
+                  }
+                  maxWidth="none"
+                >
+                  <span className="text-blue-600 inline-block">
+                    <InformationCircleIcon className="h-6 w-6 ml-2" />
+                  </span>
+                </Tooltip>
+              </li>
+              <li>
+                Stock prices are fetched from{" "}
+                <Link href="https://www.alphavantage.co/documentation/#daily">
+                  Alphavantage TIME_SERIES_DAILY
+                </Link>
+              </li>
+            </ul>
           </Section>
         </div>
       )}
