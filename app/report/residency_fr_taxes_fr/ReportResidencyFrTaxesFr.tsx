@@ -202,16 +202,29 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
           </Section>
           <Section title="Foreign accounts">
             <div className="flex justify-between">
-              <div className="flex gap-1 items-start justify-start">
-                <span>Find your Morgan Stanley's accounts details in </span>
-                <Link href="https://us.etrade.com/etx/pxy/my-profile/account-preferences">
+              <div className="flex flex-col justify-between">
+                <div>
+                  <p>
+                    Make sure you check <strong>8TT</strong>
+                  </p>
                   <Image
-                    src="/images/fr-taxes/etrade-account-details.png"
-                    alt="profile > account preferences"
-                    width={150}
-                    height={150}
+                    src="/images/fr-taxes/foreign-account-8tt.png"
+                    alt="Check 8TT"
+                    width={400}
+                    height={500}
                   />
-                </Link>
+                </div>
+                <div className="flex gap-1 items-start justify-start">
+                  <span>Find your Morgan Stanley's accounts details in </span>
+                  <Link href="https://us.etrade.com/etx/pxy/my-profile/account-preferences">
+                    <Image
+                      src="/images/fr-taxes/etrade-account-details.png"
+                      alt="profile > account preferences"
+                      width={150}
+                      height={150}
+                    />
+                  </Link>
+                </div>
               </div>
               <div>
                 <Image
