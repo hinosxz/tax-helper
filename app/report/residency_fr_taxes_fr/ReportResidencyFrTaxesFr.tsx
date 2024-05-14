@@ -305,6 +305,37 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
             </div>
             <Page510 taxes={taxes} isPrintMode={isPrintMode} />
           </Section>
+          <Section title="Source of information">
+            <div>
+              <p>
+                This tool uses the information from the Gains and Losses export
+                from Etrade.
+              </p>
+              <p>
+                The exchange rates are fetched from the{" "}
+                <Link
+                  href="https://data.ecb.europa.eu/help/api/data"
+                  className="underline"
+                >
+                  European Central Bank API
+                </Link>{" "}
+                (
+                <strong>
+                  {
+                    "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A"
+                  }
+                </strong>
+                ) and the symbol prices are fetched from{" "}
+                <Link
+                  href="https://www.alphavantage.co/documentation/#daily"
+                  className="underline"
+                >
+                  Alphavantage TIME_SERIES_DAILY
+                </Link>
+                .
+              </p>
+            </div>
+          </Section>
         </div>
       )}
     </div>
