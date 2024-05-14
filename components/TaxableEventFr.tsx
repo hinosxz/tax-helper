@@ -60,6 +60,18 @@ export const TaxableEventFr: React.FunctionComponent<{
         </div>
       }
     >
+      <TaxableEventFrLine title="Dates">
+        <div className="flex gap-4">
+          <p>
+            <strong>Acquired:</strong> {formatDateFr(event.acquisition.date)}.
+          </p>
+          {event.sell && (
+            <p>
+              <strong>Sold:</strong> {formatDateFr(event.sell.date)}.
+            </p>
+          )}
+        </div>
+      </TaxableEventFrLine>
       <TaxableEventFrLine title="Acquisition cost">
         <PriceInEuro
           eur={event.acquisition.costEur}
@@ -86,7 +98,7 @@ export const TaxableEventFr: React.FunctionComponent<{
             rate={event.sell.rate}
             date={event.sell.date}
           />{" "}
-          per share on {formatDateFr(event.sell.date)}
+          per share.
         </TaxableEventFrLine>
       )}
       <TaxableEventFrLine title={`${event.symbol} price:`}>
