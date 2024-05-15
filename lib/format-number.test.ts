@@ -1,4 +1,9 @@
-import { floorNumber, ceilNumber, formatNumber } from "./format-number";
+import {
+  floorNumber,
+  ceilNumber,
+  formatNumber,
+  roundNumber,
+} from "./format-number";
 
 describe("formatNumber", () => {
   it("should add 2 decimal places", () => {
@@ -39,5 +44,20 @@ describe("ceilNumber", () => {
   });
   it("should ceil a number with no decimals", () => {
     expect(ceilNumber(1, 2)).toBe(1);
+  });
+});
+
+describe("roundNumber", () => {
+  it("should round a number with 2 decimal places", () => {
+    expect(roundNumber(1.234)).toBe(1.23);
+  });
+  it("should work on number with 3 decimal places", () => {
+    expect(roundNumber(1.2342, 3)).toBe(1.234);
+  });
+  it("should round a number with 3 decimal places", () => {
+    expect(roundNumber(1.2347, 3)).toBe(1.235);
+  });
+  it("should round a number with no decimals", () => {
+    expect(roundNumber(1, 2)).toBe(1);
   });
 });
