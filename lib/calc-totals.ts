@@ -53,7 +53,8 @@ export const calcTotals = (events: SaleEventData[]): Totals | null => {
   if (totals) {
     const gainLoss = totals.gain + totals.loss;
     if (gainLoss < 0) {
-      totals.incomeFr += gainLoss;
+      const ratioFr = totals.incomeFr / totals.income;
+      totals.incomeFr += ratioFr * gainLoss;
     }
   }
 
