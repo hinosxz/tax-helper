@@ -106,24 +106,27 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
       ) : isFetching ? (
         <p>Loading...</p>
       ) : (
-        <div className="container">
-          <div className="flex items-baseline justify-between gap-3 print:hidden">
-            <span>Gains and Losses</span>
-            <Button
-              label="Clear"
-              color="red"
-              onClick={() => setGainsAndLosses([])}
-            />
+        <div className="container flex flex-col gap-8">
+          <div className="print:hidden">
+            <div className="flex items-baseline justify-between gap-3">
+              <span>Gains and Losses</span>
+              <Button
+                label="Clear"
+                color="red"
+                onClick={() => setGainsAndLosses([])}
+              />
+            </div>
+            <div className="flex gap-2 items-baseline justify-items-start">
+              <input
+                type="checkbox"
+                id="printMode"
+                checked={isPrintMode}
+                onChange={() => setIsPrintMode(!isPrintMode)}
+              />
+              <label htmlFor="printMode">Print mode</label>
+            </div>
           </div>
-          <div className="flex gap-2 items-baseline justify-items-start print:hidden">
-            <input
-              type="checkbox"
-              id="printMode"
-              checked={isPrintMode}
-              onChange={() => setIsPrintMode(!isPrintMode)}
-            />
-            <label htmlFor="printMode">Print mode</label>
-          </div>
+
           <Section title="Summary">
             <div className="px-6">
               <dl className="grid grid-cols-2 ">
@@ -286,7 +289,9 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
                 className="print:hidden"
               />
             </div>
-            <Page510 taxes={taxes} isPrintMode={isPrintMode} />
+            <div className="mt-6">
+              <Page510 taxes={taxes} isPrintMode={isPrintMode} />
+            </div>
           </Section>
         </div>
       )}
@@ -312,7 +317,7 @@ const TaxReportBox: React.FunctionComponent<{
 }> = ({ id, title, amount, explanations, gainType, forceOpen }) => {
   const relatedExplanations = explanations.filter(({ box }) => box === id);
   return (
-    <div className="bg-blue-200 mb-2 py-1 px-2">
+    <div className="bg-blue-200 mb-2 py-1 px-2 print:border print:mb-2">
       <div className="flex items-center gap-3 py-2">
         <h2 className="font-bold text-lg">{id}</h2>
         <span className="p-2 bg-white border border-gray-500 border-solid w-32 text-right font-bold">
@@ -337,13 +342,17 @@ const TaxReportBox: React.FunctionComponent<{
                     forceOpen={forceOpen}
                   >
                     {explanation.taxableEvents.map((taxableEvent, index) => (
-                      <TaxableEventFr
+                      <div
                         key={index}
-                        event={taxableEvent}
-                        showCapitalGains={gainType === "capital"}
-                        showAcquisitionGains={gainType === "acquisition"}
-                        forceOpen={forceOpen}
-                      />
+                        className="print:border print:mb-2 print:text-xs"
+                      >
+                        <TaxableEventFr
+                          event={taxableEvent}
+                          showCapitalGains={gainType === "capital"}
+                          showAcquisitionGains={gainType === "acquisition"}
+                          forceOpen={forceOpen}
+                        />
+                      </div>
                     ))}
                   </Drawer>
                 ) : (
@@ -392,7 +401,7 @@ const Page510: React.FunctionComponent<{
   return (
     <div>
       {pagesToDisplay.map((currentPage, index) => (
-        <div key={index} className="m-t-2">
+        <div key={index} className="m-t-2 print:border print:mb-2">
           <h2 className="text-lg text-center">
             Page {(isPrintMode ? index : currentIndex) + 1}
           </h2>
