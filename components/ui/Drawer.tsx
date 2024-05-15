@@ -3,8 +3,11 @@ import { useState } from "react";
 export const Drawer: React.FunctionComponent<{
   title: React.ReactNode;
   children: React.ReactNode;
-}> = ({ title, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  isDefaultOpen?: boolean;
+  forceOpen?: boolean;
+}> = ({ title, children, isDefaultOpen = false, forceOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(isDefaultOpen);
+  const showBody = isOpen || forceOpen;
   return (
     <div>
       <div
@@ -12,9 +15,9 @@ export const Drawer: React.FunctionComponent<{
         onClick={() => setIsOpen(!isOpen)}
       >
         <div>{title}</div>
-        <span>{isOpen ? "▲" : "▼"}</span>
+        <span>{showBody ? "▲" : "▼"}</span>
       </div>
-      {isOpen && <div>{children}</div>}
+      {showBody && <div>{children}</div>}
     </div>
   );
 };
