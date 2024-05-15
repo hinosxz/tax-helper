@@ -360,13 +360,12 @@ const TaxReportBox: React.FunctionComponent<{
 
 const PAGE_510_LABELS = {
   "511": "Désignation des titres et des intermédiaires financiers",
-  "512": "Date d'acquisitionDate de la cession ou du rachat jj/mm/aaaa",
-  "513":
-    "Nombre de titres cédés ou rachetésDétermination du prix de cession des titres",
-  "514": "PrixValeur unitaire de cession",
-  "515": "dNombre de titres cédés",
+  "512": "Date de la cession ou du rachat jj/mm/aaaa",
+  "513": "Nombre de titres cédés ou rachetés",
+  "514": "Valeur unitaire de cession",
+  "515": "Nombre de titres cédés",
   "516": "Montant global lignes (514 x 515)",
-  "517": "PrixFrais de cession cf. notice",
+  "517": "Frais de cession cf. notice",
   "518": "Prix de cession net lignes (516 - 517)",
   "519": "Détermination du prix de revient des titres",
   "520": "Prix ou valeur d’acquisition unitaire cf. notice",
