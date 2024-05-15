@@ -104,7 +104,7 @@ describe("enrichEtradeGlFrFr", () => {
 });
 
 describe("getFrTaxesForFrQualifiedSo", () => {
-  it("same day sell", () => {
+  it("same day sell, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -123,7 +123,11 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     ];
 
     const taxes = getFrTaxesForFrQualifiedSo(
-      { gainsAndLosses },
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // No capital gain
@@ -137,7 +141,7 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     expect(taxes["1TT"]).toEqual(803.57143);
   });
 
-  it("sell with losses", () => {
+  it("sell with losses, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -156,7 +160,11 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     ];
 
     const taxes = getFrTaxesForFrQualifiedSo(
-      { gainsAndLosses },
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // No capital gain
@@ -170,7 +178,7 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     expect(taxes["1TT"]).toEqual(617.88875);
   });
 
-  it("sell with gains", () => {
+  it("sell with gains, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -189,7 +197,11 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     ];
 
     const taxes = getFrTaxesForFrQualifiedSo(
-      { gainsAndLosses },
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
 
@@ -221,10 +233,51 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     expect(page510["525"]).toEqual(false);
     expect(page510["526"]).toEqual(0);
   });
+
+  it("sell with gains, US resident, no capital gain should be reported", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 110, // Sold at 110$ when acquired at 100$
+        adjustedCost: 80,
+        acquisitionCost: 20,
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+      },
+    ];
+
+    const taxes = getFrTaxesForFrQualifiedSo(
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 20,
+        isFrenchTaxResident: false,
+      },
+      getEmptyTaxes(),
+    );
+
+    // cost = 20 / 1.12 = 17.8571428571
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
+    // sellPrice = 110 / 1.13 = 97.3451327434
+    // capital gain = 97.3451327434 - 89.2857142857 = 8.0594184577
+    // acquisition gain = 89.2857142857 - 17.8571428571 = 71.4285714286
+
+    // Acquisition gain
+    expect(taxes["1TT"]).toEqual(714.28572); // This amount should be fixed when percentTimeSpentInFrance is implemented.
+
+    // Capital gain
+    expect(taxes["3VG"].toFixed(6)).toEqual("0.000000");
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
+  });
 });
 
 describe("getFrTaxesForFrQualifiedRsu()", () => {
-  it("same day sell", () => {
+  it("same day sell, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -243,7 +296,11 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     ];
 
     const taxes = getFrTaxesForFrQualifiedRsu(
-      { gainsAndLosses },
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // No capital gain
@@ -258,7 +315,7 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     expect(taxes["1WZ"]).toEqual(491.071425);
   });
 
-  it("sell with losses", () => {
+  it("sell with losses, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -277,7 +334,11 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     ];
 
     const taxes = getFrTaxesForFrQualifiedRsu(
-      { gainsAndLosses },
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // No capital gain
@@ -291,7 +352,7 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     expect(taxes["1WZ"]).toEqual(398.230085);
   });
 
-  it("sell with gains", () => {
+  it("sell with gains, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -310,7 +371,11 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     ];
 
     const taxes = getFrTaxesForFrQualifiedRsu(
-      { gainsAndLosses },
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
 
@@ -343,10 +408,52 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     expect(page510["525"]).toEqual(false);
     expect(page510["526"]).toEqual(0);
   });
+
+  it("sell with gains, US resident, no capital gain should be reported", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 110, // Sold at 110$ when acquired at 100$
+        adjustedCost: 80,
+        acquisitionCost: 0,
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+      },
+    ];
+
+    const taxes = getFrTaxesForFrQualifiedRsu(
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 20,
+        isFrenchTaxResident: false,
+      },
+      getEmptyTaxes(),
+    );
+
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
+    // sellPrice = 110 / 1.13 = 97.3451327434
+    // capital gain = 97.3451327434 - 89.2857142857 = 8.0594184577
+    // acquisition gain = 89.2857142857 - 0 = 89.2857142857
+    // discount = 89.2857142857 / 2 = 44.6428571429
+    // Acquisition gain
+    expect(taxes["1TZ"]).toEqual(446.42857); // This amount should be fixed when percentTimeSpentInFrance is implemented.
+    expect(taxes["1TT"]).toEqual(0); // This amount should be fixed when percentTimeSpentInFrance is implemented.
+    expect(taxes["1WZ"]).toEqual(446.42857); // This amount should be fixed when percentTimeSpentInFrance is implemented.
+
+    // Capital gain
+    expect(taxes["3VG"].toFixed(6)).toEqual("0.000000");
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
+  });
 });
 
 describe("getFrTaxesForEspp", () => {
-  it("capital loss", () => {
+  it("capital loss, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -364,7 +471,14 @@ describe("getFrTaxesForEspp", () => {
       },
     ];
 
-    const taxes = getFrTaxesForEspp({ gainsAndLosses }, getEmptyTaxes());
+    const taxes = getFrTaxesForEspp(
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
+      getEmptyTaxes(),
+    );
     // Capital loss
     // acquisitionValue = 100 / 1.12 = 89.2857142857
     // sellPrice = 90 / 1.13 = 79.6460176991
@@ -392,7 +506,7 @@ describe("getFrTaxesForEspp", () => {
     expect(taxes["1TT"]).toEqual(0);
     expect(taxes["1WZ"]).toEqual(0);
   });
-  it("capital gain", () => {
+  it("capital gain, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -410,7 +524,14 @@ describe("getFrTaxesForEspp", () => {
       },
     ];
 
-    const taxes = getFrTaxesForEspp({ gainsAndLosses }, getEmptyTaxes());
+    const taxes = getFrTaxesForEspp(
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
+      getEmptyTaxes(),
+    );
     // Capital gain
     // acquisitionValue = 100 / 1.12 = 89.2857142857
     // sellPrice = 110 / 1.13 = 97.3451327434
@@ -438,10 +559,49 @@ describe("getFrTaxesForEspp", () => {
     expect(taxes["1TT"]).toEqual(0);
     expect(taxes["1WZ"]).toEqual(0);
   });
+
+  it("capital gain, US resident, no capital gain should be reported", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        symbol: "DDOG",
+        planType: "ESPP",
+        quantity: 10,
+        proceeds: 110, // Sold at 110$ when acquired at 100$
+        adjustedCost: 100,
+        acquisitionCost: 80,
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+      },
+    ];
+
+    const taxes = getFrTaxesForEspp(
+      {
+        gainsAndLosses,
+        percentTimeSpentInFrance: 20,
+        isFrenchTaxResident: false,
+      },
+      getEmptyTaxes(),
+    );
+    // Capital gain
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
+    // sellPrice = 110 / 1.13 = 97.3451327434
+    // capital gain = 97.3451327434 - 89.2857142857 = 8.0594184577
+    expect(taxes["3VG"].toFixed(6)).toEqual("0.000000");
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
+    // Acquisition gain
+    expect(taxes["1AJ"]).toEqual(0);
+    expect(taxes["1TZ"]).toEqual(0);
+    expect(taxes["1TT"]).toEqual(0);
+    expect(taxes["1WZ"]).toEqual(0);
+  });
 });
 
 describe("getFrTaxesForNonFrQualifiedSo", () => {
-  it("same day sell", () => {
+  it("same day sell, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -459,14 +619,19 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedSo(
-      { gainsAndLosses, benefits: [] },
+      {
+        gainsAndLosses,
+        benefits: [],
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // No capital gain
     expect(taxes["3VG"]).toEqual(0);
     expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
   });
-  it("capital loss", () => {
+  it("capital loss, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -484,7 +649,12 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedSo(
-      { gainsAndLosses, benefits: [] },
+      {
+        gainsAndLosses,
+        benefits: [],
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // Capital loss
@@ -509,7 +679,7 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
     expect(page510["525"]).toEqual(false);
     expect(page510["526"]).toEqual(0);
   });
-  it("capital gain", () => {
+  it("capital gain, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -527,7 +697,12 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedSo(
-      { gainsAndLosses, benefits: [] },
+      {
+        gainsAndLosses,
+        benefits: [],
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // Capital gain
@@ -552,10 +727,44 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
     expect(page510["525"]).toEqual(false);
     expect(page510["526"]).toEqual(0);
   });
+
+  it("capital gain, US resident, no capital gain should be reported", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 110, // Sold at 110$ when acquired at 100$
+        adjustedCost: 80,
+        acquisitionCost: 0,
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "us",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+      },
+    ];
+    const taxes = getFrTaxesForNonFrQualifiedSo(
+      {
+        gainsAndLosses,
+        benefits: [],
+        percentTimeSpentInFrance: 20,
+        isFrenchTaxResident: false,
+      },
+      getEmptyTaxes(),
+    );
+    // Capital gain
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
+    // sellPrice = 110 / 1.13 = 97.3451327434
+    // capital gain = 97.3451327434 - 89.2857142857 = 8.0594184577
+    expect(taxes["3VG"].toFixed(6)).toEqual("0.000000");
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
+  });
 });
 
 describe("getFrTaxesForNonFrQualifiedRsu", () => {
-  it("same day sell", () => {
+  it("same day sell, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -573,14 +782,19 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedRsu(
-      { gainsAndLosses, benefits: [] },
+      {
+        gainsAndLosses,
+        benefits: [],
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // No capital gain
     expect(taxes["3VG"]).toEqual(0);
     expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
   });
-  it("capital loss", () => {
+  it("capital loss, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -598,7 +812,12 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedRsu(
-      { gainsAndLosses, benefits: [] },
+      {
+        gainsAndLosses,
+        benefits: [],
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // Capital loss
@@ -623,7 +842,7 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
     expect(page510["525"]).toEqual(false);
     expect(page510["526"]).toEqual(0);
   });
-  it("capital gain", () => {
+  it("capital gain, french resident, 100% in France", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
       {
         symbol: "DDOG",
@@ -641,7 +860,12 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedRsu(
-      { gainsAndLosses, benefits: [] },
+      {
+        gainsAndLosses,
+        benefits: [],
+        percentTimeSpentInFrance: 100,
+        isFrenchTaxResident: true,
+      },
       getEmptyTaxes(),
     );
     // Capital gain
@@ -665,5 +889,39 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
     expect(page510["524"].toFixed(6)).toEqual("80.000000");
     expect(page510["525"]).toEqual(false);
     expect(page510["526"]).toEqual(0);
+  });
+
+  it("capital gain, US resident, no capital gain should be reported", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 110, // Sold at 110$ when acquired at 100$
+        adjustedCost: 80,
+        acquisitionCost: 0,
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "us",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+      },
+    ];
+    const taxes = getFrTaxesForNonFrQualifiedRsu(
+      {
+        gainsAndLosses,
+        benefits: [],
+        percentTimeSpentInFrance: 20,
+        isFrenchTaxResident: false,
+      },
+      getEmptyTaxes(),
+    );
+    // Capital gain
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
+    // sellPrice = 110 / 1.13 = 97.3451327434
+    // capital gain = 97.3451327434 - 89.2857142857 = 8.0594184577
+    expect(taxes["3VG"].toFixed(6)).toEqual("0.000000");
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
   });
 });

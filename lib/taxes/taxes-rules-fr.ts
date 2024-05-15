@@ -270,12 +270,34 @@ const getFrTaxesCapitalGain = (
   {
     description,
     taxableEvents,
+    isFrenchTaxResident,
   }: {
     description: string;
     taxableEvents: TaxableEventFr[];
+    /** Percentage of time spent in France the year of declaration. From 0 to 100 */
+    percentTimeSpentInFrance: number;
+    /** Is the user a French tax resident? */
+    isFrenchTaxResident: boolean;
   },
   taxes: FrTaxes,
 ) => {
+  if (!isFrenchTaxResident) {
+    // There is no capital gains for non French tax residents
+    taxableEvents.forEach((taxableEvent) => {
+      // mutate taxableEvent to adjust capital gain as computed with Form 2074
+      taxableEvent.capitalGain.total = 0;
+      taxableEvent.capitalGain.perShare = 0;
+    });
+    taxes.explanations = [
+      ...taxes.explanations,
+      {
+        box: "3VG",
+        description: `${description} (0€ as the user is not a French tax resident)`,
+        taxableEvents,
+      },
+    ];
+    return taxes;
+  }
   if (!taxableEvents.length) {
     return taxes;
   }
@@ -437,8 +459,14 @@ const getFrTaxableEventFromGainsAndLossEvent = (
 export const getFrTaxesForFrQualifiedSo = (
   {
     gainsAndLosses,
+    percentTimeSpentInFrance,
+    isFrenchTaxResident,
   }: {
     gainsAndLosses: GainAndLossEventWithRates[];
+    /** Percentage of time spent in France the year of declaration. From 0 to 100 */
+    percentTimeSpentInFrance: number;
+    /** Is the user a French tax resident? */
+    isFrenchTaxResident: boolean;
   },
   taxes: FrTaxes,
 ): FrTaxes => {
@@ -509,6 +537,8 @@ export const getFrTaxesForFrQualifiedSo = (
     {
       description: "Capital gains from FR qualified SO sales.",
       taxableEvents,
+      percentTimeSpentInFrance,
+      isFrenchTaxResident,
     },
     taxes,
   );
@@ -519,8 +549,14 @@ export const getFrTaxesForFrQualifiedSo = (
 export const getFrTaxesForFrQualifiedRsu = (
   {
     gainsAndLosses,
+    percentTimeSpentInFrance,
+    isFrenchTaxResident,
   }: {
     gainsAndLosses: GainAndLossEventWithRates[];
+    /** Percentage of time spent in France the year of declaration. From 0 to 100 */
+    percentTimeSpentInFrance: number;
+    /** Is the user a French tax resident? */
+    isFrenchTaxResident: boolean;
   },
   taxes: FrTaxes,
 ): FrTaxes => {
@@ -597,7 +633,7 @@ export const getFrTaxesForFrQualifiedRsu = (
     taxes["1WZ"] += floorNumber6Digits(discountableAcquisitionGainEur / 2);
     explanations.push({
       box: "1WZ",
-      description: `Tax acquisition discount for RSU acquisition gains below 300k€ (${formatNumber(discountableAcquisitionGainEur)} * 50%, see 1TZ for calculation details)`,
+      description: `50% Tax acquisition discount for RSU acquisition gains below 300k€ (${formatNumber(discountableAcquisitionGainEur)} * 50%, see 1TZ for calculation details)`,
       taxableEvents: [],
     });
   }
@@ -615,6 +651,8 @@ export const getFrTaxesForFrQualifiedRsu = (
     {
       description: "Capital gains from FR qualified RSU sales.",
       taxableEvents,
+      percentTimeSpentInFrance,
+      isFrenchTaxResident,
     },
     taxes,
   );
@@ -625,8 +663,14 @@ export const getFrTaxesForFrQualifiedRsu = (
 export const getFrTaxesForEspp = (
   {
     gainsAndLosses,
+    percentTimeSpentInFrance,
+    isFrenchTaxResident,
   }: {
     gainsAndLosses: GainAndLossEventWithRates[];
+    /** Percentage of time spent in France the year of declaration. From 0 to 100 */
+    percentTimeSpentInFrance: number;
+    /** Is the user a French tax resident? */
+    isFrenchTaxResident: boolean;
   },
   taxes: FrTaxes,
 ): FrTaxes => {
@@ -663,7 +707,12 @@ export const getFrTaxesForEspp = (
 
   // Add capital gains
   taxes = getFrTaxesCapitalGain(
-    { description: "Capital gains from ESPP sales", taxableEvents },
+    {
+      description: "Capital gains from ESPP sales",
+      taxableEvents,
+      percentTimeSpentInFrance,
+      isFrenchTaxResident,
+    },
     taxes,
   );
 
@@ -673,9 +722,15 @@ export const getFrTaxesForEspp = (
 export const getFrTaxesForNonFrQualifiedSo = (
   {
     gainsAndLosses,
+    percentTimeSpentInFrance,
+    isFrenchTaxResident,
   }: {
     gainsAndLosses: GainAndLossEventWithRates[];
     benefits: BenefitEventWithRates[];
+    /** Percentage of time spent in France the year of declaration. From 0 to 100 */
+    percentTimeSpentInFrance: number;
+    /** Is the user a French tax resident? */
+    isFrenchTaxResident: boolean;
   },
   taxes: FrTaxes,
 ): FrTaxes => {
@@ -731,6 +786,8 @@ export const getFrTaxesForNonFrQualifiedSo = (
     {
       description: "Capital gains from non FR qualified SO sales.",
       taxableEvents,
+      percentTimeSpentInFrance,
+      isFrenchTaxResident,
     },
     taxes,
   );
@@ -740,9 +797,15 @@ export const getFrTaxesForNonFrQualifiedSo = (
 export const getFrTaxesForNonFrQualifiedRsu = (
   {
     gainsAndLosses,
+    percentTimeSpentInFrance,
+    isFrenchTaxResident,
   }: {
     gainsAndLosses: GainAndLossEventWithRates[];
     benefits: BenefitEventWithRates[];
+    /** Percentage of time spent in France the year of declaration. From 0 to 100 */
+    percentTimeSpentInFrance: number;
+    /** Is the user a French tax resident? */
+    isFrenchTaxResident: boolean;
   },
   taxes: FrTaxes,
 ): FrTaxes => {
@@ -802,6 +865,8 @@ export const getFrTaxesForNonFrQualifiedRsu = (
     {
       description: "Capital gains from non FR qualified RSU sales.",
       taxableEvents,
+      percentTimeSpentInFrance,
+      isFrenchTaxResident,
     },
     taxes,
   );
@@ -814,6 +879,8 @@ export const applyFrTaxes = ({
   benefits,
   rates,
   symbolPrices,
+  percentTimeSpentInFrance,
+  isFrenchTaxResident,
 }: {
   gainsAndLosses: GainAndLossEvent[];
   benefits: BenefitHistoryEvent[];
@@ -823,6 +890,10 @@ export const applyFrTaxes = ({
   symbolPrices: {
     [symbol: string]: SymbolDailyResponse;
   };
+  /** Percentage of time spent in France the year of declaration. From 0 to 100 */
+  percentTimeSpentInFrance: number;
+  /** Is the user a French tax resident? */
+  isFrenchTaxResident: boolean;
 }): FrTaxes => {
   return [
     getFrTaxesForFrQualifiedSo,
@@ -842,6 +913,8 @@ export const applyFrTaxes = ({
             rates,
             symbolPrices,
           }),
+          percentTimeSpentInFrance,
+          isFrenchTaxResident,
         },
         taxes,
       ),
