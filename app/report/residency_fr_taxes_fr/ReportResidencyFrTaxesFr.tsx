@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import { match } from "ts-pattern";
 import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
 import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { Button } from "@/app/guide/shared/ui/Button";
@@ -142,36 +143,55 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
           <Section title="Select Income Source and Anexes">
             <div className="flex gap-2 justify-items-center items-start">
               <div>
-                {taxes["3VG"] !== 0 &&
-                (taxes["1TT"] !== 0 || taxes["1TZ"] !== 0) ? (
-                  <Image
-                    alt="select 'Salaires, gains d'actionnariat salarié' and 'Plus-values et gains divers'"
-                    src="/images/fr-taxes/select-income-capital-gains-and-acquisition-gains.png"
-                    width={400}
-                    height={500}
-                  />
-                ) : taxes["3VG"] !== 0 ? (
-                  <Image
-                    alt="select 'Plus-values et gains divers'"
-                    src="/images/fr-taxes/select-income-capital-gains-only.png"
-                    width={400}
-                    height={500}
-                  />
-                ) : taxes["1TT"] !== 0 || taxes["1TZ"] !== 0 ? (
-                  <Image
-                    alt="select 'Salaires, gains d'actionnariat salarié'"
-                    src="/images/fr-taxes/select-income-acquisition-gains-only.png"
-                    width={400}
-                    height={500}
-                  />
-                ) : (
-                  <Image
-                    alt="No specific income selection"
-                    src="/images/fr-taxes/select-income-no-shares.png"
-                    width={400}
-                    height={500}
-                  />
-                )}
+                {match({
+                  hasCapitalGains: taxes["3VG"] !== 0,
+                  hasAcquisitionGains: taxes["1TT"] !== 0 || taxes["1TZ"] !== 0,
+                })
+                  .with(
+                    { hasCapitalGains: true, hasAcquisitionGains: true },
+                    () => (
+                      <Image
+                        alt="select 'Salaires, gains d'actionnariat salarié' and 'Plus-values et gains divers'"
+                        src="/images/fr-taxes/select-income-capital-gains-and-acquisition-gains.png"
+                        width={400}
+                        height={500}
+                      />
+                    ),
+                  )
+                  .with(
+                    { hasCapitalGains: true, hasAcquisitionGains: false },
+                    () => (
+                      <Image
+                        alt="select 'Plus-values et gains divers'"
+                        src="/images/fr-taxes/select-income-capital-gains-only.png"
+                        width={400}
+                        height={500}
+                      />
+                    ),
+                  )
+                  .with(
+                    { hasCapitalGains: false, hasAcquisitionGains: true },
+                    () => (
+                      <Image
+                        alt="select 'Salaires, gains d'actionnariat salarié'"
+                        src="/images/fr-taxes/select-income-acquisition-gains-only.png"
+                        width={400}
+                        height={500}
+                      />
+                    ),
+                  )
+                  .with(
+                    { hasCapitalGains: false, hasAcquisitionGains: false },
+                    () => (
+                      <Image
+                        alt="No specific income selection"
+                        src="/images/fr-taxes/select-income-no-shares.png"
+                        width={400}
+                        height={500}
+                      />
+                    ),
+                  )
+                  .exhaustive()}
                 <Image
                   className="mt-1"
                   alt="Compte a l'etranger"
