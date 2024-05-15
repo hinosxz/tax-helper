@@ -57,14 +57,14 @@ describe("calcTotals", () => {
           adjustedCost: 200,
           rateAcquired: 1,
           rateSold: 1,
-          fractionFr: 1,
+          fractionFr: 0.8,
         },
       ],
       expected: {
         gain: 0,
         loss: -1000,
         income: 2000,
-        incomeFr: 1000, // income - loss because total gain / loss is < 0
+        incomeFr: 800, // % FR * proceeds because total gain / loss is < 0
         proceeds: 1000,
       },
     },
