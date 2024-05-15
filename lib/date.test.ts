@@ -1,4 +1,4 @@
-import { getDateString, parseEtradeDate } from "./date";
+import { formatDateFr, getDateString, parseEtradeDate } from "./date";
 
 describe("date", () => {
   describe("getDateString", () => {
@@ -23,6 +23,26 @@ describe("date", () => {
       expect(new Date(parsed).toISOString()).toEqual(
         "2021-09-01T00:00:00.000Z",
       );
+    });
+  });
+
+  describe("formatDateFr", () => {
+    it("should return a French date", () => {
+      expect(formatDateFr("2021-09-01")).toEqual("1 sep 2021");
+    });
+
+    it("should throw if date format is not valid", () => {
+      expect(() => formatDateFr("2021-09-01-01")).toThrow(
+        "Invalid date format",
+      );
+    });
+
+    it("should throw if month is invalid", () => {
+      expect(() => formatDateFr("2021-13-01")).toThrow("Invalid month");
+    });
+
+    it("should throw if day is invalid", () => {
+      expect(() => formatDateFr("2021-09-32")).toThrow("Invalid day");
     });
   });
 });
