@@ -10,13 +10,25 @@ import {
   isUsQualifiedRsu,
   isUsQualifiedSo,
 } from "@/lib/etrade/filters";
-import { floorNumber, ceilNumber, formatNumber } from "@/lib/format-number";
+import {
+  floorNumber,
+  ceilNumber,
+  formatNumber,
+  roundNumber,
+} from "@/lib/format-number";
 import { TaxableEventFr } from "./taxable-event-fr";
 
 export interface GainAndLossEventWithRates extends GainAndLossEvent {
   rateAcquired: number;
   rateSold: number;
   symbolPriceAcquired: number;
+  /**
+   * Sometimes grant date is on a weekend.
+   * This leads to a missing symbol price since markets are closed.
+   * If the symbol price for dateAcquired is available, this field is undefined.
+   * Otherwise it is the date of the symbol price used.
+   */
+  dateSymbolPriceAcquired?: string;
 }
 
 export interface BenefitEventWithRates extends BenefitHistoryEvent {}
@@ -25,7 +37,7 @@ export interface BenefitEventWithRates extends BenefitHistoryEvent {}
 const floorNumber6Digits = (value: number): number => floorNumber(value, 6);
 const floorNumber0Digits = (value: number): number => floorNumber(value, 0);
 const ceilNumber2Digits = (value: number): number => ceilNumber(value, 2);
-const ceilNumber0Digits = (value: number): number => ceilNumber(value, 0);
+const roundNumber0Digits = (value: number): number => roundNumber(value, 0);
 
 // Qualified:
 // SO:
@@ -53,6 +65,25 @@ const ceilNumber0Digits = (value: number): number => ceilNumber(value, 0);
 // payslip, hence there is nothing needed here.
 // - capital gain =>
 
+/** Sometimes grant date is on a weekend, we need to adjust the date */
+const getAdjustedSymbolDate = (
+  date: string,
+  symbolPrices: SymbolDailyResponse,
+): string => {
+  const symbolDate = symbolPrices[date];
+  if (!symbolDate) {
+    // try the day before
+    const [dateYear, dateMonth, dateDay] = date.split("-");
+    const previousDate = new Date(
+      Date.UTC(Number(dateYear), Number(dateMonth) - 1, Number(dateDay) - 1),
+    )
+      .toISOString()
+      .substring(0, 10);
+    return getAdjustedSymbolDate(previousDate, symbolPrices);
+  }
+  return date;
+};
+
 export const enrichEtradeGlFrFr = (
   data: GainAndLossEvent[],
   {
@@ -73,14 +104,22 @@ export const enrichEtradeGlFrFr = (
     .map((event) => {
       const rateAcquired = rates[event.dateAcquired];
       const rateSold = rates[event.dateSold];
+      const dateSymbolPriceAcquired = getAdjustedSymbolDate(
+        event.dateAcquired,
+        symbolPrices[event.symbol],
+      );
       const symbolPriceAcquired =
-        symbolPrices[event.symbol][event.dateAcquired].opening;
+        symbolPrices[event.symbol][dateSymbolPriceAcquired].opening;
 
       return {
         ...event,
         rateAcquired: rateAcquired,
         rateSold: rateSold,
         symbolPriceAcquired,
+        dateSymbolPriceAcquired:
+          dateSymbolPriceAcquired !== event.dateAcquired
+            ? dateSymbolPriceAcquired
+            : undefined,
       };
     });
 };
@@ -269,11 +308,13 @@ const getFrTaxesCapitalGain = (
 
     const quantity = floorNumber0Digits(taxableEvent.quantity);
     const cell514 = floorNumber6Digits(taxableEvent.sell.eur);
-    const cell516 = floorNumber0Digits(cell514 * quantity);
+    // impots.gouv.fr rounds the total to the nearest euro
+    const cell516 = roundNumber0Digits(cell514 * quantity);
     // There is no small gains, ceiling acquisition value reduces taxable
     // amount.
     const cell520 = ceilNumber2Digits(taxableEvent.acquisition.valueEur);
-    const cell521 = ceilNumber0Digits(cell520 * quantity);
+    // impots.gouv.fr rounds the total to the nearest euro
+    const cell521 = roundNumber0Digits(cell520 * quantity);
 
     // Add a new page for Form 2074
     const newPage: FrTaxesForm2074Page510 = {
@@ -387,6 +428,7 @@ const getFrTaxableEventFromGainsAndLossEvent = (
       rate: event.rateAcquired,
       date: event.dateAcquired,
       description: explainAcquisitionValue,
+      dateSymbolPriceAcquired: event.dateSymbolPriceAcquired,
     },
     capitalGain: {
       perShare: sellPriceEur - acquisitionValueEur,
@@ -534,11 +576,11 @@ export const getFrTaxesForFrQualifiedRsu = (
                 "Acquistion value is the sell price given the plan is qualified and the sale is at loss.",
             }
           : {
-              // Just use symbol price at opening the day of exercise.
+              // Just use symbol price at opening the vesting day.
               acquisitionValueUsd: event.symbolPriceAcquired,
               acquisitionValueRate: event.rateAcquired,
               acquisitionCostUsd: event.acquisitionCost,
-              explainAcquisitionValue: `Use ${event.symbol} price at opening on day of exercise.`,
+              explainAcquisitionValue: `Use ${event.symbol} price at opening on vesting day.`,
             },
     );
 

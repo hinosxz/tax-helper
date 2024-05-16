@@ -38,3 +38,18 @@ export const ceilNumber = (value: number, digits: number = 2): number => {
   const factor = Math.pow(10, digits);
   return Math.ceil(value * factor) / factor;
 };
+
+/**
+ * Rounds a number with `digits` digits.
+ *
+ * ```
+ * roundNumber(1.234) // 1.23
+ * roundNumber(1.235) // 1.24
+ * roundNumber(1.234, 3) // 1.234
+ * roundNumber(1, 2) // 1
+ * ```
+ */
+export const roundNumber = (value: number, digits: number = 2): number => {
+  const factor = Math.pow(10, digits);
+  return Math.round(value * factor) / factor;
+};

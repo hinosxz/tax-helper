@@ -29,6 +29,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
+import { Link } from "@/app/guide/shared/ui/Link";
 
 export interface ReportResidencyFrTaxesFrProps {}
 
@@ -82,13 +83,9 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
           </p>
           <p>
             This{" "}
-            <a
-              href="/2021_mc-kenzie-taxes-presentation.pdf"
-              target="_blank"
-              className="underline"
-            >
+            <Link href="/2021_mc-kenzie-taxes-presentation.pdf" isExternal>
               guide
-            </a>{" "}
+            </Link>{" "}
             sent by equity team in 2021 was used to create this calculator
           </p>
         </MessageBox>
@@ -222,6 +219,42 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
               </div>
             </div>
           </Section>
+          <Section title="Foreign accounts">
+            <div className="flex justify-between">
+              <div className="flex flex-col justify-between">
+                <div>
+                  <p>
+                    Make sure you check <strong>8UU</strong>
+                  </p>
+                  <Image
+                    src="/images/fr-taxes/foreign-account-8uu.png"
+                    alt="Check 8UU"
+                    width={400}
+                    height={500}
+                  />
+                </div>
+                <div className="flex gap-1 items-start justify-start">
+                  <span>Find your Morgan Stanley's accounts details in </span>
+                  <Link href="https://us.etrade.com/etx/pxy/my-profile/account-preferences">
+                    <Image
+                      src="/images/fr-taxes/etrade-account-details.png"
+                      alt="profile > account preferences"
+                      width={150}
+                      height={150}
+                    />
+                  </Link>
+                </div>
+              </div>
+              <div>
+                <Image
+                  alt="Compte a l'etranger"
+                  src="/images/fr-taxes/foreign-account-form.png"
+                  width={400}
+                  height={500}
+                />
+              </div>
+            </div>
+          </Section>
           <Section title="French Taxes">
             <div>
               <TaxReportBox
@@ -292,6 +325,38 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
             <div className="mt-6">
               <Page510 taxes={taxes} isPrintMode={isPrintMode} />
             </div>
+          </Section>
+          <Section title="Source of information">
+            <div>Some external sources are used to compute data:</div>
+            <ul className="list-disc pl-6 mt-2">
+              <li>
+                <Link href="https://us.etrade.com/etx/pxy/my-account/export">
+                  Etrade Gains and Losses <strong>Expanded</strong>
+                </Link>
+              </li>
+              <li>
+                The exchange rates are fetched from the{" "}
+                <Link href="https://data.ecb.europa.eu/help/api/data">
+                  European Central Bank API
+                </Link>
+                <Tooltip
+                  content={
+                    "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A"
+                  }
+                  maxWidth="none"
+                >
+                  <span className="text-blue-600 inline-block">
+                    <InformationCircleIcon className="h-6 w-6 ml-2" />
+                  </span>
+                </Tooltip>
+              </li>
+              <li>
+                Stock prices are fetched from{" "}
+                <Link href="https://www.alphavantage.co/documentation/#daily">
+                  Alphavantage TIME_SERIES_DAILY
+                </Link>
+              </li>
+            </ul>
           </Section>
         </div>
       )}
@@ -424,6 +489,7 @@ const Page510: React.FunctionComponent<{
                             key as keyof typeof currentPage
                           ] as boolean
                         }
+                        readOnly
                       />
                     ) : typeof currentPage[key as keyof typeof currentPage] !==
                       "undefined" ? (
