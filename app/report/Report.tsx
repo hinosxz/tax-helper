@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { ReportResidencyFrTaxesFr } from "./residency_fr_taxes_fr/ReportResidencyFrTaxesFr";
 import { Select } from "@/components/ui/Select";
 import { match } from "ts-pattern";
+import { Back } from "@/components/Back";
 
 export type CountryCode = "us" | "fr";
 export interface ReportProps {}
@@ -15,6 +16,9 @@ export const Report: React.FunctionComponent<ReportProps> = () => {
   return (
     <div className="min-h-screen">
       <header>
+        <div className="print:hidden">
+          <Back />
+        </div>
         <div className={classNames("w-fit flex p-4 items-center gap-2")}>
           <div className="text-2xl font-bold">Tax Report</div>
           <Select
