@@ -57,12 +57,12 @@ export const enrichEtradeGlFrFr = (
   data: GainAndLossEvent[],
   {
     rates,
-    ddogPrices,
+    symbolPrices,
   }: {
     rates: {
       [date: string]: number;
     };
-    ddogPrices: SymbolDailyResponse;
+    symbolPrices: { [symbol: string]: SymbolDailyResponse };
   },
 ): GainAndLossEventWithRates[] => {
   return data
@@ -73,7 +73,8 @@ export const enrichEtradeGlFrFr = (
     .map((event) => {
       const rateAcquired = rates[event.dateAcquired];
       const rateSold = rates[event.dateSold];
-      const symbolPriceAcquired = ddogPrices[event.dateAcquired].opening;
+      const symbolPriceAcquired =
+        symbolPrices[event.symbol][event.dateAcquired].opening;
 
       return {
         ...event,
@@ -88,17 +89,17 @@ const enrichEtradeBenefitsFrFr = (
   data: BenefitHistoryEvent[],
   {
     rates,
-    ddogPrices,
+    symbolPrices,
   }: {
     rates: {
       [date: string]: number;
     };
-    ddogPrices: SymbolDailyResponse;
+    symbolPrices: { [symbol: string]: SymbolDailyResponse };
   },
 ): BenefitEventWithRates[] => {
   return data.map((event) => {
     const rateAcquired = rates[event.dateVested];
-    const symbolPriceAcquired = ddogPrices[event.dateVested].opening;
+    const symbolPriceAcquired = symbolPrices[event.dateVested].opening;
 
     return {
       ...event,
@@ -784,7 +785,9 @@ export const applyFrTaxes = ({
   rates: {
     [date: string]: number;
   };
-  symbolPrices: SymbolDailyResponse;
+  symbolPrices: {
+    [symbol: string]: SymbolDailyResponse;
+  };
 }): FrTaxes => {
   return [
     getFrTaxesForFrQualifiedSo,
@@ -798,11 +801,11 @@ export const applyFrTaxes = ({
         {
           gainsAndLosses: enrichEtradeGlFrFr(gainsAndLosses, {
             rates,
-            ddogPrices: symbolPrices,
+            symbolPrices,
           }),
           benefits: enrichEtradeBenefitsFrFr(benefits, {
             rates,
-            ddogPrices: symbolPrices,
+            symbolPrices,
           }),
         },
         taxes,
