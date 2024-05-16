@@ -1,7 +1,7 @@
 import Tippy, { type TippyProps } from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
-export interface TooltipProps {
+export interface TooltipProps extends Pick<TippyProps, "maxWidth"> {
   /** Tooltip content */
   content: React.ReactNode;
   /** Tooltip handle */
@@ -9,6 +9,14 @@ export interface TooltipProps {
 }
 
 /** Tooltip component based on Tippy, with default styles */
-export const Tooltip: React.FunctionComponent<TooltipProps> = (props) => {
-  return <Tippy content={props.content}>{props.children}</Tippy>;
+export const Tooltip: React.FunctionComponent<TooltipProps> = ({
+  content,
+  children,
+  ...tippyProps
+}) => {
+  return (
+    <Tippy content={content} {...tippyProps}>
+      {children}
+    </Tippy>
+  );
 };
