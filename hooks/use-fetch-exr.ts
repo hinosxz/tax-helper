@@ -55,7 +55,6 @@ interface UseExchangeRateResponse {
     [date: string]: number;
   };
 }
-const DEFAULT_EXCHANGE_RATE = 1;
 export const useExchangeRates = (dates: string[]): UseExchangeRateResponse => {
   const bankHolidays = useBankHolidays();
 
@@ -70,8 +69,7 @@ export const useExchangeRates = (dates: string[]): UseExchangeRateResponse => {
         queryKey: ["USD_EUR_EXCHANGE_RATE", date],
         queryFn: async () => {
           const rate = await fetchExchangeRate(adjustedDate);
-          // To keep track of the date in combine, it is repeated in the result
-          return { date, rate };
+          return rate;
         },
         staleTime: ONE_DAY,
       };
@@ -94,20 +92,16 @@ export const useExchangeRates = (dates: string[]): UseExchangeRateResponse => {
     values: {},
   };
 
-  for (const { data: fetchResponse, ...result } of results) {
-    const query = {
-      ...result,
-      // Overwrite the data with the rate only
-      data: fetchResponse?.rate ?? DEFAULT_EXCHANGE_RATE,
-    } as UseQueryResult<number, unknown>;
-
+  results.forEach((result, index) => {
+    const { data: rate } = result;
+    const date = dates[index];
     data.isFetching = data.isFetching || result.isFetching;
     data.isError = data.isError || result.isError;
-    if (fetchResponse) {
-      data.responses[fetchResponse.date] = query;
-      data.values[fetchResponse.date] = fetchResponse.rate;
+    data.responses[date] = results[index];
+    if (rate) {
+      data.values[date] = rate;
     }
-  }
+  });
 
   return data;
 };
