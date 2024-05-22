@@ -101,6 +101,52 @@ describe("enrichEtradeGlFrFr", () => {
       ],
     );
   });
+
+  it("should use adjusted cost for symbol price if it is not available", () => {
+    const gainsAndLosses: GainAndLossEvent[] = [
+      {
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 117,
+        adjustedCost: 80,
+        acquisitionCost: 78,
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-09-09",
+        qualifiedIn: "fr",
+      },
+    ];
+    const rates = {
+      "2022-03-03": 1.12,
+      "2022-09-09": 1.13,
+    };
+    const symbolPrices: { [symbol: string]: SymbolDailyResponse } = {
+      DDOG: {
+        // There is no price for 2022-03-03
+        "2022-02-02": { opening: 100, closing: 110 },
+        "2022-09-09": { opening: 110, closing: 120 },
+      },
+    };
+    expect(enrichEtradeGlFrFr(gainsAndLosses, { rates, symbolPrices })).toEqual(
+      [
+        {
+          symbol: "DDOG",
+          planType: "SO",
+          quantity: 10,
+          proceeds: 117,
+          adjustedCost: 80,
+          acquisitionCost: 78,
+          dateAcquired: "2022-03-03",
+          dateSold: "2022-09-09",
+          qualifiedIn: "fr",
+          rateAcquired: 1.12,
+          rateSold: 1.13,
+          symbolPriceAcquired: 80,
+          dateSymbolPriceAcquired: undefined, // cotation date is acquisition date
+        },
+      ],
+    );
+  });
 });
 
 describe("getFrTaxesForFrQualifiedSo", () => {

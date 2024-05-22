@@ -69,19 +69,30 @@ const roundNumber0Digits = (value: number): number => roundNumber(value, 0);
 const getAdjustedSymbolDate = (
   date: string,
   symbolPrices: SymbolDailyResponse,
-): string => {
-  const symbolDate = symbolPrices[date];
-  if (!symbolDate) {
-    // try the day before
-    const [dateYear, dateMonth, dateDay] = date.split("-");
-    const previousDate = new Date(
+): string | undefined => {
+  // To avoid infinite loop, set a max number of days to consider.
+  const maxIterations = 10;
+  let currentIteration = 0;
+
+  let dateToConsider = date;
+  let symbolDate = symbolPrices[dateToConsider];
+
+  while (!symbolDate && currentIteration < maxIterations) {
+    // Try the day before
+    const [dateYear, dateMonth, dateDay] = dateToConsider.split("-");
+    dateToConsider = new Date(
       Date.UTC(Number(dateYear), Number(dateMonth) - 1, Number(dateDay) - 1),
     )
       .toISOString()
       .substring(0, 10);
-    return getAdjustedSymbolDate(previousDate, symbolPrices);
+    symbolDate = symbolPrices[dateToConsider];
+    currentIteration++;
   }
-  return date;
+
+  if (!symbolDate) {
+    return undefined;
+  }
+  return dateToConsider;
 };
 
 export const enrichEtradeGlFrFr = (
@@ -108,8 +119,9 @@ export const enrichEtradeGlFrFr = (
         event.dateAcquired,
         symbolPrices[event.symbol],
       );
-      const symbolPriceAcquired =
-        symbolPrices[event.symbol][dateSymbolPriceAcquired].opening;
+      const symbolPriceAcquired = dateSymbolPriceAcquired
+        ? symbolPrices[event.symbol][dateSymbolPriceAcquired].opening
+        : event.adjustedCost; // Given the symbol was not publicly traded, use the Fair Market Value
 
       return {
         ...event,
