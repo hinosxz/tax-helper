@@ -1,5 +1,7 @@
 import { ONE_DAY } from "@/lib/constants";
 import { UseQueryResult, useQueries } from "@tanstack/react-query";
+import { useBankHolidays } from "./use-bank-holiday";
+import { dayBefore, isWeekend } from "@/lib/date";
 
 const apiUrl =
   "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A";
@@ -55,17 +57,35 @@ interface UseExchangeRateResponse {
 }
 const DEFAULT_EXCHANGE_RATE = 1;
 export const useExchangeRates = (dates: string[]): UseExchangeRateResponse => {
+  const bankHolidays = useBankHolidays();
+
   const results = useQueries({
-    queries: dates.map((date) => ({
-      queryKey: ["USD_EUR_EXCHANGE_RATE", date],
-      queryFn: async () => {
-        const rate = await fetchExchangeRate(date);
-        // To keep track of the date in combine, it is repeated in the result
-        return { date, rate };
-      },
-      staleTime: ONE_DAY,
-    })),
+    queries: dates.map((date) => {
+      // Adjust date when this is a weekend or a bank holliday
+      let adjustedDate = date;
+      while (bankHolidays.data?.[adjustedDate] || isWeekend(adjustedDate)) {
+        adjustedDate = dayBefore(adjustedDate);
+      }
+      return {
+        queryKey: ["USD_EUR_EXCHANGE_RATE", date],
+        queryFn: async () => {
+          const rate = await fetchExchangeRate(adjustedDate);
+          // To keep track of the date in combine, it is repeated in the result
+          return { date, rate };
+        },
+        staleTime: ONE_DAY,
+      };
+    }),
   });
+
+  if (bankHolidays.isFetching) {
+    return {
+      isFetching: true,
+      isError: false,
+      responses: {},
+      values: {},
+    };
+  }
 
   const data: UseExchangeRateResponse = {
     isError: false,
