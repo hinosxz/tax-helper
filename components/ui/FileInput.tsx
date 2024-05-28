@@ -34,6 +34,10 @@ export const FileInput = ({
       id={id}
       type="file"
       disabled={isDisabled}
+      // Clear on every click
+      onClick={(event) => {
+        (event.target as HTMLInputElement).value = "";
+      }}
       onInput={(event) => {
         const file = (event.target as HTMLInputElement).files?.[0];
         onUpload(file);
