@@ -3,14 +3,16 @@ import type { ReactNode } from "react";
 
 interface ButtonProps {
   icon?: ({ className }: { className: string }) => ReactNode;
+  isBorderless?: boolean;
   isDisabled?: boolean;
-  label: string;
+  label?: string;
   onClick: () => void;
-  color: "green" | "red";
+  color?: "green" | "red";
 }
 
 export const Button = ({
   icon: Icon,
+  isBorderless,
   isDisabled,
   onClick,
   color,
@@ -18,10 +20,11 @@ export const Button = ({
 }: ButtonProps) => (
   <button
     className={classNames(
-      "flex items-center px-3 py-1.5 rounded shadow",
+      "flex items-center",
       "font-semibold text-sm",
       "hover:opacity-75 disabled:opacity-25",
       {
+        "rounded shadow px-3 py-1.5": !isBorderless,
         "bg-green-200 text-base": color === "green",
         "bg-red-400 text-white": color === "red",
       },
@@ -30,6 +33,9 @@ export const Button = ({
     type="button"
     disabled={isDisabled}
   >
-    {Icon && <Icon className="h-4 w-4 inline mr-1" />} {label}
+    {Icon && (
+      <Icon className={classNames("h-4 w-4 inline", { "mr-1": !!label })} />
+    )}
+    {label && ` ${label}`}
   </button>
 );
