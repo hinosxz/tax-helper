@@ -5,6 +5,7 @@ import { ReportResidencyFrTaxesFr } from "./_ReportResidencyFrTaxesFr";
 import { Select } from "@/components/ui/Select";
 import { match } from "ts-pattern";
 import { Back } from "@/components/Back";
+import NotImplemented from "@/components/NotImplemented";
 
 export type CountryCode = "us" | "fr";
 export interface ReportProps {}
@@ -52,7 +53,7 @@ export const Report: React.FunctionComponent<ReportProps> = () => {
             <ReportResidencyFrTaxesFr />
           ))
           .otherwise(() => (
-            <p>Not yet implemented</p>
+            <NotImplemented />
           ))}
       </main>
     </div>
