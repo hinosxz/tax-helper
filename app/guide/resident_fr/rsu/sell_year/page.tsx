@@ -1,4 +1,4 @@
-import GrantOrigin from "@/app/guide/shared/GrantOrigin";
+import GrantOrigin from "@/app/guide/_GrantOrigin";
 export default function Page() {
   return <GrantOrigin />;
 }

@@ -1,4 +1,4 @@
-import { Link } from "@/app/guide/shared/ui/Link";
+import { Link } from "@/components/ui/Link";
 
 const GITHUB_REPO_URL = "https://github.com/hinosxz/tax-helper";
 

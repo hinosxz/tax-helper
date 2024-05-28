@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import classNames from "classnames";
-import { ReportResidencyFrTaxesFr } from "./residency_fr_taxes_fr/ReportResidencyFrTaxesFr";
+import { ReportResidencyFrTaxesFr } from "./_ReportResidencyFrTaxesFr";
 import { Select } from "@/components/ui/Select";
 import { match } from "ts-pattern";
 import { Back } from "@/components/Back";

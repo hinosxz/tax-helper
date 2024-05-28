@@ -1,4 +1,4 @@
-import { Currency } from "@/app/guide/shared/ui/Currency";
+import { Currency } from "@/components/ui/Currency";
 import { Tooltip } from "./Tooltip";
 
 export interface PriceInEuroProps {
