@@ -70,7 +70,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   );
 
   return (
-    <div className="container">
+    <>
       <div className="print:hidden">
         <MessageBox level="warning" title="Disclaimer">
           <p>
@@ -360,7 +360,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
           </Section>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
