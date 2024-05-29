@@ -72,6 +72,7 @@ export const useExchangeRates = (dates: string[]): UseExchangeRateResponse => {
           return rate;
         },
         staleTime: ONE_DAY,
+        enabled: !bankHolidays.isFetching,
       };
     }),
   });
