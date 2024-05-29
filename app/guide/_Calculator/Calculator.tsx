@@ -14,8 +14,8 @@ import {
 
 import { SaleEvent } from "./_SaleEvent";
 import { ONE_DAY } from "@/lib/constants";
-import { Button } from "@/app/guide/shared/ui/Button";
-import { Section } from "@/app/guide/shared/ui/Section";
+import { Button } from "@/components/ui/Button";
+import { Section } from "@/components/ui/Section";
 import { exportToCsv } from "@/lib/export-to-csv";
 import {
   SaleEventData,
@@ -25,8 +25,8 @@ import {
 import { createEtradeGLFilter } from "@/lib/etrade/parse-etrade-gl";
 import { getDateString } from "@/lib/date";
 import { calcTotals as calcTotals } from "@/lib/calc-totals";
-import { Currency } from "@/app/guide/shared/ui/Currency";
-import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
+import { Currency } from "@/components/ui/Currency";
+import { EtradeGainAndLossesFileInput } from "@/components/EtradeGainAndLossesFileInput";
 import { PlanType } from "@/lib/etrade/etrade.types";
 
 // On Saturday:

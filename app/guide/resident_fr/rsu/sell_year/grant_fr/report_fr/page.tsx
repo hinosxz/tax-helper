@@ -1,6 +1,6 @@
-import { Calculator } from "@/app/guide/shared/Calculator";
-import { Link } from "@/app/guide/shared/ui/Link";
-import { Section } from "@/app/guide/shared/ui/Section";
+import { Calculator } from "@/app/guide/_Calculator";
+import { Link } from "@/components/ui/Link";
+import { Section } from "@/components/ui/Section";
 import { eTradeGainsLossesUrl } from "@/lib/constants";
 
 export default function Page() {

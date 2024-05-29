@@ -1,7 +1,7 @@
 import { TaxableEventFr as TaxableEventFrProps } from "@/lib/taxes/taxable-event-fr";
 import { match } from "ts-pattern";
 import { Drawer } from "./ui/Drawer";
-import { Currency } from "@/app/guide/shared/ui/Currency";
+import { Currency } from "@/components/ui/Currency";
 import { PriceInEuro } from "./ui/PriceInEuro";
 import { formatDateFr } from "@/lib/date";
 import { Tooltip } from "./ui/Tooltip";

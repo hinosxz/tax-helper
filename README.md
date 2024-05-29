@@ -19,11 +19,11 @@ npm i
 You'll then need to have an alphavantage API key to run the app. You can get one for
 free [here](https://www.alphavantage.co/support/#api-key).
 
-Copy the `.env.local.example` file to `.env.local` and replace the
-`NEXT_PUBLIC_ALPHAVANTAGE_API_KEY` value with your own API key.
+Copy the `.env.local.sample` file to `.env.local` and replace the
+`ALPHA_VANTAGE_API_KEY` value with your own API key.
 
-```
-cp .env.local.example .env.local
+```bash
+cp .env.local.sample .env.local
 ```
 
 Then, run the development server:

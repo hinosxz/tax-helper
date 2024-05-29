@@ -1,16 +1,16 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { match } from "ts-pattern";
-import { EtradeGainAndLossesFileInput } from "@/app/guide/shared/EtradeGainAndLossesFileInput";
+import { EtradeGainAndLossesFileInput } from "@/components/EtradeGainAndLossesFileInput";
 import { useExchangeRates } from "@/hooks/use-fetch-exr";
-import { Button } from "@/app/guide/shared/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
 import {
   FrTaxes,
   applyFrTaxes,
   getEmptyTaxes,
 } from "@/lib/taxes/taxes-rules-fr";
-import { Section } from "@/app/guide/shared/ui/Section";
+import { Section } from "@/components/ui/Section";
 import {
   isEspp,
   isFrQualifiedRsu,
@@ -29,7 +29,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
-import { Link } from "@/app/guide/shared/ui/Link";
+import { Link } from "@/components/ui/Link";
 
 export interface ReportResidencyFrTaxesFrProps {}
 
@@ -70,7 +70,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   );
 
   return (
-    <div className="container">
+    <>
       <div className="print:hidden">
         <MessageBox level="warning" title="Disclaimer">
           <p>
@@ -360,7 +360,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
           </Section>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

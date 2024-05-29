@@ -1,4 +1,4 @@
-import { NumberField, DateField } from "@/app/guide/shared/ui/Field";
+import { NumberField, DateField } from "@/components/ui/Field";
 import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { useEffect, useMemo } from "react";
 import { getAdjustedGainLoss } from "@/lib/get-adjusted-gain-loss";

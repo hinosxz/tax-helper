@@ -1,6 +1,6 @@
 "use client";
 
-import PageLink from "./PageLink";
+import PageLink from "@/components/ui/PageLink";
 import { usePathname } from "next/navigation";
 
 export default function YearType() {

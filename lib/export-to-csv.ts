@@ -1,4 +1,4 @@
-import { sendErrorToast } from "@/app/guide/shared/ui/Toast";
+import { sendErrorToast } from "@/components/ui/Toast";
 import type { SaleEventData } from "@/lib/data";
 
 const SEPARATOR = ",";

@@ -1,7 +1,7 @@
-import { FileInput } from "@/app/guide/shared/ui/FileInput";
+import { FileInput } from "@/components/ui/FileInput";
 import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
 import { parseEtradeGL } from "@/lib/etrade/parse-etrade-gl";
-import { sendErrorToast } from "./ui/Toast";
+import { sendErrorToast } from "@/components/ui/Toast";
 
 export interface EtradeGainAndLossesFileInputProps {
   /** Unique identifier for the input. Available for css selector as `#${id}` */
