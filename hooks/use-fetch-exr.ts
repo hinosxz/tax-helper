@@ -60,7 +60,7 @@ export const useExchangeRates = (dates: string[]): UseExchangeRateResponse => {
 
   const results = useQueries({
     queries: dates.map((date) => {
-      // Adjust date when this is a weekend or a bank holliday
+      // Adjust date when this is a weekend or a French bank holiday
       let adjustedDate = date;
       while (bankHolidays.data?.[adjustedDate] || isWeekend(adjustedDate)) {
         adjustedDate = dayBefore(adjustedDate);
