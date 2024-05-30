@@ -38,3 +38,29 @@ export const formatDateFr = (/** format YYYY-MM-DD */ date: string) => {
   }
   return `${day} ${months[monthNumber - 1]} ${year}`;
 };
+
+/**
+ * Check if a date is a weekend.
+ */
+export const isWeekend = (/** format YYYY-MM-DD */ date: string) => {
+  if (!pattern.test(date)) {
+    throw new Error("Invalid date format");
+  }
+  const [year, month, day] = date.split("-").map(Number);
+  const parsedDate = new Date(Date.UTC(year, month - 1, day));
+  const dayOfWeek = parsedDate.getDay();
+  return dayOfWeek === 0 || dayOfWeek === 6;
+};
+
+/**
+ * Get the day before a date.
+ */
+export const dayBefore = (/** format YYYY-MM-DD */ date: string) => {
+  if (!pattern.test(date)) {
+    throw new Error("Invalid date format");
+  }
+  const [year, month, day] = date.split("-").map(Number);
+  const parsedDate = new Date(Date.UTC(year, month - 1, day));
+  parsedDate.setDate(parsedDate.getDate() - 1);
+  return getDateString(parsedDate);
+};

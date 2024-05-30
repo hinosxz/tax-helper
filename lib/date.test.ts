@@ -1,4 +1,10 @@
-import { formatDateFr, getDateString, parseEtradeDate } from "./date";
+import {
+  formatDateFr,
+  getDateString,
+  parseEtradeDate,
+  isWeekend,
+  dayBefore,
+} from "./date";
 
 describe("date", () => {
   describe("getDateString", () => {
@@ -43,6 +49,34 @@ describe("date", () => {
 
     it("should throw if day is invalid", () => {
       expect(() => formatDateFr("2021-09-32")).toThrow("Invalid day");
+    });
+  });
+
+  describe("isWeekend", () => {
+    it("should return true if date is a weekend", () => {
+      expect(isWeekend("2021-09-04")).toEqual(true);
+      expect(isWeekend("2021-09-05")).toEqual(true);
+    });
+
+    it("should return false if date is not a weekend", () => {
+      expect(isWeekend("2021-09-06")).toEqual(false);
+    });
+
+    it("should throw if date format is not valid", () => {
+      expect(() => isWeekend("2021-09-01-01")).toThrow("Invalid date format");
+    });
+  });
+
+  describe("dayBefore", () => {
+    it("should return the day before", () => {
+      expect(dayBefore("2021-09-02")).toEqual("2021-09-01");
+    });
+    it("should return the day before, new month", () => {
+      expect(dayBefore("2021-09-01")).toEqual("2021-08-31");
+    });
+
+    it("should throw if date format is not valid", () => {
+      expect(() => dayBefore("2021-09-01-01")).toThrow("Invalid date format");
     });
   });
 });
