@@ -78,6 +78,7 @@ export const TaxableEventFr: React.FunctionComponent<{
           usd={event.acquisition.costUsd}
           rate={event.acquisition.rate}
           date={event.acquisition.date}
+          precision={7}
         />{" "}
         per share.
       </TaxableEventFrLine>
@@ -87,6 +88,7 @@ export const TaxableEventFr: React.FunctionComponent<{
           usd={event.acquisition.valueUsd}
           rate={event.acquisition.rate}
           date={event.acquisition.date}
+          precision={7}
         />{" "}
         per share ({event.acquisition.description})
       </TaxableEventFrLine>
@@ -97,6 +99,7 @@ export const TaxableEventFr: React.FunctionComponent<{
             usd={event.sell.usd}
             rate={event.sell.rate}
             date={event.sell.date}
+            precision={7}
           />{" "}
           per share.
         </TaxableEventFrLine>
@@ -111,6 +114,7 @@ export const TaxableEventFr: React.FunctionComponent<{
               event.acquisition.dateSymbolPriceAcquired ||
               event.acquisition.date
             }
+            precision={7}
           />{" "}
           at opening on acquisition day.
         </p>
@@ -132,8 +136,12 @@ export const TaxableEventFr: React.FunctionComponent<{
           title="Acquisition gain"
           tooltip={`acq. value - acq. cost: ${event.acquisition.valueEur} - ${event.acquisition.costEur}`}
         >
-          <Currency value={event.acquisitionGain.perShare} unit="eur" /> per
-          share.
+          <Currency
+            value={event.acquisitionGain.perShare}
+            unit="eur"
+            precision={7}
+          />{" "}
+          per share.
         </TaxableEventFrLine>
       )}
       {showCapitalGains && (
@@ -141,7 +149,12 @@ export const TaxableEventFr: React.FunctionComponent<{
           title="Capital gain"
           tooltip={`sell price - acq. cession: ${event.sell?.eur} - ${event.acquisition.valueEur}`}
         >
-          <Currency value={event.capitalGain.perShare} unit="eur" /> per share.
+          <Currency
+            value={event.capitalGain.perShare}
+            unit="eur"
+            precision={7}
+          />{" "}
+          per share.
         </TaxableEventFrLine>
       )}
     </Drawer>
