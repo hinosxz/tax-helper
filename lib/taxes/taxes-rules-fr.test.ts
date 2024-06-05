@@ -20,6 +20,7 @@ describe("enrichEtradeGlFrFr", () => {
         quantity: 10,
         proceeds: 117,
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 78,
         dateAcquired: "2022-03-03",
         dateSold: "2022-09-09",
@@ -44,6 +45,7 @@ describe("enrichEtradeGlFrFr", () => {
           quantity: 10,
           proceeds: 117,
           adjustedCost: 80,
+          purchaseDateFairMktValue: 80,
           acquisitionCost: 78,
           dateAcquired: "2022-03-03",
           dateSold: "2022-09-09",
@@ -64,6 +66,7 @@ describe("enrichEtradeGlFrFr", () => {
         quantity: 10,
         proceeds: 117,
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 78,
         dateAcquired: "2022-03-03",
         dateSold: "2022-09-09",
@@ -89,6 +92,7 @@ describe("enrichEtradeGlFrFr", () => {
           quantity: 10,
           proceeds: 117,
           adjustedCost: 80,
+          purchaseDateFairMktValue: 80,
           acquisitionCost: 78,
           dateAcquired: "2022-03-03",
           dateSold: "2022-09-09",
@@ -110,6 +114,7 @@ describe("enrichEtradeGlFrFr", () => {
         quantity: 10,
         proceeds: 117,
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 78,
         dateAcquired: "2022-03-03",
         dateSold: "2022-09-09",
@@ -135,6 +140,7 @@ describe("enrichEtradeGlFrFr", () => {
           quantity: 10,
           proceeds: 117,
           adjustedCost: 80,
+          purchaseDateFairMktValue: 80,
           acquisitionCost: 78,
           dateAcquired: "2022-03-03",
           dateSold: "2022-09-09",
@@ -158,6 +164,7 @@ describe("getFrTaxesForFrQualifiedSo", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when daily value is 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 20,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-03",
@@ -191,6 +198,7 @@ describe("getFrTaxesForFrQualifiedSo", () => {
         quantity: 10,
         proceeds: 90, // Sold at 90$ when acquired at 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 20,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -224,6 +232,7 @@ describe("getFrTaxesForFrQualifiedSo", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when acquired at 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 20,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -278,6 +287,7 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when daily value is 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-03",
@@ -312,6 +322,7 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
         quantity: 10,
         proceeds: 90, // Sold at 90$ when acquired at 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -345,6 +356,7 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when acquired at 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -400,6 +412,7 @@ describe("getFrTaxesForEspp", () => {
         quantity: 10,
         proceeds: 90, // Sold at 90$ when acquired at 100$
         adjustedCost: 100,
+        purchaseDateFairMktValue: 100,
         acquisitionCost: 80,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -446,6 +459,7 @@ describe("getFrTaxesForEspp", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when acquired at 100$
         adjustedCost: 100,
+        purchaseDateFairMktValue: 100,
         acquisitionCost: 80,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -484,6 +498,57 @@ describe("getFrTaxesForEspp", () => {
     expect(taxes["1TT"]).toEqual(0);
     expect(taxes["1WZ"]).toEqual(0);
   });
+  it("Simulate first round of ESPP", () => {
+    // On first round of ESPP the taxes were not collected by E-Trade
+    // E-Trade will report the adjustedCost equal to the acquisition cost
+    // which is the same behavior as if the taxes were NOT collected.
+    // To prevent this, use the purchaseDateFairMktValue instead of the adjustedCost
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        symbol: "DDOG",
+        planType: "ESPP",
+        quantity: 10,
+        proceeds: 90, // Sold at 90$ when acquired at 100$
+        adjustedCost: 100,
+        purchaseDateFairMktValue: 100,
+        acquisitionCost: 80,
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+      },
+    ];
+
+    const taxes = getFrTaxesForEspp({ gainsAndLosses }, getEmptyTaxes());
+    // Capital loss
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
+    // sellPrice = 90 / 1.13 = 79.6460176991
+    // capital loss = 79.6460176991 - 89.2857142857 = -9.6396965866
+    expect(taxes["3VG"].toFixed(6)).toEqual("-97.000000");
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(1);
+    const page510 = taxes["Form 2074"]["Page 510"][0];
+    expect(page510["511"]).toEqual("DDOG (ESPP)");
+    expect(page510["512"]).toEqual("09/03/2022");
+    expect(page510["514"].toFixed(6)).toEqual("79.646017");
+    expect(page510["515"]).toEqual(10);
+    expect(page510["516"].toFixed(6)).toEqual("796.000000");
+    expect(page510["517"]).toEqual(0);
+    expect(page510["518"].toFixed(6)).toEqual("796.000000");
+    expect(page510["520"].toFixed(6)).toEqual("89.290000");
+    expect(page510["521"].toFixed(6)).toEqual("893.000000");
+    expect(page510["522"]).toEqual(0);
+    expect(page510["523"].toFixed(6)).toEqual("893.000000");
+    expect(page510["524"].toFixed(6)).toEqual("-97.000000");
+    expect(page510["525"]).toEqual(false);
+    expect(page510["526"]).toEqual(0);
+    // Acquisition gain
+    expect(taxes["1AJ"]).toEqual(0);
+    expect(taxes["1TZ"]).toEqual(0);
+    expect(taxes["1TT"]).toEqual(0);
+    expect(taxes["1WZ"]).toEqual(0);
+  });
 });
 
 describe("getFrTaxesForNonFrQualifiedSo", () => {
@@ -495,6 +560,7 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when daily value is 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-03",
@@ -520,6 +586,7 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
         quantity: 10,
         proceeds: 90, // Sold at 90$ when acquired at 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -563,6 +630,7 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when acquired at 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -609,6 +677,7 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when daily value is 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-03",
@@ -634,6 +703,7 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
         quantity: 10,
         proceeds: 90, // Sold at 90$ when acquired at 100$
         adjustedCost: 0,
+        purchaseDateFairMktValue: 100.6,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
@@ -677,6 +747,7 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
         quantity: 10,
         proceeds: 110, // Sold at 110$ when acquired at 100$
         adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",

@@ -121,7 +121,7 @@ export const enrichEtradeGlFrFr = (
       );
       const symbolPriceAcquired = dateSymbolPriceAcquired
         ? symbolPrices[event.symbol][dateSymbolPriceAcquired].opening
-        : event.adjustedCost; // Given the symbol was not publicly traded, use the Fair Market Value
+        : event.purchaseDateFairMktValue; // Given the symbol was not publicly traded, use the Fair Market Value
 
       return {
         ...event,
@@ -641,6 +641,11 @@ export const getFrTaxesForFrQualifiedRsu = (
   return taxes;
 };
 
+const isRoughlyEqual = (
+  a: number,
+  b: number,
+  epsilon: number = 0.001,
+): boolean => a - b < epsilon;
 export const getFrTaxesForEspp = (
   {
     gainsAndLosses,
@@ -654,16 +659,32 @@ export const getFrTaxesForEspp = (
 
   // Process each event
   eventsEspp.forEach((event) => {
+    // Precision is different from both columns, one is 2 digits, the other is 4.
+    const hasTaxesBeenCollected = isRoughlyEqual(
+      event.purchaseDateFairMktValue,
+      event.adjustedCost,
+    );
     const taxableEvent: TaxableEventFr = getFrTaxableEventFromGainsAndLossEvent(
       event,
       {
         // ESPP is the only type of plan where the acquisition cost for US
         // taxes is the same as the acquisition cost for French taxes.
-        acquisitionValueUsd: event.adjustedCost,
+        //
+        // On first round of ESPP though, the taxes were not collected by
+        // broker. Broker will report the adjustedCost equal to the
+        // acquisition cost which is the same behavior as if the taxes were NOT
+        // collected. To prevent this, use the purchaseDateFairMktValue
+        // instead of the adjustedCost.
+        // Any other case should use the adjustedCost given it has more
+        // precision.
+        acquisitionValueUsd: hasTaxesBeenCollected
+          ? event.adjustedCost
+          : event.purchaseDateFairMktValue,
         acquisitionValueRate: event.rateAcquired,
-        acquisitionCostUsd: event.acquisitionCost,
-        explainAcquisitionValue:
-          "Use ESPP value as defined by e-trade for acquisition value.",
+        acquisitionCostUsd: event.adjustedCost,
+        explainAcquisitionValue: hasTaxesBeenCollected
+          ? "Use ESPP value as defined by e-trade for acquisition value."
+          : "⚠️  Check you paid taxes for acquisition gains. Fair market value is used given e-trade did not collect taxes but your employer should have.",
       },
     );
 
