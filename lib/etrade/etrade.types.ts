@@ -12,6 +12,7 @@ export interface GainAndLossEventXlsxRow {
   "Date Sold": string;
   "Adjusted Cost Basis Per Share": number;
   "Acquisition Cost Per Share": number;
+  "Purchase Date Fair Mkt. Value": string | number;
   "Proceeds Per Share": number;
   "Qualified Plan": PlanQualification;
 }
@@ -40,6 +41,11 @@ export interface GainAndLossEvent {
    * This is 0 for RSUs, adjustedCost for ESPP and the grant price for SO.
    */
   acquisitionCost: number;
+  /**
+   * Fair market value of the share at the time of purchase.
+   * This is used for ESPP or SO acquired before IPO.
+   */
+  purchaseDateFairMktValue: number;
   dateAcquired: string;
   dateSold: string;
   /** What kind of qualified plan is it? */

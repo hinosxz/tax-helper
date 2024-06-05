@@ -31,6 +31,8 @@ export const parseEtradeGL = async (
         // See https://bofip.impots.gouv.fr/bofip/5654-PGP.html/identifiant%3DBOI-RSA-ES-20-20-20-20170724#:~:text=a.%20Actions%20cot%C3%A9es-,120,-La%20valeur%20%C3%A0
         adjustedCost: row["Adjusted Cost Basis Per Share"],
         acquisitionCost: row["Acquisition Cost Per Share"],
+        // It's unclear why this is a string and not a number.
+        purchaseDateFairMktValue: Number(row["Purchase Date Fair Mkt. Value"]),
         dateAcquired: toDateString(row["Date Acquired"]),
         dateSold: toDateString(row["Date Sold"]),
         // For now consider that a non-US qualified plan is FR qualified.
