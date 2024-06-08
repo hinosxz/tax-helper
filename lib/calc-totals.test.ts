@@ -1,6 +1,7 @@
 import { getDefaultData } from "@/lib/data";
 import type { SaleEventData } from "@/lib/data";
-import { Totals, calcTotals } from "./calc-totals";
+import type { Totals } from "./calc-totals";
+import { calcTotals } from "./calc-totals";
 
 describe("calcTotals", () => {
   const date = "2024-01-01";

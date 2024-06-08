@@ -4,7 +4,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/solid";
 import classNames from "classnames";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import toast from "react-hot-toast";
 
 interface ToastProps {

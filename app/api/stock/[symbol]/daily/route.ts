@@ -1,5 +1,5 @@
 import { ONE_DAY } from "@/lib/constants";
-import { ApiDate, SymbolDailyResponse } from "@/lib/symbol-daily.types";
+import type { ApiDate, SymbolDailyResponse } from "@/lib/symbol-daily.types";
 
 export interface SymbolDailyAlphavantageResponse {
   "Time Series (Daily)": {

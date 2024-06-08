@@ -1,5 +1,6 @@
 import { ONE_DAY } from "@/lib/constants";
-import { UseQueryResult, useQueries } from "@tanstack/react-query";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { useBankHolidays } from "./use-bank-holiday";
 import { dayBefore, isWeekend } from "@/lib/date";
 

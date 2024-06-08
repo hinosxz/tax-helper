@@ -1,5 +1,5 @@
-import { SymbolDailyResponse } from "@/lib/symbol-daily.types";
-import {
+import type { SymbolDailyResponse } from "@/lib/symbol-daily.types";
+import type {
   BenefitHistoryEvent,
   GainAndLossEvent,
 } from "@/lib/etrade/etrade.types";
@@ -16,7 +16,7 @@ import {
   formatNumber,
   roundNumber,
 } from "@/lib/format-number";
-import { TaxableEventFr } from "./taxable-event-fr";
+import type { TaxableEventFr } from "./taxable-event-fr";
 
 export interface GainAndLossEventWithRates extends GainAndLossEvent {
   rateAcquired: number;

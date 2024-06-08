@@ -1,6 +1,6 @@
-import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
+import type { GainAndLossEvent } from "@/lib/etrade/etrade.types";
+import type { GainAndLossEventWithRates } from "./taxes-rules-fr";
 import {
-  GainAndLossEventWithRates,
   enrichEtradeGlFrFr,
   getEmptyTaxes,
   getFrTaxesForEspp,
@@ -9,7 +9,7 @@ import {
   getFrTaxesForNonFrQualifiedRsu,
   getFrTaxesForNonFrQualifiedSo,
 } from "./taxes-rules-fr";
-import { SymbolDailyResponse } from "@/lib/symbol-daily.types";
+import type { SymbolDailyResponse } from "@/lib/symbol-daily.types";
 
 describe("enrichEtradeGlFrFr", () => {
   it("should work", () => {

@@ -1,4 +1,4 @@
-import { TaxableEventFr as TaxableEventFrProps } from "@/lib/taxes/taxable-event-fr";
+import type { TaxableEventFr as TaxableEventFrProps } from "@/lib/taxes/taxable-event-fr";
 import { match } from "ts-pattern";
 import { Drawer } from "./ui/Drawer";
 import { Currency } from "@/components/ui/Currency";

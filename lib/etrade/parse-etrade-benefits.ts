@@ -1,4 +1,4 @@
-import { BenefitHistoryEvent } from "./etrade.types";
+import type { BenefitHistoryEvent } from "./etrade.types";
 
 export const parseEtradeBenefits = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,5 +1,5 @@
 import { FileInput } from "@/components/ui/FileInput";
-import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
+import type { GainAndLossEvent } from "@/lib/etrade/etrade.types";
 import { parseEtradeGL } from "@/lib/etrade/parse-etrade-gl";
 import { sendErrorToast } from "@/components/ui/Toast";
 

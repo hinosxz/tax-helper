@@ -4,12 +4,9 @@ import { match } from "ts-pattern";
 import { EtradeGainAndLossesFileInput } from "@/components/EtradeGainAndLossesFileInput";
 import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { Button } from "@/components/ui/Button";
-import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
-import {
-  FrTaxes,
-  applyFrTaxes,
-  getEmptyTaxes,
-} from "@/lib/taxes/taxes-rules-fr";
+import type { GainAndLossEvent } from "@/lib/etrade/etrade.types";
+import type { FrTaxes } from "@/lib/taxes/taxes-rules-fr";
+import { applyFrTaxes, getEmptyTaxes } from "@/lib/taxes/taxes-rules-fr";
 import { Section } from "@/components/ui/Section";
 import {
   isEspp,
@@ -22,7 +19,7 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { MessageBox } from "@/components/ui/MessageBox";
 import { Drawer } from "@/components/ui/Drawer";
 import { TaxableEventFr } from "@/components/TaxableEventFr";
-import { TaxableEventFr as TaxableEventFrProps } from "@/lib/taxes/taxable-event-fr";
+import type { TaxableEventFr as TaxableEventFrProps } from "@/lib/taxes/taxable-event-fr";
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,

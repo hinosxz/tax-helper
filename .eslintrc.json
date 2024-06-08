@@ -22,6 +22,7 @@
     "@stylistic/js/quotes": ["error", "double"],
     "@stylistic/js/jsx-quotes": ["error", "prefer-double"],
     "@stylistic/js/semi": ["error", "always"],
-    "react/no-unescaped-entities": 0
+    "react/no-unescaped-entities": 0,
+    "@typescript-eslint/consistent-type-imports": "error"
   }
 }

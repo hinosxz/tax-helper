@@ -1,5 +1,5 @@
 import { ONE_DAY } from "@/lib/constants";
-import { SymbolDailyResponse } from "@/lib/symbol-daily.types";
+import type { SymbolDailyResponse } from "@/lib/symbol-daily.types";
 import { useQueries } from "@tanstack/react-query";
 
 const apiUrl = "/api/stock/{symbol}/daily";

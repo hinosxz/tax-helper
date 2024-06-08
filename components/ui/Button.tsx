@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface ButtonProps {
   icon?: ({ className }: { className: string }) => ReactNode;

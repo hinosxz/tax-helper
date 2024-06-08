@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { InputHTMLAttributes, ReactNode } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";

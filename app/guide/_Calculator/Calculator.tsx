@@ -4,30 +4,22 @@ import {
   MinusIcon,
   PlusIcon,
 } from "@heroicons/react/24/solid";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { SaleEvent } from "./_SaleEvent";
 import { ONE_DAY } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { exportToCsv } from "@/lib/export-to-csv";
-import {
-  SaleEventData,
-  getDefaultData,
-  saleEventFromGainAndLossEvent,
-} from "@/lib/data";
+import type { SaleEventData } from "@/lib/data";
+import { getDefaultData, saleEventFromGainAndLossEvent } from "@/lib/data";
 import { createEtradeGLFilter } from "@/lib/etrade/parse-etrade-gl";
 import { getDateString } from "@/lib/date";
 import { calcTotals as calcTotals } from "@/lib/calc-totals";
 import { Currency } from "@/components/ui/Currency";
 import { EtradeGainAndLossesFileInput } from "@/components/EtradeGainAndLossesFileInput";
-import { PlanType } from "@/lib/etrade/etrade.types";
+import type { PlanType } from "@/lib/etrade/etrade.types";
 
 // On Saturday:
 // date.getDay() = 6 => date.getDay() / 6 = 1 => numDaysSinceLastFriday = 1

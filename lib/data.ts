@@ -1,4 +1,4 @@
-import { GainAndLossEvent } from "@/lib/etrade/etrade.types";
+import type { GainAndLossEvent } from "@/lib/etrade/etrade.types";
 
 export interface SaleEventData {
   quantity: number;
