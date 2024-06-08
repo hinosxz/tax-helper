@@ -1,3 +1,5 @@
+import { ONE_DAY } from "./constants";
+
 export const getDateString = (date: Date) =>
   date.toISOString().substring(0, 10);
 
@@ -39,16 +41,15 @@ export const formatDateFr = (/** format YYYY-MM-DD */ date: string) => {
   return `${day} ${months[monthNumber - 1]} ${year}`;
 };
 
-/**
- * Check if a date is a weekend.
- */
-export const isWeekend = (/** format YYYY-MM-DD */ date: string) => {
+/** Check if a date of format `YYYY-MM-DD` is a Saturday or Sunday.*/
+export const isWeekend = (date: string) => {
   if (!pattern.test(date)) {
     throw new Error("Invalid date format");
   }
   const [year, month, day] = date.split("-").map(Number);
-  const parsedDate = new Date(Date.UTC(year, month - 1, day));
-  const dayOfWeek = parsedDate.getDay();
+  const ts = Date.UTC(year, month - 1, day);
+  // +4 because Jan 1st 1970 was a Thursday
+  const dayOfWeek = (Math.floor(ts / ONE_DAY) + 4) % 7;
   return dayOfWeek === 0 || dayOfWeek === 6;
 };
 
