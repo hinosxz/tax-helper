@@ -840,15 +840,15 @@ export const getFrTaxesForNonFrQualifiedRsu = (
     return taxes;
   }
 
-  // FIXME, we're assuming here that the user has already vested all of their RSUs.
-  // They might still be vesting and would have a fraction of acquisition gain to report in France.
-
+  // FIXME calculate acquisition gain on non-qualified RSUs
+  // (% of French Origin must be taken into accout)
   taxes["explanations"] = [
     ...taxes["explanations"],
     {
       box: "1AJ",
-      description:
-        "Acquisition gains from non qualified RSUs are due at vest time. This is already reported by your employer and not yet calculated by this tool.",
+      description: `Acquisition gain from non-qualified RSUs are due at vest time. 
+        That should already have been reported by your employer 
+        and is not yet calculated by this tool.`,
       taxableEvents,
     },
   ];
