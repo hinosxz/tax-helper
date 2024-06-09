@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { match } from "ts-pattern";
 import { EtradeGainAndLossesFileInput } from "@/components/EtradeGainAndLossesFileInput";
@@ -28,6 +28,7 @@ import {
 import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
 import { Link } from "@/components/ui/Link";
 import { FractionAssignmentModal } from "./_FractionAssignmentModal";
+import { sendErrorToast } from "@/components/ui/Toast";
 
 export interface ReportResidencyFrTaxesFrProps {}
 
@@ -40,16 +41,34 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   const [gainsAndLosses, setGainsAndLosses] = useState<GainAndLossEvent[]>([]);
   const [fractionsFrIncome, setFractionsFrIncome] = useState<number[]>([]);
 
-  const { values: rates, isFetching: isFetchingExr } = useExchangeRates(
+  const {
+    values: rates,
+    isFetching: isFetchingExr,
+    isError: couldNotFetchRates,
+  } = useExchangeRates(
     gainsAndLosses.flatMap((event) => [event.dateSold, event.dateAcquired]),
   );
-  const { values: symbolPrices, isFetching: isFetchingSymbols } =
-    useFetchSymbolDaily(gainsAndLosses.map((event) => event.symbol));
+  useEffect(() => {
+    if (couldNotFetchRates) {
+      sendErrorToast("could not fetch exchange rates, please retry later");
+    }
+  }, [couldNotFetchRates]);
 
-  const isFetching = isFetchingExr || isFetchingSymbols;
+  const {
+    values: symbolPrices,
+    isFetching: isFetchingPrices,
+    isError: couldNotFetchPrices,
+  } = useFetchSymbolDaily(gainsAndLosses.map((event) => event.symbol));
+  useEffect(() => {
+    if (couldNotFetchPrices) {
+      sendErrorToast("could not fetch stock prices, please retry later");
+    }
+  }, [couldNotFetchPrices]);
 
+  const isFetching = isFetchingExr || isFetchingPrices;
+  const hasError = couldNotFetchRates || couldNotFetchPrices;
   const taxes = useMemo(() => {
-    if (gainsAndLosses.length === 0 || isFetching || !rates) {
+    if (gainsAndLosses.length === 0 || isFetching || hasError || !rates) {
       return getEmptyTaxes();
     }
     return applyFrTaxes({
@@ -59,7 +78,14 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
       symbolPrices,
       fractions: fractionsFrIncome,
     });
-  }, [gainsAndLosses, rates, symbolPrices, isFetching, fractionsFrIncome]);
+  }, [
+    gainsAndLosses,
+    rates,
+    symbolPrices,
+    isFetching,
+    hasError,
+    fractionsFrIncome,
+  ]);
 
   const counts = useMemo(
     () => ({
@@ -106,6 +132,16 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
             setShowModal={setShowFractionAssignmentModal}
             data={gainsAndLosses}
             confirm={setFractionsFrIncome}
+            state={match<
+              { isFetching: boolean; hasError: boolean },
+              "loading" | "error" | "ok"
+            >({
+              isFetching,
+              hasError,
+            })
+              .with({ isFetching: true }, () => "loading")
+              .with({ hasError: true }, () => "error")
+              .otherwise(() => "ok")}
           />
           <EtradeGainAndLossesFileInput
             setData={(data) => {
