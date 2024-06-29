@@ -36,17 +36,28 @@ export const FractionAssignmentModal = ({
   return (
     <Modal show={showModal}>
       <div className="grid grid-cols-1 gap-4">
-        <div className="flex justify-end">
+        <div className="flex justify-between">
+          <div className="text-lg font-bold">
+            Confirm the origin of your income
+          </div>
           <Button
             onClick={() => setShowModal(false)}
             isBorderless
             icon={XMarkIcon}
           />
         </div>
+        <div>
+          For each sale, please confirm the % of French income. If you have
+          never moved abroad, it should be 100%.
+        </div>
+        <MessageBox level="info" title="Note: this only applies to RSUs.">
+          If you would like support for other types of equity (e.g. stock
+          options), please reach out with examples.
+        </MessageBox>
         {match(state)
           .with("ok", () => (
             <>
-              <div className="grid grid-cols-4">
+              <div className="grid grid-cols-4 gap-4">
                 {["Quantity", "Grant Date", "Acquisition Date", "% FR"].map(
                   (h) => (
                     <div key={h} className="font-semibold">

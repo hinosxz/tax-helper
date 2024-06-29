@@ -6,6 +6,7 @@ import { PriceInEuro } from "./ui/PriceInEuro";
 import { formatDateFr } from "@/lib/date";
 import { Tooltip } from "./ui/Tooltip";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
+import { formatNumber } from "@/lib/format-number";
 
 export const TaxableEventFr: React.FunctionComponent<{
   event: TaxableEventFrProps;
@@ -93,7 +94,7 @@ export const TaxableEventFr: React.FunctionComponent<{
       {event.acquisitionGain.fractionFr < 1 ? (
         <TaxableEventFrLine title="% of French Origin">
           <span className="font-semibold">
-            {(event.acquisitionGain.fractionFr * 100).toFixed(2)}%
+            {formatNumber(event.acquisitionGain.fractionFr * 100)}%
           </span>
         </TaxableEventFrLine>
       ) : null}
