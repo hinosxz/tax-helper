@@ -82,7 +82,7 @@ interface NumberInputProps extends BaseInputProps<number> {
   maxDecimals?: 0 | 1 | 2;
 }
 
-const NumberInput = ({
+export const NumberInput = ({
   isLoading,
   isReadOnly,
   isRequired,
@@ -111,7 +111,7 @@ const NumberInput = ({
 
 interface DateInputProps extends BaseInputProps<string> {}
 
-const DateInput = ({
+export const DateInput = ({
   isLoading,
   isReadOnly,
   isRequired,

@@ -22,6 +22,11 @@ export interface GainAndLossEventWithRates extends GainAndLossEvent {
   rateAcquired: number;
   rateSold: number;
   symbolPriceAcquired: number;
+  /** People that have spent time abroad and have vested stocks in another country
+   * will only have a fraction of the income to report to the French authorities.
+   * 0 < `fractionFrIncome` < 1. By default, fractionFrIncome = 1.
+   */
+  fractionFrIncome: number;
   /**
    * Sometimes grant date is on a weekend.
    * This leads to a missing symbol price since markets are closed.
@@ -98,6 +103,7 @@ const getAdjustedSymbolDate = (
 export const enrichEtradeGlFrFr = (
   data: GainAndLossEvent[],
   {
+    fractions,
     rates,
     symbolPrices,
   }: {
@@ -105,6 +111,7 @@ export const enrichEtradeGlFrFr = (
       [date: string]: number;
     };
     symbolPrices: { [symbol: string]: SymbolDailyResponse };
+    fractions: number[];
   },
 ): GainAndLossEventWithRates[] => {
   return data
@@ -112,7 +119,7 @@ export const enrichEtradeGlFrFr = (
       // sort by dateSold
       return new Date(a.dateSold).getTime() - new Date(b.dateSold).getTime();
     })
-    .map((event) => {
+    .map((event, eventIdx) => {
       const rateAcquired = rates[event.dateAcquired];
       const rateSold = rates[event.dateSold];
       const dateSymbolPriceAcquired = getAdjustedSymbolDate(
@@ -132,6 +139,7 @@ export const enrichEtradeGlFrFr = (
           dateSymbolPriceAcquired !== event.dateAcquired
             ? dateSymbolPriceAcquired
             : undefined,
+        fractionFrIncome: fractions[eventIdx],
       };
     });
 };
@@ -400,7 +408,7 @@ const getFrTaxableEventFromGainsAndLossEvent = (
      * For instance:
      * - "Use symbol price at opening price on day of exercise."
      * - "Use symbol price at opening price on day of vesting."
-     * - "Use sell price as acquistion value given the plan is qualified and the sale is at loss."
+     * - "Use sell price as acquisition value given the plan is qualified and the sale is at loss."
      */
     explainAcquisitionValue: string;
   },
@@ -447,8 +455,13 @@ const getFrTaxableEventFromGainsAndLossEvent = (
       total: (sellPriceEur - acquisitionValueEur) * event.quantity,
     },
     acquisitionGain: {
-      perShare: acquisitionValueEur - acquisitionCostEur,
-      total: (acquisitionValueEur - acquisitionCostEur) * event.quantity,
+      perShare:
+        (acquisitionValueEur - acquisitionCostEur) * event.fractionFrIncome,
+      total:
+        (acquisitionValueEur - acquisitionCostEur) *
+        event.fractionFrIncome *
+        event.quantity,
+      fractionFr: event.fractionFrIncome,
     },
   };
 };
@@ -489,7 +502,7 @@ export const getFrTaxesForFrQualifiedSo = (
             acquisitionValueRate: event.rateSold,
             acquisitionCostUsd: event.acquisitionCost,
             explainAcquisitionValue:
-              "Use sell price as acquistion value given this is a sell to cover.",
+              "Use sell price as acquisition value given this is a sell to cover.",
           }
         : isSellAtLoss
           ? {
@@ -499,7 +512,7 @@ export const getFrTaxesForFrQualifiedSo = (
               acquisitionValueRate: event.rateSold,
               acquisitionCostUsd: event.acquisitionCost,
               explainAcquisitionValue:
-                "Acquistion value is the sell price given the plan is qualified and the sale is at loss.",
+                "Acquisition value is the sell price given the plan is qualified and the sale is at loss.",
             }
           : {
               // Just use symbol price at opening the day of exercise.
@@ -571,7 +584,7 @@ export const getFrTaxesForFrQualifiedRsu = (
             acquisitionValueRate: event.rateSold,
             acquisitionCostUsd: event.acquisitionCost,
             explainAcquisitionValue: [
-              "Use sell price as acquistion value given this is a sell to cover.",
+              "Use sell price as acquisition value given this is a sell to cover.",
               "WARNING: implemented tax rule might be wrong for this case.",
               "Maybe the acquisition price should be the vesting price instead of the sell price.",
               "If you encouter this message, please contact French taxes support.",
@@ -585,7 +598,7 @@ export const getFrTaxesForFrQualifiedRsu = (
               acquisitionValueRate: event.rateSold,
               acquisitionCostUsd: event.acquisitionCost,
               explainAcquisitionValue:
-                "Acquistion value is the sell price given the plan is qualified and the sale is at loss.",
+                "Acquisition value is the sell price given the plan is qualified and the sale is at loss.",
             }
           : {
               // Just use symbol price at opening the vesting day.
@@ -738,7 +751,7 @@ export const getFrTaxesForNonFrQualifiedSo = (
             acquisitionValueRate: event.rateSold,
             acquisitionCostUsd: event.acquisitionCost,
             explainAcquisitionValue:
-              "Acquistion value is the sell price given this is a sell to cover.",
+              "Acquisition value is the sell price given this is a sell to cover.",
           }
         : {
             // Use symbol price
@@ -805,10 +818,10 @@ export const getFrTaxesForNonFrQualifiedRsu = (
             acquisitionValueRate: event.rateSold,
             acquisitionCostUsd: event.acquisitionCost,
             explainAcquisitionValue: [
-              "Use sell price as acquistion value given this is a sell to cover.",
+              "Use sell price as acquisition value given this is a sell to cover.",
               "WARNING: implemented tax rule might be wrong for this case.",
               "Maybe the acquisition price should be the vesting price instead of the sell price.",
-              "If you encouter this message, please contact French taxes support.",
+              "If you encounter this message, please contact French taxes support.",
             ].join("\n"),
           }
         : {
@@ -827,12 +840,15 @@ export const getFrTaxesForNonFrQualifiedRsu = (
     return taxes;
   }
 
+  // FIXME calculate acquisition gain on non-qualified RSUs
+  // (% of French Origin must be taken into accout)
   taxes["explanations"] = [
     ...taxes["explanations"],
     {
       box: "1AJ",
-      description:
-        "Acquisition gains from non qualified RSUs are due at vest time. This is already reported by your employer and not yet calculated by this tool.",
+      description: `Acquisition gain from non-qualified RSUs are due at vest time. 
+        That should already have been reported by your employer 
+        and is not yet calculated by this tool.`,
       taxableEvents,
     },
   ];
@@ -854,6 +870,7 @@ export const applyFrTaxes = ({
   benefits,
   rates,
   symbolPrices,
+  fractions,
 }: {
   gainsAndLosses: GainAndLossEvent[];
   benefits: BenefitHistoryEvent[];
@@ -863,6 +880,7 @@ export const applyFrTaxes = ({
   symbolPrices: {
     [symbol: string]: SymbolDailyResponse;
   };
+  fractions: number[];
 }): FrTaxes => {
   return [
     getFrTaxesForFrQualifiedSo,
@@ -877,6 +895,7 @@ export const applyFrTaxes = ({
           gainsAndLosses: enrichEtradeGlFrFr(gainsAndLosses, {
             rates,
             symbolPrices,
+            fractions,
           }),
           benefits: enrichEtradeBenefitsFrFr(benefits, {
             rates,

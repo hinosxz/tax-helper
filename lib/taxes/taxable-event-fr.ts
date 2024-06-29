@@ -64,5 +64,6 @@ export interface TaxableEventFr {
   acquisitionGain: {
     perShare: number;
     total: number;
+    fractionFr: number;
   };
 }

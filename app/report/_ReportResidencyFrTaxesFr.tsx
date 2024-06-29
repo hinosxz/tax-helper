@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { match } from "ts-pattern";
 import { EtradeGainAndLossesFileInput } from "@/components/EtradeGainAndLossesFileInput";
@@ -27,24 +27,48 @@ import {
 } from "@heroicons/react/24/solid";
 import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
 import { Link } from "@/components/ui/Link";
+import { FractionAssignmentModal } from "./_FractionAssignmentModal";
+import { sendErrorToast } from "@/components/ui/Toast";
 
 export interface ReportResidencyFrTaxesFrProps {}
 
 export const ReportResidencyFrTaxesFr: React.FunctionComponent<
   ReportResidencyFrTaxesFrProps
 > = () => {
+  const [showFractionAssignmentModal, setShowFractionAssignmentModal] =
+    useState(false);
   const [isPrintMode, setIsPrintMode] = useState(false);
   const [gainsAndLosses, setGainsAndLosses] = useState<GainAndLossEvent[]>([]);
-  const { values: rates, isFetching: isFetchingExr } = useExchangeRates(
+  const [fractionsFrIncome, setFractionsFrIncome] = useState<number[]>([]);
+
+  const {
+    values: rates,
+    isFetching: isFetchingExr,
+    isError: couldNotFetchRates,
+  } = useExchangeRates(
     gainsAndLosses.flatMap((event) => [event.dateSold, event.dateAcquired]),
   );
-  const { values: symbolPrices, isFetching: isFetchingSymbols } =
-    useFetchSymbolDaily(gainsAndLosses.map((event) => event.symbol));
+  useEffect(() => {
+    if (couldNotFetchRates) {
+      sendErrorToast("could not fetch exchange rates, please retry later");
+    }
+  }, [couldNotFetchRates]);
 
-  const isFetching = isFetchingExr || isFetchingSymbols;
+  const {
+    values: symbolPrices,
+    isFetching: isFetchingPrices,
+    isError: couldNotFetchPrices,
+  } = useFetchSymbolDaily(gainsAndLosses.map((event) => event.symbol));
+  useEffect(() => {
+    if (couldNotFetchPrices) {
+      sendErrorToast("could not fetch stock prices, please retry later");
+    }
+  }, [couldNotFetchPrices]);
 
+  const isFetching = isFetchingExr || isFetchingPrices;
+  const hasError = couldNotFetchRates || couldNotFetchPrices;
   const taxes = useMemo(() => {
-    if (gainsAndLosses.length === 0 || isFetching || !rates) {
+    if (gainsAndLosses.length === 0 || isFetching || hasError || !rates) {
       return getEmptyTaxes();
     }
     return applyFrTaxes({
@@ -52,8 +76,16 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
       benefits: [],
       rates,
       symbolPrices,
+      fractions: fractionsFrIncome,
     });
-  }, [gainsAndLosses, rates, symbolPrices, isFetching]);
+  }, [
+    gainsAndLosses,
+    rates,
+    symbolPrices,
+    isFetching,
+    hasError,
+    fractionsFrIncome,
+  ]);
 
   const counts = useMemo(
     () => ({
@@ -92,10 +124,34 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
           Benefit History) from Etrade.
         </div>
       </div>
-      {gainsAndLosses.length === 0 ? (
+      {gainsAndLosses.length === 0 || fractionsFrIncome.length === 0 ? (
         <div className="flex items-baseline justify-center gap-3">
           <span>Import the Gains and Losses CSV file: </span>
-          <EtradeGainAndLossesFileInput setData={setGainsAndLosses} />
+          <FractionAssignmentModal
+            showModal={showFractionAssignmentModal}
+            setShowModal={setShowFractionAssignmentModal}
+            data={gainsAndLosses}
+            confirm={setFractionsFrIncome}
+            state={match<
+              { isFetching: boolean; hasError: boolean },
+              "loading" | "error" | "ok"
+            >({
+              isFetching,
+              hasError,
+            })
+              .with({ isFetching: true }, () => "loading")
+              .with({ hasError: true }, () => "error")
+              .otherwise(() => "ok")}
+          />
+          <EtradeGainAndLossesFileInput
+            setData={(data) => {
+              setGainsAndLosses(data);
+              if (data.filter((e) => e.planType === "RS").length > 0) {
+                // Show fraction assignment modal if you sold RSUs
+                setShowFractionAssignmentModal(true);
+              }
+            }}
+          />
         </div>
       ) : isFetching ? (
         <p>Loading...</p>
@@ -107,7 +163,10 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
               <Button
                 label="Clear"
                 color="red"
-                onClick={() => setGainsAndLosses([])}
+                onClick={() => {
+                  setGainsAndLosses([]);
+                  setFractionsFrIncome([]);
+                }}
               />
             </div>
             <div className="flex gap-2 items-baseline justify-items-start">

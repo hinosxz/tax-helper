@@ -15,6 +15,7 @@ export interface GainAndLossEventXlsxRow {
   "Purchase Date Fair Mkt. Value": string | number;
   "Proceeds Per Share": number;
   "Qualified Plan": PlanQualification;
+  "Grant Date": string;
 }
 
 /**
@@ -46,6 +47,7 @@ export interface GainAndLossEvent {
    * This is used for ESPP or SO acquired before IPO.
    */
   purchaseDateFairMktValue: number;
+  dateGranted: string;
   dateAcquired: string;
   dateSold: string;
   /** What kind of qualified plan is it? */

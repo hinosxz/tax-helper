@@ -22,6 +22,7 @@ describe("enrichEtradeGlFrFr", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 78,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-09-09",
         qualifiedIn: "fr",
@@ -37,26 +38,29 @@ describe("enrichEtradeGlFrFr", () => {
         "2022-09-09": { opening: 110, closing: 120 },
       },
     };
-    expect(enrichEtradeGlFrFr(gainsAndLosses, { rates, symbolPrices })).toEqual(
-      [
-        {
-          symbol: "DDOG",
-          planType: "SO",
-          quantity: 10,
-          proceeds: 117,
-          adjustedCost: 80,
-          purchaseDateFairMktValue: 80,
-          acquisitionCost: 78,
-          dateAcquired: "2022-03-03",
-          dateSold: "2022-09-09",
-          qualifiedIn: "fr",
-          rateAcquired: 1.12,
-          rateSold: 1.13,
-          symbolPriceAcquired: 100,
-          dateSymbolPriceAcquired: undefined,
-        },
-      ],
-    );
+    const fractions = [1];
+    expect(
+      enrichEtradeGlFrFr(gainsAndLosses, { rates, symbolPrices, fractions }),
+    ).toEqual([
+      {
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 117,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 78,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-09-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+        dateSymbolPriceAcquired: undefined,
+        fractionFrIncome: 1,
+      },
+    ]);
   });
   it("should use previous day for symbol price if it is not available", () => {
     const gainsAndLosses: GainAndLossEvent[] = [
@@ -68,6 +72,7 @@ describe("enrichEtradeGlFrFr", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 78,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-09-09",
         qualifiedIn: "fr",
@@ -84,26 +89,29 @@ describe("enrichEtradeGlFrFr", () => {
         "2022-09-09": { opening: 110, closing: 120 },
       },
     };
-    expect(enrichEtradeGlFrFr(gainsAndLosses, { rates, symbolPrices })).toEqual(
-      [
-        {
-          symbol: "DDOG",
-          planType: "SO",
-          quantity: 10,
-          proceeds: 117,
-          adjustedCost: 80,
-          purchaseDateFairMktValue: 80,
-          acquisitionCost: 78,
-          dateAcquired: "2022-03-03",
-          dateSold: "2022-09-09",
-          qualifiedIn: "fr",
-          rateAcquired: 1.12,
-          rateSold: 1.13,
-          symbolPriceAcquired: 100,
-          dateSymbolPriceAcquired: "2022-03-02",
-        },
-      ],
-    );
+    const fractions = [1];
+    expect(
+      enrichEtradeGlFrFr(gainsAndLosses, { rates, symbolPrices, fractions }),
+    ).toEqual([
+      {
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 117,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 78,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-09-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+        dateSymbolPriceAcquired: "2022-03-02",
+        fractionFrIncome: 1,
+      },
+    ]);
   });
 
   it("should use adjusted cost for symbol price if it is not available", () => {
@@ -116,6 +124,7 @@ describe("enrichEtradeGlFrFr", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 78,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-09-09",
         qualifiedIn: "fr",
@@ -132,26 +141,30 @@ describe("enrichEtradeGlFrFr", () => {
         "2022-09-09": { opening: 110, closing: 120 },
       },
     };
-    expect(enrichEtradeGlFrFr(gainsAndLosses, { rates, symbolPrices })).toEqual(
-      [
-        {
-          symbol: "DDOG",
-          planType: "SO",
-          quantity: 10,
-          proceeds: 117,
-          adjustedCost: 80,
-          purchaseDateFairMktValue: 80,
-          acquisitionCost: 78,
-          dateAcquired: "2022-03-03",
-          dateSold: "2022-09-09",
-          qualifiedIn: "fr",
-          rateAcquired: 1.12,
-          rateSold: 1.13,
-          symbolPriceAcquired: 80,
-          dateSymbolPriceAcquired: undefined, // cotation date is acquisition date
-        },
-      ],
-    );
+
+    const fractions = [1];
+    expect(
+      enrichEtradeGlFrFr(gainsAndLosses, { rates, symbolPrices, fractions }),
+    ).toEqual([
+      {
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 117,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 78,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-09-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 80,
+        dateSymbolPriceAcquired: undefined, // cotation date is acquisition date
+        fractionFrIncome: 1,
+      },
+    ]);
   });
 });
 
@@ -166,12 +179,14 @@ describe("getFrTaxesForFrQualifiedSo", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 20,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-03",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.12,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -200,12 +215,14 @@ describe("getFrTaxesForFrQualifiedSo", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 20,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -234,12 +251,14 @@ describe("getFrTaxesForFrQualifiedSo", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 20,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -289,12 +308,14 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-03",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.12,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -324,12 +345,14 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -358,12 +381,14 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -401,6 +426,43 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     expect(page510["525"]).toEqual(false);
     expect(page510["526"]).toEqual(0);
   });
+
+  it("fraction FR income < 100%", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 110, // Sold at 110$ when acquired at 100$
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 0,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 0.9,
+      },
+    ];
+
+    const taxes = getFrTaxesForFrQualifiedRsu(
+      { gainsAndLosses },
+      getEmptyTaxes(),
+    );
+
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
+    // sellPrice = 110 / 1.13 = 97.3451327434
+    // capital gain = 97.3451327434 - 89.2857142857 = 8.0594184577
+    // acquisition gain = (89.2857142857 - 0) * 90% = 80.3571428571
+    // discount = 80.3571428571 / 2 = 40.1785714286
+    // Acquisition gain
+    expect(taxes["1TZ"]).toEqual(401.785713);
+    expect(taxes["1TT"]).toEqual(0);
+    expect(taxes["1WZ"]).toEqual(401.785713);
+  });
 });
 
 describe("getFrTaxesForEspp", () => {
@@ -414,12 +476,14 @@ describe("getFrTaxesForEspp", () => {
         adjustedCost: 100,
         purchaseDateFairMktValue: 100,
         acquisitionCost: 80,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -461,12 +525,14 @@ describe("getFrTaxesForEspp", () => {
         adjustedCost: 100,
         purchaseDateFairMktValue: 100,
         acquisitionCost: 80,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -512,12 +578,14 @@ describe("getFrTaxesForEspp", () => {
         adjustedCost: 100,
         purchaseDateFairMktValue: 100,
         acquisitionCost: 80,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "fr",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
 
@@ -562,12 +630,14 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-03",
         qualifiedIn: "us",
         rateAcquired: 1.12,
         rateSold: 1.12,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedSo(
@@ -588,12 +658,14 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "us",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedSo(
@@ -632,12 +704,14 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "us",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedSo(
@@ -679,12 +753,14 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-03",
         qualifiedIn: "us",
         rateAcquired: 1.12,
         rateSold: 1.12,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedRsu(
@@ -705,12 +781,14 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
         adjustedCost: 0,
         purchaseDateFairMktValue: 100.6,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "us",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedRsu(
@@ -749,12 +827,14 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
         adjustedCost: 80,
         purchaseDateFairMktValue: 80,
         acquisitionCost: 0,
+        dateGranted: "2021-03-03",
         dateAcquired: "2022-03-03",
         dateSold: "2022-03-09",
         qualifiedIn: "us",
         rateAcquired: 1.12,
         rateSold: 1.13,
         symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
       },
     ];
     const taxes = getFrTaxesForNonFrQualifiedRsu(
