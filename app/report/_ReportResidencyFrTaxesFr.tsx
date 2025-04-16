@@ -124,7 +124,9 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
           Benefit History) from Etrade.
         </div>
       </div>
-      {gainsAndLosses.length === 0 || fractionsFrIncome.length === 0 ? (
+      {gainsAndLosses.length === 0 ||
+      (gainsAndLosses.filter((e) => e.planType === "RS").length > 0 &&
+        fractionsFrIncome.length === 0) ? (
         <div className="flex items-baseline justify-center gap-3">
           <span>Import the Gains and Losses CSV file: </span>
           <FractionAssignmentModal
