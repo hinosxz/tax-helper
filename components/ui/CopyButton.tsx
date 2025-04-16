@@ -23,11 +23,9 @@ export const CopyButton = ({ value }: CopyButtonProps) => {
       <button
         onClick={handleCopy}
         className={classNames(
-          "p-1.5 rounded-md transition-all duration-200",
-          "hover:bg-blue-100 active:bg-blue-200",
-          "border border-transparent hover:border-blue-300",
-          "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-transparent",
-          "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50",
+          "flex items-center",
+          "font-semibold text-sm",
+          "hover:opacity-75 disabled:opacity-25",
           {
             "bg-green-100 border-green-300": copied,
             "text-green-600": copied,
