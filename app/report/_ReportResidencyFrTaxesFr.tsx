@@ -29,6 +29,7 @@ import { useFetchSymbolDaily } from "@/hooks/use-fetch-symbol-daily";
 import { Link } from "@/components/ui/Link";
 import { FractionAssignmentModal } from "./_FractionAssignmentModal";
 import { sendErrorToast } from "@/components/ui/Toast";
+import { CopyButton } from "@/components/ui/CopyButton";
 
 export interface ReportResidencyFrTaxesFrProps {}
 
@@ -490,6 +491,19 @@ const TaxReportBox: React.FunctionComponent<{
   );
 };
 
+const CopyableCell: React.FunctionComponent<{
+  value: string | number;
+}> = ({ value }) => {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="inline-block w-32 p-1 bg-white border border-black">
+        {value}
+      </span>
+      <CopyButton value={value} />
+    </div>
+  );
+};
+
 const PAGE_510_LABELS = {
   "511": "Désignation des titres et des intermédiaires financiers",
   "512": "Date de la cession ou du rachat jj/mm/aaaa",
@@ -500,7 +514,7 @@ const PAGE_510_LABELS = {
   "517": "Frais de cession cf. notice",
   "518": "Prix de cession net lignes (516 - 517)",
   "519": "Détermination du prix de revient des titres",
-  "520": "Prix ou valeur d’acquisition unitaire cf. notice",
+  "520": "Prix ou valeur d'acquisition unitaire cf. notice",
   "521": "Prix d'acquisition global cf. notice",
   "522": "Frais d'acquisition",
   "523": "Prix de revient lignes (521 + 522)",
@@ -530,34 +544,25 @@ const Page510: React.FunctionComponent<{
           </h2>
           <table className="my-2 border-collapse text-sm">
             <tbody>
-              {Object.keys(currentPage).map((key) => (
-                <tr
-                  key={key}
-                  className="border-y-2 border-white bg-blue-200 *:p-2"
-                >
-                  <th>{key}</th>
-                  <td>{PAGE_510_LABELS[key as keyof typeof currentPage]}</td>
-                  <td>
-                    {typeof currentPage[key as keyof typeof currentPage] ===
-                    "boolean" ? (
-                      <input
-                        type="checkbox"
-                        checked={
-                          currentPage[
-                            key as keyof typeof currentPage
-                          ] as boolean
-                        }
-                        readOnly
-                      />
-                    ) : typeof currentPage[key as keyof typeof currentPage] !==
-                      "undefined" ? (
-                      <span className="inline-block w-32 p-1 bg-white border border-black">
-                        {currentPage[key as keyof typeof currentPage]}
-                      </span>
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
+              {Object.keys(currentPage).map((key) => {
+                const value = currentPage[key as keyof typeof currentPage];
+                return (
+                  <tr
+                    key={key}
+                    className="border-y-2 border-white bg-blue-200 *:p-2"
+                  >
+                    <th>{key}</th>
+                    <td>{PAGE_510_LABELS[key as keyof typeof currentPage]}</td>
+                    <td>
+                      {typeof value === "boolean" ? (
+                        <input type="checkbox" checked={value} readOnly />
+                      ) : value !== undefined ? (
+                        <CopyableCell value={value as string | number} />
+                      ) : null}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
