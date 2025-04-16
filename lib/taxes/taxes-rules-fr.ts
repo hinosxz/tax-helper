@@ -239,9 +239,9 @@ export interface FrTaxes {
   explanations: FrTaxesExplain[];
   /** RSU acquisition gains above 300K€ */
   "1TT": number;
-  /** RSU acquisition gains below 300K€ */
+  /** RSU acquisition gains below 300K€, after 50% tax rebate */
   "1TZ": number;
-  /** Tax acquisition rebate for RSU, 50% of 1TZ */
+  /** Tax acquisition rebate for RSU (50% of the acquisition gains under 300K€, and thus equal to 1TZ) */
   "1WZ": number;
   /** 1AJ OR 1BJ for gains as salaries */
   "1AJ": number;
