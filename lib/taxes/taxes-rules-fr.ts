@@ -139,7 +139,7 @@ export const enrichEtradeGlFrFr = (
           dateSymbolPriceAcquired !== event.dateAcquired
             ? dateSymbolPriceAcquired
             : undefined,
-        fractionFrIncome: fractions[eventIdx],
+        fractionFrIncome: eventIdx in fractions ? fractions[eventIdx] : 1,
       };
     });
 };
