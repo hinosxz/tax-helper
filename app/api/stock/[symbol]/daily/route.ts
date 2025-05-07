@@ -18,19 +18,29 @@ const cachedData: {
 } = {};
 
 const apiUrl = "https://www.alphavantage.co/query";
-if (!process.env.ALPHA_VANTAGE_API_KEY) {
-  throw new Error(`
-    ALPHA_VANTAGE_API_KEY is not set.
-    Please set it in your .env.local file.
+let apiKey = "";
 
-    To create a new API key, visit: https://www.alphavantage.co/support/#api-key
-    `);
-}
+const loadApiKey = () => {
+  if (!process.env.ALPHA_VANTAGE_API_KEY) {
+    throw new Error(`
+      [env:${process.env.NODE_ENV}] 
+      ALPHA_VANTAGE_API_KEY is not set.
+      Please set it in your .env.local file.
+  
+      To create a new API key, visit: https://www.alphavantage.co/support/#api-key
+      `);
+  }
+  apiKey = process.env.ALPHA_VANTAGE_API_KEY;
+};
 
 export async function GET(
   _request: Request,
   { params }: { params: { symbol: string } },
 ) {
+  if (!apiKey) {
+    loadApiKey();
+  }
+
   const symbol = params.symbol;
   try {
     const cache = cachedData[symbol];
@@ -39,7 +49,7 @@ export async function GET(
         function: "TIME_SERIES_DAILY",
         symbol,
         outputsize: "full",
-        apikey: process.env.ALPHA_VANTAGE_API_KEY || "",
+        apiKey,
       });
       cachedData[symbol] = await fetch(`${apiUrl}?${searchParams.toString()}`)
         .then((res) => res.json())
