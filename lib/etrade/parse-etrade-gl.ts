@@ -26,7 +26,7 @@ export const parseEtradeGL = async (
         symbol: row["Symbol"],
         quantity: row["Qty."],
         proceeds: row["Proceeds Per Share"],
-        dateGranted: row["Grant Date"],
+        dateGranted: toDateString(row["Grant Date"]),
         // FIXME: Adjusted cost from ETrade's G&L is the close price on day acquired,
         // France expects the opening price on day acquired.
         // See https://bofip.impots.gouv.fr/bofip/5654-PGP.html/identifiant%3DBOI-RSA-ES-20-20-20-20170724#:~:text=a.%20Actions%20cot%C3%A9es-,120,-La%20valeur%20%C3%A0
