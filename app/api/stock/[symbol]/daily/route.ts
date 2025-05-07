@@ -2,15 +2,17 @@ import { ONE_DAY } from "@/lib/constants";
 import type { ApiDate, SymbolDailyResponse } from "@/lib/symbol-daily.types";
 
 export interface SymbolDailyAlphavantageResponse {
-  "Time Series (Daily)": {
-    [date: ApiDate]: {
-      "1. open": string;
-      "2. high": string;
-      "3. low": string;
-      "4. close": string;
-      "5. volume": string;
-    };
-  };
+  "Time Series (Daily)":
+    | {
+        [date: ApiDate]: {
+          "1. open": string;
+          "2. high": string;
+          "3. low": string;
+          "4. close": string;
+          "5. volume": string;
+        };
+      }
+    | undefined;
 }
 
 const cachedData: {
@@ -49,15 +51,21 @@ export async function GET(
         function: "TIME_SERIES_DAILY",
         symbol,
         outputsize: "full",
-        apiKey,
+        apikey: apiKey,
       });
       cachedData[symbol] = await fetch(`${apiUrl}?${searchParams.toString()}`)
         .then((res) => res.json())
         .then((response: SymbolDailyAlphavantageResponse) => {
+          if ("Error Message" in response) {
+            throw new Error(
+              `Failed to fetch symbol ${symbol} prices with: "${response["Error Message"]}"`,
+            );
+          }
           const data: SymbolDailyResponse = {};
-          for (const [date, values] of Object.entries(
-            response["Time Series (Daily)"],
-          )) {
+          const dailyTs = response["Time Series (Daily)"]
+            ? Object.entries(response["Time Series (Daily)"])
+            : [];
+          for (const [date, values] of dailyTs) {
             data[date] = {
               opening: parseFloat(values["1. open"]),
               closing: parseFloat(values["4. close"]),
