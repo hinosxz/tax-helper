@@ -31,10 +31,10 @@ import { FractionAssignmentModal } from "./_FractionAssignmentModal";
 import { sendErrorToast } from "@/components/ui/Toast";
 import { CopyButton } from "@/components/ui/CopyButton";
 
-export interface ReportResidencyFrTaxesFrProps {}
+export interface ReportResidencyFrProps {}
 
-export const ReportResidencyFrTaxesFr: React.FunctionComponent<
-  ReportResidencyFrTaxesFrProps
+export const ReportResidencyFr: React.FunctionComponent<
+  ReportResidencyFrProps
 > = () => {
   const [showFractionAssignmentModal, setShowFractionAssignmentModal] =
     useState(false);
