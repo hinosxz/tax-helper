@@ -15,18 +15,9 @@ export default function Home() {
           bg-green-200 px-12 py-4 rounded shadow 
           hover:opacity-75 text-base font-semibold
         `}
-          href="/guide"
-        >
-          Guide
-        </Link>
-        <Link
-          className={`
-          bg-green-200 px-12 py-4 rounded shadow 
-          hover:opacity-75 text-base font-semibold
-        `}
           href="/report"
         >
-          Compute my tax report
+          Compute my French tax report
         </Link>
       </div>
     </main>
