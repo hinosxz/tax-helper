@@ -18,6 +18,8 @@ export interface PriceInEuroProps {
   rate: number;
   /** Date of the conversion rate */
   date: string;
+  /** Number of decimal places to display, default 2 */
+  precision?: number;
 }
 
 export const PriceInEuro: React.FunctionComponent<PriceInEuroProps> = ({
@@ -25,6 +27,7 @@ export const PriceInEuro: React.FunctionComponent<PriceInEuroProps> = ({
   usd,
   rate,
   date,
+  precision = 2,
 }) => {
   const priceInEuro = eur ?? usd / rate;
 
@@ -32,15 +35,17 @@ export const PriceInEuro: React.FunctionComponent<PriceInEuroProps> = ({
     <Tooltip
       content={
         <div>
-          <Currency value={usd} unit="usd" /> at {rate} on {date}
+          <Currency value={usd} unit="usd" precision={precision} /> at {rate} on{" "}
+          {date}
         </div>
       }
     >
       <span>
-        <Currency value={priceInEuro} unit="eur" />
+        <Currency value={priceInEuro} unit="eur" precision={precision} />
         <span className="hidden print:inline">
           {" "}
-          (<Currency value={usd} unit="usd" /> at {rate} $/€ on {date})
+          (<Currency value={usd} unit="usd" precision={precision} /> at {rate}{" "}
+          $/€ on {date})
         </span>
       </span>
     </Tooltip>
