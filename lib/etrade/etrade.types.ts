@@ -25,6 +25,9 @@ export interface GainAndLossEvent {
   planType: PlanType;
   symbol: string;
   quantity: number;
+  dateGranted: string;
+  dateAcquired: string;
+  dateSold: string;
   /** Proceeds per share in USD: sell price. */
   proceeds: number;
   /**
@@ -45,8 +48,10 @@ export interface GainAndLossEvent {
   /**
    * Fair market value of the share at the time of purchase.
    * This is used for ESPP or SO acquired before IPO.
+   * ⚠️  This can be empty or 0, in this case, the `adjustedCost` is used.
    */
   purchaseDateFairMktValue: number;
+  /**
   dateGranted: string;
   dateAcquired: string;
   dateSold: string;

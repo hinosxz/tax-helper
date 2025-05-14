@@ -128,7 +128,10 @@ export const enrichEtradeGlFrFr = (
       );
       const symbolPriceAcquired = dateSymbolPriceAcquired
         ? symbolPrices[event.symbol][dateSymbolPriceAcquired].opening
-        : event.purchaseDateFairMktValue; // Given the symbol was not publicly traded, use the Fair Market Value
+        : event.purchaseDateFairMktValue &&
+            !Number.isNaN(event.purchaseDateFairMktValue)
+          ? event.purchaseDateFairMktValue // Given the symbol was not publicly traded, use the Fair Market Value
+          : Number(event.adjustedCost); // Use the adjusted cost basis per share as last resort if purchaseDateFairMktValue is not available
 
       return {
         ...event,
