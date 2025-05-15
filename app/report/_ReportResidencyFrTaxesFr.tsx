@@ -350,7 +350,7 @@ export const ReportResidencyFrTaxesFr: React.FunctionComponent<
               />
               <TaxReportBox
                 id="3VG"
-                title="Social contributions on acquisition gain"
+                title="Total net taxable capital gains"
                 amount={taxes["3VG"]}
                 explanations={taxes.explanations}
                 gainType="capital"
