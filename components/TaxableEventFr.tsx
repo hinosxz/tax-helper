@@ -64,6 +64,9 @@ export const TaxableEventFr: React.FunctionComponent<{
       <TaxableEventFrLine title="Dates">
         <div className="flex gap-4">
           <p>
+            <strong>Granted:</strong> {formatDateFr(event.dateGranted)}.
+          </p>
+          <p>
             <strong>Acquired:</strong> {formatDateFr(event.acquisition.date)}.
           </p>
           {event.sell && (
