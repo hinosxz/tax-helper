@@ -9,12 +9,30 @@ import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import { MessageBox } from "@/components/ui/MessageBox";
 
 interface FractionAssignmentModalProps {
-  data: GainAndLossEvent[] | undefined;
+  data: GainAndLossEvent[];
   showModal: boolean;
   setShowModal: (show: boolean) => void;
   confirm: (fractions: number[]) => void;
   state: "loading" | "error" | "ok";
 }
+
+const toKey = (e: GainAndLossEvent) => `${e.dateGranted},${e.dateAcquired}`;
+const fromKey = (pair: string) => pair.split(",");
+
+const sortByDates = (pairA: string, pairB: string) => {
+  const [aGranted, aAcquired] = fromKey(pairA);
+  const [bGranted, bAcquired] = fromKey(pairB);
+  return aAcquired.localeCompare(bAcquired) || aGranted.localeCompare(bGranted);
+};
+
+const fractionsFromEvents = (
+  events: GainAndLossEvent[],
+  pctMap: Map<string, number>,
+) =>
+  events.map((e) => {
+    const datePair = toKey(e);
+    return (pctMap.get(datePair) ?? 100) / 100; // normalize before sending back
+  });
 
 export const FractionAssignmentModal = ({
   data,
@@ -23,15 +41,22 @@ export const FractionAssignmentModal = ({
   confirm,
   state,
 }: FractionAssignmentModalProps) => {
-  // Initialize to 100%
-  const [fractions, setFractions] = useState<number[]>(
-    Array<number>(data?.length ?? 0).fill(100),
+  // % are the same for each date acquired / date granted pair.
+  const [pctMap, setPctMap] = useState<Map<string, number>>(
+    new Map<string, number>(),
   );
 
-  // Reset fractions if data changes
+  // Reset % if data changes
   useEffect(() => {
-    setFractions(Array<number>(data?.length ?? 0).fill(100));
-  }, [data, setFractions]);
+    setPctMap(new Map<string, number>());
+  }, [data]);
+
+  const salesByDates = Map.groupBy(
+    data
+      .map((e, eventIdx) => ({ ...e, index: eventIdx }))
+      .filter((e) => e.planType === "RS"), // origin of income only applies to RSUs
+    toKey,
+  );
 
   return (
     <Modal show={showModal}>
@@ -57,50 +82,38 @@ export const FractionAssignmentModal = ({
         {match(state)
           .with("ok", () => (
             <>
-              <div className="grid grid-cols-4 gap-4">
-                {["Quantity", "Grant Date", "Acquisition Date", "% FR"].map(
-                  (h) => (
-                    <div key={h} className="font-semibold">
-                      {h}
-                    </div>
-                  ),
-                )}
-                {data
-                  ?.map((e, eventIdx) => ({ ...e, index: eventIdx }))
-                  .filter((e) => e.planType === "RS") // origin of income only applies to RSUs
-                  .sort(
-                    (a, b) =>
-                      b.dateAcquired.localeCompare(a.dateAcquired) ||
-                      b.dateGranted.localeCompare(a.dateGranted),
-                  )
-                  .map((e) => (
-                    <Fragment key={`event-${e.index}`}>
-                      <div>
-                        {e.quantity}×{e.symbol}
-                      </div>
-                      <div>{e.dateGranted}</div>
-                      <div>{e.dateAcquired}</div>
-                      <NumberInput
-                        value={fractions[e.index] ?? 100}
-                        min={0}
-                        max={100}
-                        maxDecimals={2}
-                        onChange={(value) => {
-                          setFractions((prevFractions) =>
-                            prevFractions.map((f, i) =>
-                              i === e.index ? value : f,
-                            ),
-                          );
-                        }}
-                      />
-                    </Fragment>
-                  ))}
+              <div className="grid grid-cols-3 gap-4">
+                {["Grant Date", "Acquisition Date", "% FR"].map((h) => (
+                  <div key={h} className="font-semibold">
+                    {h}
+                  </div>
+                ))}
+                {Array.from(salesByDates.keys())
+                  .sort(sortByDates)
+                  .map((datePair) => {
+                    const [granted, acquired] = fromKey(datePair);
+                    return (
+                      <Fragment key={datePair}>
+                        <div>{granted}</div>
+                        <div>{acquired}</div>
+                        <NumberInput
+                          value={pctMap.get(datePair) ?? 100}
+                          min={0}
+                          max={100}
+                          maxDecimals={2}
+                          onChange={(value) => {
+                            setPctMap(new Map(pctMap.set(datePair, value)));
+                          }}
+                        />
+                      </Fragment>
+                    );
+                  })}
               </div>
               <div className="flex justify-end">
                 <Button
                   color="green"
                   onClick={() => {
-                    confirm(fractions.map((f) => f / 100)); // normalize before sending back
+                    confirm(fractionsFromEvents(data, pctMap));
                     setShowModal(false);
                   }}
                   label="Confirm"
