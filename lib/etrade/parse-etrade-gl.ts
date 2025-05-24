@@ -37,6 +37,7 @@ export const parseEtradeGL = async (
         dateAcquired: toDateString(row["Date Acquired"]),
         dateSold: toDateString(row["Date Sold"]),
         // For now consider that a non-US qualified plan is FR qualified.
+        // FIXME: this is actually wrong, ETrade doesn't fill in the "Qualified Plan" column for qualified RSU plans.
         qualifiedIn: row["Qualified Plan"] === "Qualified" ? "us" : "fr",
       });
     } catch {
