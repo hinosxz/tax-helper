@@ -31,7 +31,7 @@ export default function RootLayout({
             <header>
               <Back />
             </header>
-            <main className="container mx-auto">{children}</main>
+            <main className="container mx-auto mb-8">{children}</main>
           </div>
         </QueryProvider>
       </body>

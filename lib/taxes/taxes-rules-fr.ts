@@ -431,6 +431,7 @@ const getFrTaxableEventFromGainsAndLossEvent = (
     // ETrade Gans And Losses only lists sell events
     type: "sell",
     date: event.dateSold,
+    dateGranted: event.dateGranted,
     quantity: event.quantity,
     sell: {
       usd: event.proceeds,

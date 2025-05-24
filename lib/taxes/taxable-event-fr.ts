@@ -11,6 +11,8 @@ export interface TaxableEventFr {
    * In format YYYY-MM-DD
    */
   date: string;
+  /** Date those stocks were granted */
+  dateGranted: string;
   /** Number of shares */
   quantity: number;
   /**
