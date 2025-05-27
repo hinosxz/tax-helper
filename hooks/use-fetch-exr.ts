@@ -4,46 +4,14 @@ import { useQueries } from "@tanstack/react-query";
 import { useBankHolidays } from "./use-bank-holiday";
 import { dayBefore, isWeekend } from "@/lib/date";
 
-const apiUrl =
-  "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A";
-
-interface Series {
-  "0:0:0:0:0": {
-    observations: {
-      "0": [number];
-    };
-  };
-}
-interface DataSet {
-  action: string;
-  validFrom: string;
-  series: Series;
-}
-interface Response {
-  dataSets: DataSet[];
-}
-
-// @deprecated use useExchangeRates instead
-export interface ExchangeRate {
-  rate: number | null;
-  isFetching: boolean;
-  errorMessage: string | null;
-}
+const apiUrl = "/api/euro/{date}";
 
 const fetchExchangeRate = async (date: string): Promise<number> => {
-  const searchParams = new URLSearchParams({
-    format: "jsondata",
-    detail: "dataonly",
-  });
-  searchParams.set("startPeriod", date);
-  searchParams.set("endPeriod", date);
-
-  return fetch(`${apiUrl}?${searchParams.toString()}`)
+  return fetch(`${apiUrl.replace("{date}", date)}`)
     .then((res) => res.json())
-    .then(
-      (data: Response) =>
-        data.dataSets[0].series["0:0:0:0:0"].observations[0][0],
-    );
+    .then((response: number) => {
+      return response;
+    });
 };
 
 interface UseExchangeRateResponse {
