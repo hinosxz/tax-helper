@@ -3,6 +3,7 @@ import type { FrTaxes } from "@/lib/taxes/taxes-rules-fr";
 import Image from "next/image";
 import { Link } from "@/components/ui/Link";
 import { TaxReportBox } from "./_TaxReportBox";
+import { Currency } from "@/components/ui/Currency";
 import { Button } from "@/components/ui/Button";
 import { match } from "ts-pattern";
 
@@ -223,6 +224,27 @@ export const ReportFr = ({
         <div className="mt-6">
           <Page510 taxes={taxes} isPrintMode={isPrintMode} />
         </div>
+        {isPrintMode ? null : (
+          <div className="print:hidden mt-6">
+            <div className="text-lg font-bold my-auto mb-2">
+              One Last Step For Form 2074
+            </div>
+            <p>
+              You must report{" "}
+              <strong>
+                <Currency unit="eur" value={taxes["3VG"]} />
+              </strong>{" "}
+              on line <strong>1133</strong>.
+            </p>
+            <Image
+              src="/images/fr-taxes/form-2074-box-1133.png"
+              alt="Form 2074 - Box 1133"
+              width={800}
+              height={500}
+              className="print:hidden"
+            />
+          </div>
+        )}
       </Section>
     </>
   );
