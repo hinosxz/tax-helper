@@ -68,6 +68,11 @@ export const FractionAssignmentModal = ({
                 {data
                   ?.map((e, eventIdx) => ({ ...e, index: eventIdx }))
                   .filter((e) => e.planType === "RS") // origin of income only applies to RSUs
+                  .sort(
+                    (a, b) =>
+                      b.dateAcquired.localeCompare(a.dateAcquired) ||
+                      b.dateGranted.localeCompare(a.dateGranted),
+                  )
                   .map((e) => (
                     <Fragment key={`event-${e.index}`}>
                       <div>
