@@ -1,3 +1,6 @@
+const ExtraZerosRegex = /(\.)(\d+[1-9])?(0*)$/;
+const extraZeroReplacer = (_: string, p1: string, p2: string = "00") =>
+  `${p1}${p2}`;
 /**
  * Format a number with a fixes 2 decimal places.
  *
@@ -7,8 +10,10 @@
  * formatNumber(null) // "–"
  * ```
  */
-export const formatNumber = (value: number | null): string => {
-  return value?.toFixed(2) ?? "–";
+export const formatNumber = (value: number | null, precision = 2): string => {
+  return (
+    value?.toFixed(precision).replace(ExtraZerosRegex, extraZeroReplacer) ?? "–"
+  );
 };
 
 /**
