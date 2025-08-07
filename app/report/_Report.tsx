@@ -22,7 +22,7 @@ import { FractionAssignmentModal } from "./_FractionAssignmentModal";
 import { sendErrorToast } from "@/components/ui/Toast";
 import { ReportFr } from "./_ReportFr";
 import type { CountryCode } from "./types";
-import NotImplemented from "@/components/NotImplemented";
+import { ReportUs } from "./_ReportUs";
 
 export interface ReportResidencyFrProps {
   taxResidency: CountryCode;
@@ -203,7 +203,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 taxes={taxes}
               />
             ))
-            .with({ taxResidency: "us" }, () => <NotImplemented />)
+            .with({ taxResidency: "us" }, () => (
+              <ReportUs isPrintMode={isPrintMode} taxes={taxes} />
+            ))
             .exhaustive()}
           <Section title="Source of information">
             <div>Some external sources are used to compute data:</div>
