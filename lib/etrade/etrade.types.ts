@@ -4,7 +4,7 @@ export type PlanQualification = "Qualified" | "Non-Qualified";
 /**
  * Original format for the XLSX file rows in the Etrade Gain/Loss report.
  */
-export interface GainAndLossEventXlsxRow {
+export interface GainAndLossEventXlsxRowPrior2025 {
   "Plan Type": PlanType;
   Symbol: string;
   "Qty.": number;
@@ -17,6 +17,23 @@ export interface GainAndLossEventXlsxRow {
   "Qualified Plan": PlanQualification;
   "Grant Date": string;
 }
+export interface GainAndLossEventXlsxRow2025 {
+  "Plan Type": PlanType;
+  Symbol: string;
+  Quantity: number;
+  "Date Acquired": string;
+  "Date Sold": string;
+  "Adjusted Cost Basis Per Share": number;
+  "Acquisition Cost Per Share": number;
+  "Purchase Date Fair Mkt. Value": string | number;
+  "Proceeds Per Share": number;
+  "Qualified Plan": PlanQualification;
+  "Grant Date": string;
+}
+
+export type GainAndLossEventXlsxRow =
+  | GainAndLossEventXlsxRowPrior2025
+  | GainAndLossEventXlsxRow2025;
 
 /**
  * Data format for a single sale event after parsing the Etrade Gain/Loss report.
