@@ -64,6 +64,10 @@ export async function GET(
     return Response.json(exchangeRate, { status: 200 });
   } catch (error) {
     console.error(error);
+    // Invalidate the cache, just in case
+    if (CACHE_EXCHANGE_RATE_PROMISES.has(params.date)) {
+      CACHE_EXCHANGE_RATE_PROMISES.delete(params.date);
+    }
     return Response.json(
       {
         error:
