@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 
 import QueryProvider from "@/components/QueryProvider";
 import { Back } from "@/components/Back";
+import { ForkMessage } from "@/components/ForkMessage";
 
 import "./globals.css";
 
@@ -29,6 +30,7 @@ export default function RootLayout({
         <QueryProvider>
           <div className="min-h-screen">
             <header>
+              <ForkMessage />
               <Back />
             </header>
             <main className="container mx-auto mb-8">{children}</main>
