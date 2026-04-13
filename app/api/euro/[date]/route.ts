@@ -24,8 +24,21 @@ const baseFetchExchangeRate = async (date: string): Promise<number> => {
   url.searchParams.set("startPeriod", date);
   url.searchParams.set("endPeriod", date);
 
-  return fetch(url)
-    .then((res) => res.json())
+  // Fetch the exchange rate, with no cache to avoid having staled data
+  return fetch(url, { cache: "no-cache" })
+    .then((res) => {
+      try {
+        return res.json();
+      } catch (error) {
+        // Transform the error into a more user-friendly one
+        throw new Error(
+          `${(error as Error).message} for ${date}
+Response status: ${res.statusText} ${res.statusText}
+Response body:
+${res.text()}`,
+        );
+      }
+    })
     .then(
       (data: Response) =>
         data.dataSets[0].series["0:0:0:0:0"].observations[0][0],
@@ -64,6 +77,10 @@ export async function GET(
     return Response.json(exchangeRate, { status: 200 });
   } catch (error) {
     console.error(error);
+    // Invalidate the cache, just in case
+    if (CACHE_EXCHANGE_RATE_PROMISES.has(params.date)) {
+      CACHE_EXCHANGE_RATE_PROMISES.delete(params.date);
+    }
     return Response.json(
       {
         error:
