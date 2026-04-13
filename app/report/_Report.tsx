@@ -116,9 +116,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
           </p>
         </MessageBox>
         <div className="my-2">
-          Based on the <b>expanded</b> exports both for Gain And Losses (My
-          Account &gt; Gains and losses) and Benefit History (My Account &gt;
-          Benefit History) from Etrade.
+          Based on the <b>expanded</b> exports both for Gain And Losses (At
+          Work &gt; My Account &gt; Gains and losses) and Benefit History (At
+          Work &gt; My Account &gt; Benefit History) from Etrade.
         </div>
       </div>
       {gainsAndLosses.length === 0 ||
