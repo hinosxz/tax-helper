@@ -362,8 +362,8 @@ const getFrTaxesCapitalGain = (
     newPages.push(newPage);
   });
 
-  // Net loss → do not fill Form 2074
-  if (capitalGainEur < 0) {
+  // Net loss or zero → do not fill Form 2074
+  if (capitalGainEur <= 0) {
     return taxes;
   }
 

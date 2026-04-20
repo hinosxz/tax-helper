@@ -217,7 +217,7 @@ export const ReportFr = ({
           <p className="text-sm text-gray-500 mt-1">
             One operation is reported per sale. Sales at a loss report a
             negative capital gain. Form 2074 is only required when the total net
-            capital gain is positive.
+            capital gain is strictly positive.
           </p>
           <Image
             alt="Form 2074 - Page 1"
