@@ -239,14 +239,14 @@ export const ReportFr = ({
                       value={taxes["Form 2074"]["page 11"]["1133"].gains}
                     />
                   </strong>{" "}
-                  (plus-values) and{" "}
+                  (capital gains) and{" "}
                   <strong>
                     <Currency
                       unit="eur"
                       value={taxes["Form 2074"]["page 11"]["1133"].losses}
                     />
                   </strong>{" "}
-                  (moins-values) on line <strong>1133</strong>.
+                  (capital losses) on line <strong>1133</strong>.
                 </p>
               </>
             ) : (
