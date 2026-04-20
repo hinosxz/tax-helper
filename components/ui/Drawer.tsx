@@ -11,7 +11,7 @@ export const Drawer: React.FunctionComponent<{
   return (
     <div>
       <div
-        className="flex items-center gap-2 cursor-pointer justify-between p-2"
+        className="flex items-center gap-2 cursor-pointer p-2"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div>{title}</div>

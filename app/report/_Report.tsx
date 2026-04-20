@@ -4,7 +4,12 @@ import { EtradeGainAndLossesFileInput } from "@/components/EtradeGainAndLossesFi
 import { useExchangeRates } from "@/hooks/use-fetch-exr";
 import { Button } from "@/components/ui/Button";
 import type { GainAndLossEvent } from "@/lib/etrade/etrade.types";
-import { applyFrTaxes, getEmptyTaxes } from "@/lib/taxes/taxes-rules-fr";
+import {
+  applyFrTaxes,
+  enrichEtradeGlFrFr,
+  getEmptyTaxes,
+} from "@/lib/taxes/taxes-rules-fr";
+import type { GainAndLossEventWithRates } from "@/lib/taxes/taxes-rules-fr";
 import { Section } from "@/components/ui/Section";
 import {
   isEspp,
@@ -23,6 +28,7 @@ import { sendErrorToast } from "@/components/ui/Toast";
 import { ReportFr } from "./_ReportFr";
 import type { CountryCode } from "./types";
 import { ReportUs } from "./_ReportUs";
+import { ImportValidation } from "./_ImportValidation";
 
 export interface ReportResidencyFrProps {
   taxResidency: CountryCode;
@@ -75,6 +81,23 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     [gainsAndLosses],
   );
 
+  const enrichedEvents = useMemo<GainAndLossEventWithRates[]>(() => {
+    if (gainsAndLosses.length === 0 || isFetching || hasError || !rates)
+      return [];
+    return enrichEtradeGlFrFr(gainsAndLosses, {
+      fractions: fractionsFrIncome,
+      rates,
+      symbolPrices,
+    });
+  }, [
+    gainsAndLosses,
+    rates,
+    symbolPrices,
+    isFetching,
+    hasError,
+    fractionsFrIncome,
+  ]);
+
   const taxes = useMemo(() => {
     if (gainsAndLosses.length === 0 || isFetching || hasError || !rates) {
       return getEmptyTaxes();
@@ -116,9 +139,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
           </p>
         </MessageBox>
         <div className="my-2">
-          Based on the <b>expanded</b> exports both for Gain And Losses (At
-          Work &gt; My Account &gt; Gains and losses) and Benefit History (At
-          Work &gt; My Account &gt; Benefit History) from Etrade.
+          Based on the <b>expanded</b> exports both for Gain And Losses (At Work
+          &gt; My Account &gt; Gains and losses) and Benefit History (At Work
+          &gt; My Account &gt; Benefit History) from Etrade.
         </div>
       </div>
       {gainsAndLosses.length === 0 ||
@@ -195,6 +218,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
               </dl>
             </div>
           </Section>
+          <div className="print:hidden">
+            <ImportValidation events={enrichedEvents} />
+          </div>
           {match({ taxResidency })
             .with({ taxResidency: "fr" }, () => (
               <ReportFr
