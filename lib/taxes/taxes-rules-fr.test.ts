@@ -459,6 +459,59 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     // (100 - 20) * 10 * 2 events = 1600
     expect(taxes["1TT"]).toEqual(1600);
   });
+
+  it("sell with gain and loss (net zero)", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        // Event A: gain of +100
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 110,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 20,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1,
+        rateSold: 1,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+      {
+        // Event B: loss of -100, net = 0
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 90,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 20,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-04-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1,
+        rateSold: 1,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+    ];
+
+    const taxes = getFrTaxesForFrQualifiedSo(
+      { gainsAndLosses },
+      getEmptyTaxes(),
+    );
+
+    // Net capital gain is zero → Form 2074 is not filled
+    expect(taxes["3VG"]).toEqual(0);
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
+
+    // Acquisition gain is still reported
+    expect(taxes["1TT"]).toEqual(1600);
+  });
 });
 
 describe("getFrTaxesForFrQualifiedRsu()", () => {
@@ -687,6 +740,60 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
 
     // Acquisition gain: both events use symbolPriceAcquired=100, acquisitionCost=0
     // discount = (100 * 10 + 100 * 10) / 2 = 1000
+    expect(taxes["1TZ"]).toEqual(1000);
+    expect(taxes["1WZ"]).toEqual(1000);
+  });
+
+  it("sell with gain and loss (net zero)", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        // Event A: gain of +100
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 110,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 0,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1,
+        rateSold: 1,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+      {
+        // Event B: loss of -100, net = 0
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 90,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 0,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-04-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1,
+        rateSold: 1,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+    ];
+
+    const taxes = getFrTaxesForFrQualifiedRsu(
+      { gainsAndLosses },
+      getEmptyTaxes(),
+    );
+
+    // Net capital gain is zero → Form 2074 is not filled
+    expect(taxes["3VG"]).toEqual(0);
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
+
+    // Acquisition gain is still reported
     expect(taxes["1TZ"]).toEqual(1000);
     expect(taxes["1WZ"]).toEqual(1000);
   });
