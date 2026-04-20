@@ -275,6 +275,18 @@ const formatDateForFrTaxes = (date: string) => {
   return `${day}/${month}/${year}`;
 };
 
+const getForm2074CapitalGainSummary = (
+  pages: FrTaxes["Form 2074"]["Page 510"],
+): { gains: number; losses: number } => {
+  return pages.reduce(
+    (summary, page) => ({
+      gains: summary.gains + Math.max(page["524"], 0),
+      losses: summary.losses + Math.max(-page["524"], 0),
+    }),
+    { gains: 0, losses: 0 },
+  );
+};
+
 export const getEmptyTaxes = (): FrTaxes => ({
   explanations: [],
   "1TT": 0,
@@ -382,6 +394,11 @@ const getFrTaxesCapitalGain = (
     ...taxes["Form 2074"]["Page 510"],
     ...newPages,
   ];
+  const capitalGainSummary = getForm2074CapitalGainSummary(
+    taxes["Form 2074"]["Page 510"],
+  );
+  taxes["Form 2074"]["Page 900"]["903"] = capitalGainSummary;
+  taxes["Form 2074"]["page 11"]["1133"] = capitalGainSummary;
 
   return taxes;
 };

@@ -721,6 +721,59 @@ describe("getFrTaxesForEspp", () => {
   });
 });
 
+describe("form 2074 summary", () => {
+  it("should split gains and losses for line 1133", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        symbol: "DDOG",
+        planType: "ESPP",
+        quantity: 10,
+        proceeds: 110, // Gain event
+        adjustedCost: 100,
+        purchaseDateFairMktValue: 100,
+        acquisitionCost: 80,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+      {
+        symbol: "DDOG",
+        planType: "ESPP",
+        quantity: 10,
+        proceeds: 95, // Loss event
+        adjustedCost: 100,
+        purchaseDateFairMktValue: 100,
+        acquisitionCost: 80,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-10",
+        qualifiedIn: "fr",
+        rateAcquired: 1.12,
+        rateSold: 1.13,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+    ];
+
+    const taxes = getFrTaxesForEspp({ gainsAndLosses }, getEmptyTaxes());
+
+    expect(taxes["3VG"]).toEqual(28);
+    expect(taxes["Form 2074"]["Page 900"]["903"]).toEqual({
+      gains: 80,
+      losses: 52,
+    });
+    expect(taxes["Form 2074"]["page 11"]["1133"]).toEqual({
+      gains: 80,
+      losses: 52,
+    });
+  });
+});
+
 describe("getFrTaxesForNonFrQualifiedSo", () => {
   it("same day sell", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
