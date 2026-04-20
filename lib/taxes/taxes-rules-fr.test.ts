@@ -337,10 +337,10 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
 
     // Acquisition gain
-    // sellPrice = 90 / 1.13 = 79.6460176991
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
     // cost = 20 / 1.12 = 17.8571428571
-    // gain per share = 79.6460176991 - 17.8571428571 = 61.7888748419
-    expect(taxes["1TT"]).toEqual(617.88875);
+    // gain per share = 89.2857142857 - 17.8571428571 = 71.4285714286
+    expect(taxes["1TT"]).toEqual(714.28572);
   });
 
   it("sell with gains", () => {
@@ -396,6 +396,68 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     expect(page510["524"].toFixed(6)).toEqual("80.000000");
     expect(page510["525"]).toEqual(false);
     expect(page510["526"]).toEqual(0);
+  });
+
+  it("sell with gain and loss (net positive)", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        // Event A: gain
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 120, // Sold at 120$ when acquired at 100$
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 20,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1,
+        rateSold: 1,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+      {
+        // Event B: loss
+        symbol: "DDOG",
+        planType: "SO",
+        quantity: 10,
+        proceeds: 90, // Sold at 90$ when acquired at 100$
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 20,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-04-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1,
+        rateSold: 1,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+    ];
+
+    const taxes = getFrTaxesForFrQualifiedSo(
+      { gainsAndLosses },
+      getEmptyTaxes(),
+    );
+
+    // Both operations appear in Form 2074
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(2);
+
+    // Net capital gain is positive (200 - 100 = 100)
+    expect(taxes["3VG"]).toEqual(100);
+
+    // Loss event has a negative cell 524
+    const gainPage = taxes["Form 2074"]["Page 510"][0];
+    const lossPage = taxes["Form 2074"]["Page 510"][1];
+    expect(gainPage["524"]).toEqual(200);
+    expect(lossPage["524"]).toEqual(-100);
+
+    // Acquisition gain: both events use symbolPriceAcquired=100
+    // (100 - 20) * 10 * 2 events = 1600
+    expect(taxes["1TT"]).toEqual(1600);
   });
 });
 
@@ -466,11 +528,11 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     expect(taxes["3VG"]).toEqual(0);
     expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
     // Acquisition gain
-    // sellPrice = 90 / 1.13 = 79.6460176991
-    // discount = 79.6460176991 / 2 = 39.8230088495
-    expect(taxes["1TZ"]).toEqual(398.230085);
+    // acquisitionValue = 100 / 1.12 = 89.2857142857
+    // discount = 89.2857142857 / 2 = 44.6428571429
+    expect(taxes["1TZ"]).toEqual(446.42857);
     expect(taxes["1TT"]).toEqual(0);
-    expect(taxes["1WZ"]).toEqual(398.230085);
+    expect(taxes["1WZ"]).toEqual(446.42857);
   });
 
   it("sell with gains", () => {
@@ -565,6 +627,69 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     expect(taxes["1TT"]).toEqual(0);
     expect(taxes["1WZ"]).toEqual(401.785713);
   });
+
+  it("sell with gain and loss (net positive)", () => {
+    const gainsAndLosses: GainAndLossEventWithRates[] = [
+      {
+        // Event A: gain
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 120, // Sold at 120$ when acquired at 100$
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 0,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-03-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1,
+        rateSold: 1,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+      {
+        // Event B: loss
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 90, // Sold at 90$ when acquired at 100$
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 0,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-04-09",
+        qualifiedIn: "fr",
+        rateAcquired: 1,
+        rateSold: 1,
+        symbolPriceAcquired: 100,
+        fractionFrIncome: 1,
+      },
+    ];
+
+    const taxes = getFrTaxesForFrQualifiedRsu(
+      { gainsAndLosses },
+      getEmptyTaxes(),
+    );
+
+    // Both operations appear in Form 2074
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(2);
+
+    // Net capital gain is positive (200 - 100 = 100)
+    expect(taxes["3VG"]).toEqual(100);
+
+    // Loss event has a negative cell 524
+    const gainPage = taxes["Form 2074"]["Page 510"][0];
+    const lossPage = taxes["Form 2074"]["Page 510"][1];
+    expect(gainPage["524"]).toEqual(200);
+    expect(lossPage["524"]).toEqual(-100);
+
+    // Acquisition gain: both events use symbolPriceAcquired=100, acquisitionCost=0
+    // discount = (100 * 10 + 100 * 10) / 2 = 1000
+    expect(taxes["1TZ"]).toEqual(1000);
+    expect(taxes["1WZ"]).toEqual(1000);
+  });
 });
 
 describe("getFrTaxesForEspp", () => {
@@ -590,27 +715,12 @@ describe("getFrTaxesForEspp", () => {
     ];
 
     const taxes = getFrTaxesForEspp({ gainsAndLosses }, getEmptyTaxes());
-    // Capital loss
+    // Net capital loss → Form 2074 is not filled
     // acquisitionValue = 100 / 1.12 = 89.2857142857
     // sellPrice = 90 / 1.13 = 79.6460176991
     // capital loss = 79.6460176991 - 89.2857142857 = -9.6396965866
-    expect(taxes["3VG"].toFixed(6)).toEqual("-97.000000");
-    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(1);
-    const page510 = taxes["Form 2074"]["Page 510"][0];
-    expect(page510["511"]).toEqual("DDOG (ESPP)");
-    expect(page510["512"]).toEqual("09/03/2022");
-    expect(page510["514"].toFixed(6)).toEqual("79.646017");
-    expect(page510["515"]).toEqual(10);
-    expect(page510["516"].toFixed(6)).toEqual("796.000000");
-    expect(page510["517"]).toEqual(0);
-    expect(page510["518"].toFixed(6)).toEqual("796.000000");
-    expect(page510["520"].toFixed(6)).toEqual("89.290000");
-    expect(page510["521"].toFixed(6)).toEqual("893.000000");
-    expect(page510["522"]).toEqual(0);
-    expect(page510["523"].toFixed(6)).toEqual("893.000000");
-    expect(page510["524"].toFixed(6)).toEqual("-97.000000");
-    expect(page510["525"]).toEqual(false);
-    expect(page510["526"]).toEqual(0);
+    expect(taxes["3VG"]).toEqual(0);
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
     // Acquisition gain
     expect(taxes["1AJ"]).toEqual(0);
     expect(taxes["1TZ"]).toEqual(0);
@@ -692,27 +802,12 @@ describe("getFrTaxesForEspp", () => {
     ];
 
     const taxes = getFrTaxesForEspp({ gainsAndLosses }, getEmptyTaxes());
-    // Capital loss
+    // Net capital loss → Form 2074 is not filled
     // acquisitionValue = 100 / 1.12 = 89.2857142857
     // sellPrice = 90 / 1.13 = 79.6460176991
     // capital loss = 79.6460176991 - 89.2857142857 = -9.6396965866
-    expect(taxes["3VG"].toFixed(6)).toEqual("-97.000000");
-    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(1);
-    const page510 = taxes["Form 2074"]["Page 510"][0];
-    expect(page510["511"]).toEqual("DDOG (ESPP)");
-    expect(page510["512"]).toEqual("09/03/2022");
-    expect(page510["514"].toFixed(6)).toEqual("79.646017");
-    expect(page510["515"]).toEqual(10);
-    expect(page510["516"].toFixed(6)).toEqual("796.000000");
-    expect(page510["517"]).toEqual(0);
-    expect(page510["518"].toFixed(6)).toEqual("796.000000");
-    expect(page510["520"].toFixed(6)).toEqual("89.290000");
-    expect(page510["521"].toFixed(6)).toEqual("893.000000");
-    expect(page510["522"]).toEqual(0);
-    expect(page510["523"].toFixed(6)).toEqual("893.000000");
-    expect(page510["524"].toFixed(6)).toEqual("-97.000000");
-    expect(page510["525"]).toEqual(false);
-    expect(page510["526"]).toEqual(0);
+    expect(taxes["3VG"]).toEqual(0);
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
     // Acquisition gain
     expect(taxes["1AJ"]).toEqual(0);
     expect(taxes["1TZ"]).toEqual(0);
@@ -774,27 +869,12 @@ describe("getFrTaxesForNonFrQualifiedSo", () => {
       { gainsAndLosses, benefits: [] },
       getEmptyTaxes(),
     );
-    // Capital loss
+    // Net capital loss → Form 2074 is not filled
     // acquisitionValue = 100 / 1.12 = 89.2857142857
     // sellPrice = 90 / 1.13 = 79.6460176991
     // capital loss = 79.6460176991 - 89.2857142857 = -9.6396965866
-    expect(taxes["3VG"].toFixed(6)).toEqual("-97.000000");
-    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(1);
-    const page510 = taxes["Form 2074"]["Page 510"][0];
-    expect(page510["511"]).toEqual("DDOG (Stock Options)");
-    expect(page510["512"]).toEqual("09/03/2022");
-    expect(page510["514"].toFixed(6)).toEqual("79.646017");
-    expect(page510["515"]).toEqual(10);
-    expect(page510["516"].toFixed(6)).toEqual("796.000000");
-    expect(page510["517"]).toEqual(0);
-    expect(page510["518"].toFixed(6)).toEqual("796.000000");
-    expect(page510["520"].toFixed(6)).toEqual("89.290000");
-    expect(page510["521"].toFixed(6)).toEqual("893.000000");
-    expect(page510["522"]).toEqual(0);
-    expect(page510["523"].toFixed(6)).toEqual("893.000000");
-    expect(page510["524"].toFixed(6)).toEqual("-97.000000");
-    expect(page510["525"]).toEqual(false);
-    expect(page510["526"]).toEqual(0);
+    expect(taxes["3VG"]).toEqual(0);
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
   });
   it("capital gain", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [
@@ -897,27 +977,12 @@ describe("getFrTaxesForNonFrQualifiedRsu", () => {
       { gainsAndLosses, benefits: [] },
       getEmptyTaxes(),
     );
-    // Capital loss
+    // Net capital loss → Form 2074 is not filled
     // acquisitionValue = 100 / 1.12 = 89.2857142857
     // sellPrice = 90 / 1.13 = 79.6460176991
     // capital loss = 79.6460176991 - 89.2857142857 = -9.6396965866
-    expect(taxes["3VG"].toFixed(6)).toEqual("-97.000000");
-    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(1);
-    const page510 = taxes["Form 2074"]["Page 510"][0];
-    expect(page510["511"]).toEqual("DDOG (RSU)");
-    expect(page510["512"]).toEqual("09/03/2022");
-    expect(page510["514"].toFixed(6)).toEqual("79.646017");
-    expect(page510["515"]).toEqual(10);
-    expect(page510["516"].toFixed(6)).toEqual("796.000000");
-    expect(page510["517"]).toEqual(0);
-    expect(page510["518"].toFixed(6)).toEqual("796.000000");
-    expect(page510["520"].toFixed(6)).toEqual("89.290000");
-    expect(page510["521"].toFixed(6)).toEqual("893.000000");
-    expect(page510["522"]).toEqual(0);
-    expect(page510["523"].toFixed(6)).toEqual("893.000000");
-    expect(page510["524"].toFixed(6)).toEqual("-97.000000");
-    expect(page510["525"]).toEqual(false);
-    expect(page510["526"]).toEqual(0);
+    expect(taxes["3VG"]).toEqual(0);
+    expect(taxes["Form 2074"]["Page 510"]).toHaveLength(0);
   });
   it("capital gain", () => {
     const gainsAndLosses: GainAndLossEventWithRates[] = [

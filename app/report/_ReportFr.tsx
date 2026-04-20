@@ -1,3 +1,4 @@
+import { Drawer } from "@/components/ui/Drawer";
 import { Section } from "@/components/ui/Section";
 import type { FrTaxes } from "@/lib/taxes/taxes-rules-fr";
 import Image from "next/image";
@@ -155,7 +156,7 @@ export const ReportFr = ({
         </div>
       </Section>
       <Section title="French Taxes">
-        <div>
+        <Drawer title="Details">
           <TaxReportBox
             id="1AJ"
             title="Total income. Depending on your situation, you might use 1BJ instead. WARNING: unqualified options acquisition gain is not yet computed."
@@ -204,14 +205,19 @@ export const ReportFr = ({
             gainType="capital"
             forceOpen={isPrintMode}
           />
-        </div>
+        </Drawer>
       </Section>
       <Section title="Form 2074">
         <div>
           <p>
             You must report{" "}
-            <strong>{taxes["Form 2074"]["Page 510"].length}</strong> in this
-            form.
+            <strong>{taxes["Form 2074"]["Page 510"].length}</strong> operations
+            in this form.
+          </p>
+          <p className="text-sm text-gray-500 mt-1">
+            One operation is reported per sale. Sales at a loss report a
+            negative capital gain. Form 2074 is only required when the total net
+            capital gain is positive.
           </p>
           <Image
             alt="Form 2074 - Page 1"

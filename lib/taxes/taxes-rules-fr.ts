@@ -307,10 +307,6 @@ const getFrTaxesCapitalGain = (
   if (!taxableEvents.length) {
     return taxes;
   }
-  if (taxableEvents.every((event) => event.capitalGain.total === 0)) {
-    return taxes;
-  }
-
   let capitalGainEur = 0;
   const newPages: FrTaxes["Form 2074"]["Page 510"] = [];
 
@@ -365,6 +361,11 @@ const getFrTaxesCapitalGain = (
     capitalGainEur += newPage["524"];
     newPages.push(newPage);
   });
+
+  // Net loss → do not fill Form 2074
+  if (capitalGainEur < 0) {
+    return taxes;
+  }
 
   // Add the capital gain to the total
   taxes["3VG"] += capitalGainEur;
@@ -487,14 +488,7 @@ export const getFrTaxesForFrQualifiedSo = (
 
   // Process each event
   qualifiedSo.forEach((event) => {
-    // Convert prices to EUR
-    const sellPriceEur = floorNumber6Digits(event.proceeds / event.rateSold);
-    const priceOnDayOfAcquisitionEur = floorNumber6Digits(
-      event.symbolPriceAcquired / event.rateAcquired,
-    );
-
     const isSellToCover = event.dateAcquired === event.dateSold;
-    const isSellAtLoss = sellPriceEur < priceOnDayOfAcquisitionEur;
 
     const taxableEvent = getFrTaxableEventFromGainsAndLossEvent(
       event,
@@ -508,23 +502,13 @@ export const getFrTaxesForFrQualifiedSo = (
             explainAcquisitionValue:
               "Use sell price as acquisition value given this is a sell to cover.",
           }
-        : isSellAtLoss
-          ? {
-              // Sale is at loss, use sell price as acquisition price given the
-              // plan is qualified
-              acquisitionValueUsd: event.proceeds,
-              acquisitionValueRate: event.rateSold,
-              acquisitionCostUsd: event.acquisitionCost,
-              explainAcquisitionValue:
-                "Acquisition value is the sell price given the plan is qualified and the sale is at loss.",
-            }
-          : {
-              // Just use symbol price at opening the day of exercise.
-              acquisitionValueUsd: event.symbolPriceAcquired,
-              acquisitionValueRate: event.rateAcquired,
-              acquisitionCostUsd: event.acquisitionCost,
-              explainAcquisitionValue: `Use ${event.symbol} price at opening on day of exercise.`,
-            },
+        : {
+            // Just use symbol price at opening the day of exercise.
+            acquisitionValueUsd: event.symbolPriceAcquired,
+            acquisitionValueRate: event.rateAcquired,
+            acquisitionCostUsd: event.acquisitionCost,
+            explainAcquisitionValue: `Use ${event.symbol} price at opening on day of exercise.`,
+          },
     );
     taxableEvents.push(taxableEvent);
 
@@ -569,13 +553,7 @@ export const getFrTaxesForFrQualifiedRsu = (
 
   // Process each event
   qualifiedRsu.forEach((event) => {
-    // Convert prices to EUR
-    const sellPriceEur = floorNumber6Digits(event.proceeds / event.rateSold);
-    const priceOnDayOfAcquisitionEur = floorNumber6Digits(
-      event.symbolPriceAcquired / event.rateAcquired,
-    );
     const isSellToCover = event.dateAcquired === event.dateSold;
-    const isSellAtLoss = sellPriceEur < priceOnDayOfAcquisitionEur;
 
     const taxableEvent = getFrTaxableEventFromGainsAndLossEvent(
       event,
@@ -594,23 +572,13 @@ export const getFrTaxesForFrQualifiedRsu = (
               "If you encouter this message, please contact French taxes support.",
             ].join("\n"),
           }
-        : isSellAtLoss
-          ? {
-              // Sale is at loss, use sell price as acquisition price given this
-              // is a qualified plan
-              acquisitionValueUsd: event.proceeds,
-              acquisitionValueRate: event.rateSold,
-              acquisitionCostUsd: event.acquisitionCost,
-              explainAcquisitionValue:
-                "Acquisition value is the sell price given the plan is qualified and the sale is at loss.",
-            }
-          : {
-              // Just use symbol price at opening the vesting day.
-              acquisitionValueUsd: event.symbolPriceAcquired,
-              acquisitionValueRate: event.rateAcquired,
-              acquisitionCostUsd: event.acquisitionCost,
-              explainAcquisitionValue: `Use ${event.symbol} price at opening on vesting day.`,
-            },
+        : {
+            // Just use symbol price at opening the vesting day.
+            acquisitionValueUsd: event.symbolPriceAcquired,
+            acquisitionValueRate: event.rateAcquired,
+            acquisitionCostUsd: event.acquisitionCost,
+            explainAcquisitionValue: `Use ${event.symbol} price at opening on vesting day.`,
+          },
     );
 
     taxableEvents.push(taxableEvent);
