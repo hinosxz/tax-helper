@@ -1,0 +1,141 @@
+{
+  "explanations": [
+    {
+      "box": "1TT",
+      "description": "Acquisition gains from Qualified SO sales. (0.00€)",
+      "taxableEvents": []
+    },
+    {
+      "box": "1TZ",
+      "description": "RSU acquisition gains below 300k€ with 50% discount. (6872.54 * 50%)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "RS",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2025-09-03",
+          "dateGranted": "2021-05-24",
+          "quantity": 67,
+          "sell": {
+            "usd": 134.3,
+            "rate": 1.1653,
+            "eur": 115.249292,
+            "date": "2025-09-03"
+          },
+          "acquisition": {
+            "valueUsd": 116.30999755859375,
+            "valueEur": 102.57518,
+            "costUsd": 0,
+            "costEur": 0,
+            "symbolPrice": 116.30999755859375,
+            "symbolPriceEur": 102.57518,
+            "rate": 1.1339,
+            "date": "2025-06-01",
+            "description": "Use DDOG price at opening on vesting day.",
+            "dateSymbolPriceAcquired": "2025-05-30"
+          },
+          "capitalGain": {
+            "perShare": 12.669291999999999,
+            "total": 849
+          },
+          "acquisitionGain": {
+            "perShare": 102.57518,
+            "total": 6872.537060000001,
+            "fractionFr": 1
+          }
+        }
+      ]
+    },
+    {
+      "box": "1WZ",
+      "description": "Tax acquisition discount for RSU acquisition gains below 300k€ (6872.54 * 50%, see 1TZ for calculation details)",
+      "taxableEvents": []
+    },
+    {
+      "box": "3VG",
+      "description": "Capital gains from FR qualified RSU sales. (849.00€ as computed by form 2074)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "RS",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2025-09-03",
+          "dateGranted": "2021-05-24",
+          "quantity": 67,
+          "sell": {
+            "usd": 134.3,
+            "rate": 1.1653,
+            "eur": 115.249292,
+            "date": "2025-09-03"
+          },
+          "acquisition": {
+            "valueUsd": 116.30999755859375,
+            "valueEur": 102.57518,
+            "costUsd": 0,
+            "costEur": 0,
+            "symbolPrice": 116.30999755859375,
+            "symbolPriceEur": 102.57518,
+            "rate": 1.1339,
+            "date": "2025-06-01",
+            "description": "Use DDOG price at opening on vesting day.",
+            "dateSymbolPriceAcquired": "2025-05-30"
+          },
+          "capitalGain": {
+            "perShare": 12.669291999999999,
+            "total": 849
+          },
+          "acquisitionGain": {
+            "perShare": 102.57518,
+            "total": 6872.537060000001,
+            "fractionFr": 1
+          }
+        }
+      ]
+    },
+    {
+      "box": "1AJ",
+      "description": "Acquisition gains from ESPP sales are due the year of acquisition. Already reported by your employer and not yet available in this tool.",
+      "taxableEvents": []
+    }
+  ],
+  "1TT": 0,
+  "1TZ": 3436.26853,
+  "1WZ": 3436.26853,
+  "1AJ": 0,
+  "3VG": 849,
+  "3VH": 0,
+  "Form 2074": {
+    "Page 510": [
+      {
+        "511": "DDOG (RSU)",
+        "512": "03/09/2025",
+        "514": 115.249292,
+        "515": 67,
+        "516": 7722,
+        "517": 0,
+        "518": 7722,
+        "520": 102.58,
+        "521": 6873,
+        "522": 0,
+        "523": 6873,
+        "524": 849,
+        "525": false,
+        "526": 0
+      }
+    ],
+    "Page 900": {
+      "903": {
+        "gains": 0,
+        "losses": 0
+      }
+    },
+    "page 11": {
+      "1133": {
+        "gains": 0,
+        "losses": 0
+      }
+    }
+  }
+}

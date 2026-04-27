@@ -1,0 +1,129 @@
+{
+  "explanations": [
+    {
+      "box": "1TT",
+      "description": "Acquisition gains from Qualified SO sales. (2946.57€)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "SO",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2023-05-09",
+          "dateGranted": "2017-03-28",
+          "quantity": 600,
+          "sell": {
+            "usd": 80.81435,
+            "rate": 1.0959,
+            "eur": 73.742449,
+            "date": "2023-05-09"
+          },
+          "acquisition": {
+            "valueUsd": 6.3667,
+            "valueEur": 5.669367,
+            "costUsd": 0.8517,
+            "costEur": 0.758414,
+            "symbolPrice": 6.3667,
+            "symbolPriceEur": 5.669367,
+            "rate": 1.123,
+            "date": "2019-05-12",
+            "description": "Use DDOG price at opening on day of exercise."
+          },
+          "capitalGain": {
+            "perShare": 68.07244899999999,
+            "total": 40843
+          },
+          "acquisitionGain": {
+            "perShare": 4.910953,
+            "total": 2946.5718,
+            "fractionFr": 1
+          }
+        }
+      ]
+    },
+    {
+      "box": "3VG",
+      "description": "Capital gains from FR qualified SO sales. (40843.00€ as computed by form 2074)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "SO",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2023-05-09",
+          "dateGranted": "2017-03-28",
+          "quantity": 600,
+          "sell": {
+            "usd": 80.81435,
+            "rate": 1.0959,
+            "eur": 73.742449,
+            "date": "2023-05-09"
+          },
+          "acquisition": {
+            "valueUsd": 6.3667,
+            "valueEur": 5.669367,
+            "costUsd": 0.8517,
+            "costEur": 0.758414,
+            "symbolPrice": 6.3667,
+            "symbolPriceEur": 5.669367,
+            "rate": 1.123,
+            "date": "2019-05-12",
+            "description": "Use DDOG price at opening on day of exercise."
+          },
+          "capitalGain": {
+            "perShare": 68.07244899999999,
+            "total": 40843
+          },
+          "acquisitionGain": {
+            "perShare": 4.910953,
+            "total": 2946.5718,
+            "fractionFr": 1
+          }
+        }
+      ]
+    },
+    {
+      "box": "1AJ",
+      "description": "Acquisition gains from ESPP sales are due the year of acquisition. Already reported by your employer and not yet available in this tool.",
+      "taxableEvents": []
+    }
+  ],
+  "1TT": 2946.5718,
+  "1TZ": 0,
+  "1WZ": 0,
+  "1AJ": 0,
+  "3VG": 40843,
+  "3VH": 0,
+  "Form 2074": {
+    "Page 510": [
+      {
+        "511": "DDOG (Stock Options)",
+        "512": "09/05/2023",
+        "514": 73.742449,
+        "515": 600,
+        "516": 44245,
+        "517": 0,
+        "518": 44245,
+        "520": 5.67,
+        "521": 3402,
+        "522": 0,
+        "523": 3402,
+        "524": 40843,
+        "525": false,
+        "526": 0
+      }
+    ],
+    "Page 900": {
+      "903": {
+        "gains": 0,
+        "losses": 0
+      }
+    },
+    "page 11": {
+      "1133": {
+        "gains": 0,
+        "losses": 0
+      }
+    }
+  }
+}

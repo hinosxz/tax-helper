@@ -1,0 +1,563 @@
+{
+  "explanations": [
+    {
+      "box": "1TT",
+      "description": "Acquisition gains from Qualified SO sales. (7315.86€)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "SO",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-09-11",
+          "dateGranted": "2018-09-06",
+          "quantity": 150,
+          "sell": {
+            "usd": 107.997,
+            "rate": 1.1043,
+            "eur": 97.796794,
+            "date": "2024-09-11"
+          },
+          "acquisition": {
+            "valueUsd": 35.45000076293945,
+            "valueEur": 31.830834,
+            "costUsd": 1.55,
+            "costEur": 1.391757,
+            "symbolPrice": 35.45000076293945,
+            "symbolPriceEur": 31.830834,
+            "rate": 1.1137,
+            "date": "2019-12-12",
+            "description": "Use DDOG price at opening on day of exercise."
+          },
+          "capitalGain": {
+            "perShare": 65.956794,
+            "total": 9894
+          },
+          "acquisitionGain": {
+            "perShare": 30.439077,
+            "total": 4565.8615500000005,
+            "fractionFr": 1
+          }
+        },
+        {
+          "symbol": "DDOG",
+          "planType": "SO",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-09-11",
+          "dateGranted": "2018-09-06",
+          "quantity": 100,
+          "sell": {
+            "usd": 107.9969,
+            "rate": 1.1043,
+            "eur": 97.796703,
+            "date": "2024-09-11"
+          },
+          "acquisition": {
+            "valueUsd": 32.459999084472656,
+            "valueEur": 28.879002,
+            "costUsd": 1.55,
+            "costEur": 1.379003,
+            "symbolPrice": 32.459999084472656,
+            "symbolPriceEur": 28.879002,
+            "rate": 1.124,
+            "date": "2020-03-12",
+            "description": "Use DDOG price at opening on day of exercise."
+          },
+          "capitalGain": {
+            "perShare": 68.916703,
+            "total": 6892
+          },
+          "acquisitionGain": {
+            "perShare": 27.499999,
+            "total": 2749.9999,
+            "fractionFr": 1
+          }
+        }
+      ]
+    },
+    {
+      "box": "3VG",
+      "description": "Capital gains from FR qualified SO sales. (16786.00€ as computed by form 2074)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "SO",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-09-11",
+          "dateGranted": "2018-09-06",
+          "quantity": 150,
+          "sell": {
+            "usd": 107.997,
+            "rate": 1.1043,
+            "eur": 97.796794,
+            "date": "2024-09-11"
+          },
+          "acquisition": {
+            "valueUsd": 35.45000076293945,
+            "valueEur": 31.830834,
+            "costUsd": 1.55,
+            "costEur": 1.391757,
+            "symbolPrice": 35.45000076293945,
+            "symbolPriceEur": 31.830834,
+            "rate": 1.1137,
+            "date": "2019-12-12",
+            "description": "Use DDOG price at opening on day of exercise."
+          },
+          "capitalGain": {
+            "perShare": 65.956794,
+            "total": 9894
+          },
+          "acquisitionGain": {
+            "perShare": 30.439077,
+            "total": 4565.8615500000005,
+            "fractionFr": 1
+          }
+        },
+        {
+          "symbol": "DDOG",
+          "planType": "SO",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-09-11",
+          "dateGranted": "2018-09-06",
+          "quantity": 100,
+          "sell": {
+            "usd": 107.9969,
+            "rate": 1.1043,
+            "eur": 97.796703,
+            "date": "2024-09-11"
+          },
+          "acquisition": {
+            "valueUsd": 32.459999084472656,
+            "valueEur": 28.879002,
+            "costUsd": 1.55,
+            "costEur": 1.379003,
+            "symbolPrice": 32.459999084472656,
+            "symbolPriceEur": 28.879002,
+            "rate": 1.124,
+            "date": "2020-03-12",
+            "description": "Use DDOG price at opening on day of exercise."
+          },
+          "capitalGain": {
+            "perShare": 68.916703,
+            "total": 6892
+          },
+          "acquisitionGain": {
+            "perShare": 27.499999,
+            "total": 2749.9999,
+            "fractionFr": 1
+          }
+        }
+      ]
+    },
+    {
+      "box": "1TZ",
+      "description": "RSU acquisition gains below 300k€ with 50% discount. (14351.75 * 50%)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "RS",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-11-22",
+          "dateGranted": "2021-04-23",
+          "quantity": 79,
+          "sell": {
+            "usd": 150.995696,
+            "rate": 1.0412,
+            "eur": 145.020837,
+            "date": "2024-11-22"
+          },
+          "acquisition": {
+            "valueUsd": 96.83999633789062,
+            "valueEur": 90.403282,
+            "costUsd": 0,
+            "costEur": 0,
+            "symbolPrice": 96.83999633789062,
+            "symbolPriceEur": 90.403282,
+            "rate": 1.0712,
+            "date": "2022-06-01",
+            "description": "Use DDOG price at opening on vesting day."
+          },
+          "capitalGain": {
+            "perShare": 54.610837000000004,
+            "total": 4315
+          },
+          "acquisitionGain": {
+            "perShare": 90.403282,
+            "total": 7141.859278,
+            "fractionFr": 1
+          }
+        },
+        {
+          "symbol": "DDOG",
+          "planType": "RS",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-12-04",
+          "dateGranted": "2021-04-23",
+          "quantity": 80,
+          "sell": {
+            "usd": 165.015125,
+            "rate": 1.0492,
+            "eur": 157.277092,
+            "date": "2024-12-04"
+          },
+          "acquisition": {
+            "valueUsd": 97.7300033569336,
+            "valueEur": 90.123573,
+            "costUsd": 0,
+            "costEur": 0,
+            "symbolPrice": 97.7300033569336,
+            "symbolPriceEur": 90.123573,
+            "rate": 1.0844,
+            "date": "2023-09-01",
+            "description": "Use DDOG price at opening on vesting day."
+          },
+          "capitalGain": {
+            "perShare": 67.14709200000001,
+            "total": 5372
+          },
+          "acquisitionGain": {
+            "perShare": 90.123573,
+            "total": 7209.885839999999,
+            "fractionFr": 1
+          }
+        }
+      ]
+    },
+    {
+      "box": "1WZ",
+      "description": "Tax acquisition discount for RSU acquisition gains below 300k€ (14351.75 * 50%, see 1TZ for calculation details)",
+      "taxableEvents": []
+    },
+    {
+      "box": "3VG",
+      "description": "Capital gains from FR qualified RSU sales. (9687.00€ as computed by form 2074)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "RS",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-11-22",
+          "dateGranted": "2021-04-23",
+          "quantity": 79,
+          "sell": {
+            "usd": 150.995696,
+            "rate": 1.0412,
+            "eur": 145.020837,
+            "date": "2024-11-22"
+          },
+          "acquisition": {
+            "valueUsd": 96.83999633789062,
+            "valueEur": 90.403282,
+            "costUsd": 0,
+            "costEur": 0,
+            "symbolPrice": 96.83999633789062,
+            "symbolPriceEur": 90.403282,
+            "rate": 1.0712,
+            "date": "2022-06-01",
+            "description": "Use DDOG price at opening on vesting day."
+          },
+          "capitalGain": {
+            "perShare": 54.610837000000004,
+            "total": 4315
+          },
+          "acquisitionGain": {
+            "perShare": 90.403282,
+            "total": 7141.859278,
+            "fractionFr": 1
+          }
+        },
+        {
+          "symbol": "DDOG",
+          "planType": "RS",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-12-04",
+          "dateGranted": "2021-04-23",
+          "quantity": 80,
+          "sell": {
+            "usd": 165.015125,
+            "rate": 1.0492,
+            "eur": 157.277092,
+            "date": "2024-12-04"
+          },
+          "acquisition": {
+            "valueUsd": 97.7300033569336,
+            "valueEur": 90.123573,
+            "costUsd": 0,
+            "costEur": 0,
+            "symbolPrice": 97.7300033569336,
+            "symbolPriceEur": 90.123573,
+            "rate": 1.0844,
+            "date": "2023-09-01",
+            "description": "Use DDOG price at opening on vesting day."
+          },
+          "capitalGain": {
+            "perShare": 67.14709200000001,
+            "total": 5372
+          },
+          "acquisitionGain": {
+            "perShare": 90.123573,
+            "total": 7209.885839999999,
+            "fractionFr": 1
+          }
+        }
+      ]
+    },
+    {
+      "box": "1AJ",
+      "description": "Acquisition gains from ESPP sales are due the year of acquisition. Already reported by your employer and not yet available in this tool.",
+      "taxableEvents": []
+    },
+    {
+      "box": "3VG",
+      "description": "Capital gains from ESPP sales (1031.00€ as computed by form 2074)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "ESPP",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-11-19",
+          "dateGranted": "2024-05-16",
+          "quantity": 2,
+          "sell": {
+            "usd": 125.895,
+            "rate": 1.0578,
+            "eur": 119.015882,
+            "date": "2024-11-19"
+          },
+          "acquisition": {
+            "valueUsd": 126.0915,
+            "valueEur": 119.145327,
+            "costUsd": 126.0915,
+            "costEur": 119.145327,
+            "symbolPrice": 129.0500030517578,
+            "symbolPriceEur": 121.940851,
+            "rate": 1.0583,
+            "date": "2024-11-15",
+            "description": "Use ESPP value as defined by e-trade for acquisition value."
+          },
+          "capitalGain": {
+            "perShare": -0.13411800000000085,
+            "total": 0
+          },
+          "acquisitionGain": {
+            "perShare": 0,
+            "total": 0,
+            "fractionFr": 1
+          }
+        },
+        {
+          "symbol": "DDOG",
+          "planType": "ESPP",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-11-20",
+          "dateGranted": "2024-05-16",
+          "quantity": 22,
+          "sell": {
+            "usd": 135.995909,
+            "rate": 1.0562,
+            "eur": 128.759618,
+            "date": "2024-11-20"
+          },
+          "acquisition": {
+            "valueUsd": 126.089682,
+            "valueEur": 119.143609,
+            "costUsd": 126.089682,
+            "costEur": 119.143609,
+            "symbolPrice": 129.0500030517578,
+            "symbolPriceEur": 121.940851,
+            "rate": 1.0583,
+            "date": "2024-11-15",
+            "description": "Use ESPP value as defined by e-trade for acquisition value."
+          },
+          "capitalGain": {
+            "perShare": 9.609616999999986,
+            "total": 212
+          },
+          "acquisitionGain": {
+            "perShare": 0,
+            "total": 0,
+            "fractionFr": 1
+          }
+        },
+        {
+          "symbol": "DDOG",
+          "planType": "ESPP",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2024-11-22",
+          "dateGranted": "2023-11-16",
+          "quantity": 23,
+          "sell": {
+            "usd": 150.995652,
+            "rate": 1.0412,
+            "eur": 145.020795,
+            "date": "2024-11-22"
+          },
+          "acquisition": {
+            "valueUsd": 118.470174,
+            "valueEur": 109.370544,
+            "costUsd": 118.470174,
+            "costEur": 109.370544,
+            "symbolPrice": 118.83000183105469,
+            "symbolPriceEur": 109.702734,
+            "rate": 1.0832,
+            "date": "2024-05-15",
+            "description": "Use ESPP value as defined by e-trade for acquisition value."
+          },
+          "capitalGain": {
+            "perShare": 35.640795,
+            "total": 819
+          },
+          "acquisitionGain": {
+            "perShare": 0,
+            "total": 0,
+            "fractionFr": 1
+          }
+        }
+      ]
+    }
+  ],
+  "1TT": 7315.86145,
+  "1TZ": 7175.872558,
+  "1WZ": 7175.872558,
+  "1AJ": 0,
+  "3VG": 27504,
+  "3VH": 0,
+  "Form 2074": {
+    "Page 510": [
+      {
+        "511": "DDOG (Stock Options)",
+        "512": "11/09/2024",
+        "514": 97.796794,
+        "515": 150,
+        "516": 14670,
+        "517": 0,
+        "518": 14670,
+        "520": 31.84,
+        "521": 4776,
+        "522": 0,
+        "523": 4776,
+        "524": 9894,
+        "525": false,
+        "526": 0
+      },
+      {
+        "511": "DDOG (Stock Options)",
+        "512": "11/09/2024",
+        "514": 97.796703,
+        "515": 100,
+        "516": 9780,
+        "517": 0,
+        "518": 9780,
+        "520": 28.88,
+        "521": 2888,
+        "522": 0,
+        "523": 2888,
+        "524": 6892,
+        "525": false,
+        "526": 0
+      },
+      {
+        "511": "DDOG (RSU)",
+        "512": "22/11/2024",
+        "514": 145.020837,
+        "515": 79,
+        "516": 11457,
+        "517": 0,
+        "518": 11457,
+        "520": 90.41,
+        "521": 7142,
+        "522": 0,
+        "523": 7142,
+        "524": 4315,
+        "525": false,
+        "526": 0
+      },
+      {
+        "511": "DDOG (RSU)",
+        "512": "04/12/2024",
+        "514": 157.277092,
+        "515": 80,
+        "516": 12582,
+        "517": 0,
+        "518": 12582,
+        "520": 90.13,
+        "521": 7210,
+        "522": 0,
+        "523": 7210,
+        "524": 5372,
+        "525": false,
+        "526": 0
+      },
+      {
+        "511": "DDOG (ESPP)",
+        "512": "19/11/2024",
+        "514": 119.015882,
+        "515": 2,
+        "516": 238,
+        "517": 0,
+        "518": 238,
+        "520": 119.15,
+        "521": 238,
+        "522": 0,
+        "523": 238,
+        "524": 0,
+        "525": false,
+        "526": 0
+      },
+      {
+        "511": "DDOG (ESPP)",
+        "512": "20/11/2024",
+        "514": 128.759617,
+        "515": 22,
+        "516": 2833,
+        "517": 0,
+        "518": 2833,
+        "520": 119.15,
+        "521": 2621,
+        "522": 0,
+        "523": 2621,
+        "524": 212,
+        "525": false,
+        "526": 0
+      },
+      {
+        "511": "DDOG (ESPP)",
+        "512": "22/11/2024",
+        "514": 145.020795,
+        "515": 23,
+        "516": 3335,
+        "517": 0,
+        "518": 3335,
+        "520": 109.38,
+        "521": 2516,
+        "522": 0,
+        "523": 2516,
+        "524": 819,
+        "525": false,
+        "526": 0
+      }
+    ],
+    "Page 900": {
+      "903": {
+        "gains": 0,
+        "losses": 0
+      }
+    },
+    "page 11": {
+      "1133": {
+        "gains": 0,
+        "losses": 0
+      }
+    }
+  }
+}
