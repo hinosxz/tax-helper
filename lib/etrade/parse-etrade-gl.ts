@@ -70,7 +70,7 @@ export const parseEtradeGL = async (
 ): Promise<GainAndLossEvent[]> => {
   const data: GainAndLossEvent[] = [];
   const fileAsArrayBuffer = await file.arrayBuffer();
-  const workbook = XLSX.read(fileAsArrayBuffer);
+  const workbook = XLSX.read(new Uint8Array(fileAsArrayBuffer));
   const worksheet = workbook.Sheets[workbook.SheetNames[0]];
   const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 2 });
   // First row is summary
