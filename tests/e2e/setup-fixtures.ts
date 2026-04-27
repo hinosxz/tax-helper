@@ -16,23 +16,7 @@ import path from "path";
 import XLSX from "xlsx";
 
 const FIXTURES_DIR = path.join(__dirname, "__fixtures__");
-const ROOT_DIR = path.join(__dirname, "../..");
 const FORCE = process.argv.includes("--force");
-
-// ---------------------------------------------------------------------------
-// Env
-// ---------------------------------------------------------------------------
-
-function loadEnv() {
-  const envPath = path.join(ROOT_DIR, ".env.local");
-  if (!fs.existsSync(envPath)) return;
-  for (const line of fs.readFileSync(envPath, "utf-8").split("\n")) {
-    const match = line.match(/^([^#\s][^=]*)=(.*)/);
-    if (match) {
-      process.env[match[1].trim()] = match[2].trim().replace(/^"|"$/g, "");
-    }
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Date helpers (inlined to keep the script self-contained)
@@ -64,7 +48,7 @@ function subtractDays(date: string, days: number): string {
 // ---------------------------------------------------------------------------
 
 function findColumn(headers: unknown[], name: string): number {
-  return (headers as string[]).indexOf(name);
+  return headers.findIndex((h) => String(h ?? "") === name);
 }
 
 /**
@@ -72,7 +56,7 @@ function findColumn(headers: unknown[], name: string): number {
  * Order Number columns already starts with the expected prefix.
  */
 function isAlreadyAnonymized(buffer: Buffer): boolean {
-  const workbook = XLSX.read(buffer);
+  const workbook = XLSX.read(new Uint8Array(buffer));
   const ws = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1 });
   if (rows.length < 2) return true;
@@ -102,7 +86,7 @@ function isAlreadyAnonymized(buffer: Buffer): boolean {
  * of the original values so the result is deterministic.
  */
 function anonymizeXlsx(buffer: Buffer): Buffer {
-  const workbook = XLSX.read(buffer);
+  const workbook = XLSX.read(new Uint8Array(buffer));
   const ws = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1 });
 
@@ -167,7 +151,7 @@ function extractDatesAndSymbols(buffer: Buffer): {
   dates: string[];
   symbols: string[];
 } {
-  const workbook = XLSX.read(buffer);
+  const workbook = XLSX.read(new Uint8Array(buffer));
   const worksheet = workbook.Sheets[workbook.SheetNames[0]];
   const rawData = XLSX.utils.sheet_to_json<RawRow>(worksheet, { header: 2 });
 
@@ -236,16 +220,13 @@ async function fetchEcbRates(
 }
 
 /** Walk backwards up to 10 days to find a trading day rate. */
-function resolveRate(
-  date: string,
-  allRates: Record<string, number>,
-): number | undefined {
+function resolveRate(date: string, allRates: Record<string, number>): number {
   let current = date;
   for (let i = 0; i < 10; i++) {
     if (allRates[current] !== undefined) return allRates[current];
     current = dayBefore(current);
   }
-  return undefined;
+  throw new Error(`no ECB rate found for ${date} within 10 days`);
 }
 
 // ---------------------------------------------------------------------------
@@ -317,8 +298,6 @@ async function fetchSymbolPrices(
 // ---------------------------------------------------------------------------
 
 async function main() {
-  loadEnv();
-
   const cases = fs
     .readdirSync(FIXTURES_DIR)
     .filter((name) => fs.statSync(path.join(FIXTURES_DIR, name)).isDirectory());
@@ -396,17 +375,15 @@ async function main() {
 
   // Fetch symbol prices — deduplicated across all pending cases, full range at once
   const allSymbols = [...new Set(pending.flatMap((c) => c.symbols))];
-  const symbolPricesMap: Record<string, SymbolDailyResponse> = {};
-
-  for (const symbol of allSymbols) {
-    process.stdout.write(`Fetching Yahoo Finance: ${symbol} ... `);
-    symbolPricesMap[symbol] = await fetchSymbolPrices(
-      symbol,
-      globalMin,
-      globalMax,
-    );
-    console.log(`${Object.keys(symbolPricesMap[symbol]).length} days`);
-  }
+  console.log(`Fetching Yahoo Finance: ${allSymbols.join(", ")} ...`);
+  const symbolPricesEntries = await Promise.all(
+    allSymbols.map(async (symbol) => {
+      const prices = await fetchSymbolPrices(symbol, globalMin, globalMax);
+      console.log(`  ${symbol}: ${Object.keys(prices).length} days`);
+      return [symbol, prices] as const;
+    }),
+  );
+  const symbolPricesMap = Object.fromEntries(symbolPricesEntries);
 
   // Write fixtures per case
   console.log();
@@ -414,12 +391,7 @@ async function main() {
     // rates.json: map each event date to the nearest trading day rate
     const rates: Record<string, number> = {};
     for (const date of dates) {
-      const rate = resolveRate(date, allRates);
-      if (rate === undefined) {
-        console.warn(`  WARNING [${name}]: no rate found for ${date}`);
-      } else {
-        rates[date] = rate;
-      }
+      rates[date] = resolveRate(date, allRates);
     }
 
     // symbol-prices.json: for each transaction date include that trading day if

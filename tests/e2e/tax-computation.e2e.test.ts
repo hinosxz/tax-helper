@@ -55,6 +55,11 @@ describe.each(cases)("%s", (caseName) => {
 
     const expectedPath = path.join(caseDir, "expected.json");
     if (!fs.existsSync(expectedPath)) {
+      if (process.env.CI) {
+        throw new Error(
+          `expected.json is missing for "${caseName}". Generate it locally with \`npm run test:e2e\` and commit it.`,
+        );
+      }
       fs.writeFileSync(expectedPath, JSON.stringify(normalised, null, 2));
       console.log(
         `\nGenerated expected.json for "${caseName}".`,
