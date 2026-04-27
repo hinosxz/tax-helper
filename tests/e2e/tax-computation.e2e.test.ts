@@ -23,20 +23,6 @@ describe.each(cases)("%s", (caseName) => {
       );
     }
 
-    const xlsxBuffer = fs.readFileSync(path.join(caseDir, "etrade-gl.xlsx"));
-    // jsdom's File doesn't implement arrayBuffer(); provide it from the Node buffer.
-    const file = {
-      name: "etrade-gl.xlsx",
-      arrayBuffer: () =>
-        Promise.resolve(
-          xlsxBuffer.buffer.slice(
-            xlsxBuffer.byteOffset,
-            xlsxBuffer.byteOffset + xlsxBuffer.byteLength,
-          ),
-        ),
-    } as unknown as File;
-    const gainsAndLosses = await parseEtradeGL(file);
-
     const rates: Record<string, number> = JSON.parse(
       fs.readFileSync(ratesPath, "utf-8"),
     );
@@ -50,6 +36,11 @@ describe.each(cases)("%s", (caseName) => {
       ? JSON.parse(fs.readFileSync(configPath, "utf-8"))
       : {};
 
+    // Read and parse XLSX file
+    const xlsxBuffer = fs.readFileSync(path.join(caseDir, "etrade-gl.xlsx"));
+    const file = new File([xlsxBuffer], "etrade-gl.xlsx");
+    const gainsAndLosses = await parseEtradeGL(file);
+
     const taxes = applyFrTaxes({
       gainsAndLosses,
       benefits: [],
@@ -58,9 +49,13 @@ describe.each(cases)("%s", (caseName) => {
       fractions: config.fractions ?? [],
     });
 
+    // Normalise through JSON roundtrip so that undefined properties and
+    // numeric precision match exactly how expected.json is written on disk.
+    const normalised = JSON.parse(JSON.stringify(taxes)) as FrTaxes;
+
     const expectedPath = path.join(caseDir, "expected.json");
     if (!fs.existsSync(expectedPath)) {
-      fs.writeFileSync(expectedPath, JSON.stringify(taxes, null, 2));
+      fs.writeFileSync(expectedPath, JSON.stringify(normalised, null, 2));
       console.log(
         `\nGenerated expected.json for "${caseName}".`,
         "\nVerify the values against your tax forms, then commit the file.",
@@ -71,6 +66,6 @@ describe.each(cases)("%s", (caseName) => {
     const expected: FrTaxes = JSON.parse(
       fs.readFileSync(expectedPath, "utf-8"),
     );
-    expect(taxes).toEqual(expected);
+    expect(normalised).toEqual(expected);
   });
 });

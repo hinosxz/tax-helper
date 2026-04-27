@@ -5,7 +5,7 @@ const createJestConfig = nextJest({ dir: "./" });
 
 const config: Config = {
   coverageProvider: "v8",
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
   testMatch: ["**/tests/e2e/**/*.test.[tj]s?(x)"],
 };
 
