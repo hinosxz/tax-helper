@@ -10,7 +10,9 @@
     "prepare": "husky",
     "format:all": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:e2e": "jest --config jest.e2e.config.ts",
+    "setup-e2e-fixtures": "ts-node --project tsconfig.node.json tests/e2e/setup-fixtures.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
