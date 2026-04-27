@@ -56,7 +56,7 @@ function findColumn(headers: unknown[], name: string): number {
  * Order Number columns already starts with the expected prefix.
  */
 function isAlreadyAnonymized(buffer: Buffer): boolean {
-  const workbook = XLSX.read(new Uint8Array(buffer));
+  const workbook = XLSX.read(buffer);
   const ws = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1 });
   if (rows.length < 2) return true;
@@ -86,7 +86,7 @@ function isAlreadyAnonymized(buffer: Buffer): boolean {
  * of the original values so the result is deterministic.
  */
 function anonymizeXlsx(buffer: Buffer): Buffer {
-  const workbook = XLSX.read(new Uint8Array(buffer));
+  const workbook = XLSX.read(buffer);
   const ws = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1 });
 
@@ -151,7 +151,7 @@ function extractDatesAndSymbols(buffer: Buffer): {
   dates: string[];
   symbols: string[];
 } {
-  const workbook = XLSX.read(new Uint8Array(buffer));
+  const workbook = XLSX.read(buffer);
   const worksheet = workbook.Sheets[workbook.SheetNames[0]];
   const rawData = XLSX.utils.sheet_to_json<RawRow>(worksheet, { header: 2 });
 
