@@ -7,7 +7,7 @@
         {
           "symbol": "DDOG",
           "planType": "SO",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2023-05-09",
           "dateGranted": "2017-03-28",
@@ -48,7 +48,7 @@
         {
           "symbol": "DDOG",
           "planType": "SO",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2023-05-09",
           "dateGranted": "2017-03-28",

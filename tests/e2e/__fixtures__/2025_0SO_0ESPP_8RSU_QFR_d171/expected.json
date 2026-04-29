@@ -12,7 +12,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2021-06-21",
@@ -48,7 +48,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2022-08-02",
@@ -84,7 +84,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2021-11-23",
@@ -120,7 +120,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2021-11-23",
@@ -156,7 +156,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2021-06-21",
@@ -192,7 +192,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2022-08-02",
@@ -228,7 +228,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-09-12",
           "dateGranted": "2022-08-02",
@@ -264,7 +264,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-09-12",
           "dateGranted": "2021-11-23",
@@ -311,7 +311,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2021-06-21",
@@ -347,7 +347,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2022-08-02",
@@ -383,7 +383,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2021-11-23",
@@ -419,7 +419,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2021-11-23",
@@ -455,7 +455,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2021-06-21",
@@ -491,7 +491,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-06-05",
           "dateGranted": "2022-08-02",
@@ -527,7 +527,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-09-12",
           "dateGranted": "2022-08-02",
@@ -563,7 +563,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-09-12",
           "dateGranted": "2021-11-23",

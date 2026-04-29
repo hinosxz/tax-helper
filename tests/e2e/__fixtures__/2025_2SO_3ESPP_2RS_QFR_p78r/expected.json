@@ -7,7 +7,7 @@
         {
           "symbol": "DDOG",
           "planType": "SO",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-09-11",
           "dateGranted": "2018-09-06",
@@ -42,7 +42,7 @@
         {
           "symbol": "DDOG",
           "planType": "SO",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-09-11",
           "dateGranted": "2018-09-06",
@@ -83,7 +83,7 @@
         {
           "symbol": "DDOG",
           "planType": "SO",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-09-11",
           "dateGranted": "2018-09-06",
@@ -118,7 +118,7 @@
         {
           "symbol": "DDOG",
           "planType": "SO",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-09-11",
           "dateGranted": "2018-09-06",
@@ -159,7 +159,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-11-22",
           "dateGranted": "2021-04-23",
@@ -194,7 +194,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-12-04",
           "dateGranted": "2021-04-23",
@@ -240,7 +240,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-11-22",
           "dateGranted": "2021-04-23",
@@ -275,7 +275,7 @@
         {
           "symbol": "DDOG",
           "planType": "RS",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-12-04",
           "dateGranted": "2021-04-23",
@@ -321,7 +321,7 @@
         {
           "symbol": "DDOG",
           "planType": "ESPP",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-11-19",
           "dateGranted": "2024-05-16",
@@ -356,7 +356,7 @@
         {
           "symbol": "DDOG",
           "planType": "ESPP",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-11-20",
           "dateGranted": "2024-05-16",
@@ -391,7 +391,7 @@
         {
           "symbol": "DDOG",
           "planType": "ESPP",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2024-11-22",
           "dateGranted": "2023-11-16",
