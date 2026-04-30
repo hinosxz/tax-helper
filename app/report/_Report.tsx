@@ -227,6 +227,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 hasSoldShares={gainsAndLosses.length > 0}
                 isPrintMode={isPrintMode}
                 taxes={taxes}
+                importedEventsCount={enrichedEvents.length}
               />
             ))
             .with({ taxResidency: "us" }, () => (

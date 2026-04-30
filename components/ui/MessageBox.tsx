@@ -1,6 +1,6 @@
 export interface MessageBoxProps {
   level: "info" | "success" | "warning" | "error";
-  title: string;
+  title: React.ReactNode;
   children?: React.ReactNode;
 }
 

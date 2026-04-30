@@ -2,6 +2,7 @@ import { Section } from "@/components/ui/Section";
 import type { FrTaxes } from "@/lib/taxes/taxes-rules-fr";
 import Image from "next/image";
 import { Link } from "@/components/ui/Link";
+import { MessageBox } from "@/components/ui/MessageBox";
 import { TaxReportBox } from "./_TaxReportBox";
 import { Currency } from "@/components/ui/Currency";
 import { Button } from "@/components/ui/Button";
@@ -10,6 +11,7 @@ import { match } from "ts-pattern";
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
+  InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { CopyableCell } from "./_CopyableCell";
@@ -18,13 +20,16 @@ interface ReportResidencyFrContentProps {
   hasSoldShares: boolean;
   isPrintMode: boolean;
   taxes: FrTaxes;
+  importedEventsCount: number;
 }
 
 export const ReportFr = ({
   hasSoldShares,
   isPrintMode,
   taxes,
+  importedEventsCount,
 }: ReportResidencyFrContentProps) => {
+  const declaredCount = taxes["Form 2074"]["Page 510"].length;
   return (
     <>
       <Section title="Select Income Source and Annexes">
@@ -206,12 +211,66 @@ export const ReportFr = ({
           />
         </div>
       </Section>
+      {isPrintMode ? null : (
+        <div className="print:hidden">
+          <MessageBox
+            level="info"
+            title={
+              <span className="inline-flex items-center gap-1">
+                <InformationCircleIcon className="h-5 w-5" />
+                Why are some sales not shown?
+              </span>
+            }
+          >
+            <p>
+              <strong>{declaredCount}</strong> of{" "}
+              <strong>{importedEventsCount}</strong> imported sale
+              {importedEventsCount !== 1 ? "s" : ""} should be declared in Form
+              2074.
+            </p>
+            <p className="mt-2">
+              Sales at a loss are handled differently depending on the type of
+              equity:
+            </p>
+            <ul className="list-disc pl-6 mt-2">
+              <li>
+                <strong>RSU sales at a loss</strong> are intentionally excluded.
+                Under French tax law (
+                <Link
+                  href="https://bofip.impots.gouv.fr/bofip/5654-PGP.html/identifiant%3DBOI-RSA-ES-20-20-20-20170724"
+                  isExternal
+                >
+                  BOI-RSA-ES-20-20-20
+                </Link>
+                ), any loss on RSU shares is deducted directly from the
+                acquisition gain — so there is no separate loss to declare in
+                Form 2074.
+              </li>
+              <li>
+                <strong>ESPP sales at a loss</strong> follow different rules and
+                may still appear.
+              </li>
+              <li>
+                <strong>
+                  USD gains that become losses after EUR conversion
+                </strong>{" "}
+                are also excluded. The exchange rates on the acquisition date
+                and sale date differ, so a gain in USD can turn into a loss in
+                EUR.
+              </li>
+            </ul>
+            <p className="mt-2">
+              If the number of transactions shown seems lower than expected,
+              check whether the missing sales fall into one of the categories
+              above by expanding the import validation section above.
+            </p>
+          </MessageBox>
+        </div>
+      )}
       <Section title="Form 2074">
         <div>
           <p>
-            You must report{" "}
-            <strong>{taxes["Form 2074"]["Page 510"].length}</strong> in this
-            form.
+            You must report <strong>{declaredCount}</strong> in this form.
           </p>
           <Image
             alt="Form 2074 - Page 1"
