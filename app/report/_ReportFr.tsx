@@ -1,10 +1,13 @@
 import { Section } from "@/components/ui/Section";
 import type { FrTaxes } from "@/lib/taxes/taxes-rules-fr";
+import type { TaxableEventFr } from "@/lib/taxes/taxable-event-fr";
 import Image from "next/image";
 import { Link } from "@/components/ui/Link";
 import { TaxReportBox } from "./_TaxReportBox";
 import { Currency } from "@/components/ui/Currency";
 import { Button } from "@/components/ui/Button";
+import { Drawer } from "@/components/ui/Drawer";
+import { PriceInEuro } from "@/components/ui/PriceInEuro";
 import { match } from "ts-pattern";
 
 import {
@@ -224,6 +227,7 @@ export const ReportFr = ({
         <div className="mt-6">
           <Page510 taxes={taxes} isPrintMode={isPrintMode} />
         </div>
+        <QualifiedAtLossSection taxes={taxes} isPrintMode={isPrintMode} />
         {isPrintMode ? null : (
           <div className="print:hidden mt-6">
             <div className="text-lg font-bold my-auto mb-2">
@@ -363,5 +367,123 @@ const Page510: React.FunctionComponent<{
         </div>
       )}
     </div>
+  );
+};
+
+const QualifiedAtLossSection: React.FunctionComponent<{
+  taxes: FrTaxes;
+  isPrintMode?: boolean;
+}> = ({ taxes, isPrintMode }) => {
+  const entries = taxes.explanations
+    .filter((e) => e.box === "1TT" || e.box === "1TZ")
+    .flatMap((e) => e.taxableEvents)
+    .filter(
+      (
+        e,
+      ): e is TaxableEventFr & { sell: NonNullable<TaxableEventFr["sell"]> } =>
+        !!e.isQualifiedAtLoss && e.sell !== null,
+    );
+
+  if (!entries.length) return null;
+
+  const planDescription = (planType: TaxableEventFr["planType"]) =>
+    planType === "SO" ? "Stock Options" : planType === "RS" ? "RSU" : "ESPP";
+
+  return (
+    <Drawer
+      title="Some events are not reported in Form 2074, expand to learn why"
+      forceOpen={isPrintMode}
+    >
+      <div className="mt-4 text-sm text-gray-700">
+        <p className="mb-3">
+          The following events are not reported in Form 2074 because the sale
+          price is below the vesting/exercise value. Per{" "}
+          <Link href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000026947022/2024-03-22/">
+            Art. 150-0 D §11 / Art. 80 quaterdecies V CGI
+          </Link>
+          , the loss is deducted from the acquisition gain (1TT/1TZ) instead.
+        </p>
+        <table className="border-collapse w-full">
+          <thead>
+            <tr className="bg-blue-300 *:p-2 text-left">
+              <th>Symbol</th>
+              <th>Date of sale</th>
+              <th>Qty</th>
+              <th>Sale price/share</th>
+              <th>Vesting price/share</th>
+              <th>Loss/share</th>
+              <th>Loss deducted from acquisition gain</th>
+            </tr>
+          </thead>
+          <tbody>
+            {entries.map((entry, i) => {
+              const sellEur = entry.sell.eur;
+              const vestingEur = entry.acquisition.symbolPriceEur;
+              const lossPerShare = sellEur - vestingEur;
+              const lossDeducted =
+                (vestingEur - sellEur) *
+                entry.quantity *
+                entry.acquisitionGain.fractionFr;
+              return (
+                <tr
+                  key={i}
+                  className="border-y-2 border-white bg-blue-100 *:p-2"
+                >
+                  <td>
+                    {entry.symbol} ({planDescription(entry.planType)})
+                  </td>
+                  <td>{entry.sell.date}</td>
+                  <td>{entry.quantity}</td>
+                  <td>
+                    <PriceInEuro
+                      eur={sellEur}
+                      usd={entry.sell.usd}
+                      rate={entry.sell.rate}
+                      date={entry.sell.date}
+                      precision={6}
+                    />
+                  </td>
+                  <td>
+                    <PriceInEuro
+                      eur={vestingEur}
+                      usd={entry.acquisition.symbolPrice}
+                      rate={entry.acquisition.rate}
+                      date={entry.acquisition.date}
+                      precision={6}
+                    />
+                  </td>
+                  <td className="text-red-700">
+                    <Currency unit="eur" value={lossPerShare} precision={6} />
+                  </td>
+                  <td className="text-red-700 font-bold">
+                    <Currency unit="eur" value={-lossDeducted} precision={2} />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+          <tfoot>
+            <tr className="bg-blue-200 *:p-2 font-bold">
+              <td colSpan={6}>Total loss deducted from acquisition gain</td>
+              <td className="text-red-700">
+                <Currency
+                  unit="eur"
+                  value={
+                    -entries.reduce((sum, entry) => {
+                      const lossDeducted =
+                        (entry.acquisition.symbolPriceEur - entry.sell.eur) *
+                        entry.quantity *
+                        entry.acquisitionGain.fractionFr;
+                      return sum + lossDeducted;
+                    }, 0)
+                  }
+                  precision={2}
+                />
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </Drawer>
   );
 };

@@ -43,7 +43,8 @@
             "perShare": 107.764581,
             "total": 16595.745474,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         },
         {
           "symbol": "DDOG",
@@ -79,7 +80,8 @@
             "perShare": 107.76467,
             "total": 10345.408319999999,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         },
         {
           "symbol": "DDOG",
@@ -115,7 +117,8 @@
             "perShare": 107.764606,
             "total": 10991.989812,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         },
         {
           "symbol": "DDOG",
@@ -259,7 +262,8 @@
             "perShare": 118.697729,
             "total": 11394.981984,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         },
         {
           "symbol": "DDOG",
@@ -295,7 +299,8 @@
             "perShare": 118.697729,
             "total": 12107.168357999999,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         }
       ]
     },
@@ -342,7 +347,8 @@
             "perShare": 107.764581,
             "total": 16595.745474,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         },
         {
           "symbol": "DDOG",
@@ -378,7 +384,8 @@
             "perShare": 107.76467,
             "total": 10345.408319999999,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         },
         {
           "symbol": "DDOG",
@@ -414,7 +421,8 @@
             "perShare": 107.764606,
             "total": 10991.989812,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         },
         {
           "symbol": "DDOG",
@@ -558,7 +566,8 @@
             "perShare": 118.697729,
             "total": 11394.981984,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         },
         {
           "symbol": "DDOG",
@@ -594,7 +603,8 @@
             "perShare": 118.697729,
             "total": 12107.168357999999,
             "fractionFr": 1
-          }
+          },
+          "isQualifiedAtLoss": true
         }
       ]
     },

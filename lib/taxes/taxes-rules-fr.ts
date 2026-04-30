@@ -528,7 +528,8 @@ export const getFrTaxesForFrQualifiedSo = (
         : isSellAtLoss
           ? {
               // Sale is at loss, use sell price as acquisition price given the
-              // plan is qualified
+              // plan is qualified. Per Art. 150-0 D §11 CGI the capital loss is
+              // deducted from the acquisition gain (1TT) instead.
               acquisitionValueUsd: event.proceeds,
               acquisitionValueRate: event.rateSold,
               acquisitionCostUsd: event.acquisitionCost,
@@ -543,6 +544,9 @@ export const getFrTaxesForFrQualifiedSo = (
               explainAcquisitionValue: `Use ${event.symbol} price at opening on day of exercise.`,
             },
     );
+    if (isSellAtLoss) {
+      taxableEvent.isQualifiedAtLoss = true;
+    }
     taxableEvents.push(taxableEvent);
 
     // Add acquisition gains information
@@ -614,7 +618,8 @@ export const getFrTaxesForFrQualifiedRsu = (
         : isSellAtLoss
           ? {
               // Sale is at loss, use sell price as acquisition price given this
-              // is a qualified plan
+              // is a qualified plan. Per Art. 80 quaterdecies V CGI the capital
+              // loss is deducted from the acquisition gain (1TZ/1TT) instead.
               acquisitionValueUsd: event.proceeds,
               acquisitionValueRate: event.rateSold,
               acquisitionCostUsd: event.acquisitionCost,
@@ -629,7 +634,9 @@ export const getFrTaxesForFrQualifiedRsu = (
               explainAcquisitionValue: `Use ${event.symbol} price at opening on vesting day.`,
             },
     );
-
+    if (isSellAtLoss) {
+      taxableEvent.isQualifiedAtLoss = true;
+    }
     taxableEvents.push(taxableEvent);
     // Add acquisition gains information
     acquisitionGainEur += taxableEvent.acquisitionGain.total;
