@@ -30,3 +30,4 @@ jobs:
         env:
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
       - run: npm test
+      - run: npm run test:e2e
