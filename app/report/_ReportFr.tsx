@@ -377,7 +377,12 @@ const QualifiedAtLossSection: React.FunctionComponent<{
   const entries = taxes.explanations
     .filter((e) => e.box === "1TT" || e.box === "1TZ")
     .flatMap((e) => e.taxableEvents)
-    .filter((e) => e.isQualifiedAtLoss);
+    .filter(
+      (
+        e,
+      ): e is TaxableEventFr & { sell: NonNullable<TaxableEventFr["sell"]> } =>
+        !!e.isQualifiedAtLoss && e.sell !== null,
+    );
 
   if (!entries.length) return null;
 
@@ -412,7 +417,7 @@ const QualifiedAtLossSection: React.FunctionComponent<{
           </thead>
           <tbody>
             {entries.map((entry, i) => {
-              const sellEur = entry.sell!.eur;
+              const sellEur = entry.sell.eur;
               const vestingEur = entry.acquisition.symbolPriceEur;
               const lossPerShare = sellEur - vestingEur;
               const lossDeducted =
@@ -427,14 +432,14 @@ const QualifiedAtLossSection: React.FunctionComponent<{
                   <td>
                     {entry.symbol} ({planDescription(entry.planType)})
                   </td>
-                  <td>{entry.sell!.date}</td>
+                  <td>{entry.sell.date}</td>
                   <td>{entry.quantity}</td>
                   <td>
                     <PriceInEuro
                       eur={sellEur}
-                      usd={entry.sell!.usd}
-                      rate={entry.sell!.rate}
-                      date={entry.sell!.date}
+                      usd={entry.sell.usd}
+                      rate={entry.sell.rate}
+                      date={entry.sell.date}
                       precision={6}
                     />
                   </td>
@@ -466,7 +471,7 @@ const QualifiedAtLossSection: React.FunctionComponent<{
                   value={
                     -entries.reduce((sum, entry) => {
                       const lossDeducted =
-                        (entry.acquisition.symbolPriceEur - entry.sell!.eur) *
+                        (entry.acquisition.symbolPriceEur - entry.sell.eur) *
                         entry.quantity *
                         entry.acquisitionGain.fractionFr;
                       return sum + lossDeducted;
