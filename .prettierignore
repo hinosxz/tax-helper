@@ -5,3 +5,4 @@ public/
 .next/
 node_modules/
 .env*
+**/*.xlsx

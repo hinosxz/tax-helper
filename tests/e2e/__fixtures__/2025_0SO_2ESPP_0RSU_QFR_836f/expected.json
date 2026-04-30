@@ -1,0 +1,144 @@
+{
+  "explanations": [
+    {
+      "box": "1TT",
+      "description": "Acquisition gains from Qualified SO sales. (0.00€)",
+      "taxableEvents": []
+    },
+    {
+      "box": "1AJ",
+      "description": "Acquisition gains from ESPP sales are due the year of acquisition. Already reported by your employer and not yet available in this tool.",
+      "taxableEvents": []
+    },
+    {
+      "box": "3VG",
+      "description": "Capital gains from ESPP sales (-907.00€ as computed by form 2074)",
+      "taxableEvents": [
+        {
+          "symbol": "DDOG",
+          "planType": "ESPP",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2025-11-18",
+          "dateGranted": "2025-05-16",
+          "quantity": 8,
+          "sell": {
+            "usd": 177.52,
+            "rate": 1.159,
+            "eur": 153.166522,
+            "date": "2025-11-18"
+          },
+          "acquisition": {
+            "valueUsd": 185.0105,
+            "valueEur": 158.834563,
+            "costUsd": 185.0105,
+            "costEur": 158.834563,
+            "symbolPrice": 181.17999267578125,
+            "symbolPriceEur": 155.54601,
+            "rate": 1.1648,
+            "date": "2025-11-14",
+            "description": "Use ESPP value as defined by e-trade for acquisition value."
+          },
+          "capitalGain": {
+            "perShare": -5.673478000000017,
+            "total": -46
+          },
+          "acquisitionGain": {
+            "perShare": 0,
+            "total": 0,
+            "fractionFr": 1
+          }
+        },
+        {
+          "symbol": "DDOG",
+          "planType": "ESPP",
+          "qualifiedIn": "fr",
+          "type": "sell",
+          "date": "2025-11-24",
+          "dateGranted": "2025-05-16",
+          "quantity": 41,
+          "sell": {
+            "usd": 159.1,
+            "rate": 1.1544,
+            "eur": 137.820512,
+            "date": "2025-11-24"
+          },
+          "acquisition": {
+            "valueUsd": 185.010012,
+            "valueEur": 158.834144,
+            "costUsd": 185.010012,
+            "costEur": 158.834144,
+            "symbolPrice": 181.17999267578125,
+            "symbolPriceEur": 155.54601,
+            "rate": 1.1648,
+            "date": "2025-11-14",
+            "description": "Use ESPP value as defined by e-trade for acquisition value."
+          },
+          "capitalGain": {
+            "perShare": -21.019487999999996,
+            "total": -861
+          },
+          "acquisitionGain": {
+            "perShare": 0,
+            "total": 0,
+            "fractionFr": 1
+          }
+        }
+      ]
+    }
+  ],
+  "1TT": 0,
+  "1TZ": 0,
+  "1WZ": 0,
+  "1AJ": 0,
+  "3VG": -907,
+  "3VH": 0,
+  "Form 2074": {
+    "Page 510": [
+      {
+        "511": "DDOG (ESPP)",
+        "512": "18/11/2025",
+        "514": 153.166522,
+        "515": 8,
+        "516": 1225,
+        "517": 0,
+        "518": 1225,
+        "520": 158.84,
+        "521": 1271,
+        "522": 0,
+        "523": 1271,
+        "524": -46,
+        "525": false,
+        "526": 0
+      },
+      {
+        "511": "DDOG (ESPP)",
+        "512": "24/11/2025",
+        "514": 137.820512,
+        "515": 41,
+        "516": 5651,
+        "517": 0,
+        "518": 5651,
+        "520": 158.84,
+        "521": 6512,
+        "522": 0,
+        "523": 6512,
+        "524": -861,
+        "525": false,
+        "526": 0
+      }
+    ],
+    "Page 900": {
+      "903": {
+        "gains": 0,
+        "losses": 907
+      }
+    },
+    "page 11": {
+      "1133": {
+        "gains": 0,
+        "losses": 907
+      }
+    }
+  }
+}

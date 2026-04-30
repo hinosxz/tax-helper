@@ -41,3 +41,23 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the app by modifying any component located in `app/`. The page auto-updates as you edit the files.
+
+### Testing
+
+#### Unit tests
+
+```bash
+npm test
+```
+
+Covers date helpers, number formatting, and the French tax computation rules.
+
+#### E2E tests
+
+E2E tests run the full pipeline — parse an actual E-Trade xlsx file, apply French tax rules, and compare the output against a committed golden file.
+
+```bash
+npm run test:e2e
+```
+
+See [`tests/e2e/README.md`](tests/e2e/README.md) for how to add new cases or refresh fixture data.
