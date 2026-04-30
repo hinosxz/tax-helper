@@ -190,7 +190,7 @@ export const ReportFr = ({
           />
           <TaxReportBox
             id="3VG"
-            title="Total net taxable capital gains""
+            title="Total net taxable capital gains"
             amount={taxes["3VG"]}
             explanations={taxes.explanations}
             gainType="capital"
