@@ -2,8 +2,8 @@ export interface TaxableEventFr {
   /** Symbol of the stock */
   symbol: string;
   planType: "ESPP" | "RS" | "SO";
-  /** What kind of qualified plan is it? */
-  qualifiedIn: "fr" | "us";
+  /** Whether this plan is qualified under French rules. */
+  isQualified: boolean;
   /** Taxable event type */
   type: "vesting" | "sell" | "exercise";
   /**

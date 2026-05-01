@@ -73,7 +73,7 @@ describe("parseEtradeGL", () => {
       adjustedCost: 80,
       acquisitionCost: 0,
       proceeds: 95,
-      qualifiedIn: "fr",
+      isQualified: true,
     });
   });
 
@@ -100,11 +100,11 @@ describe("parseEtradeGL", () => {
       symbol: "DDOG",
       planType: "SO",
       quantity: 100,
-      qualifiedIn: "fr",
+      isQualified: true,
     });
   });
 
-  it("marks Qualified Plan value as US-qualified", async () => {
+  it("marks Qualified Plan value as not French-qualified", async () => {
     const file = buildXlsx(HEADERS_2025, [
       [
         "Sell",
@@ -122,7 +122,7 @@ describe("parseEtradeGL", () => {
       ],
     ]);
     const result = await parseEtradeGL(file);
-    expect(result[0].qualifiedIn).toBe("us");
+    expect(result[0].isQualified).toBe(false);
   });
 
   it("rejects when a required field is missing", async () => {

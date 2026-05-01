@@ -13,10 +13,10 @@ import type { GainAndLossEventWithRates } from "@/lib/taxes/taxes-rules-fr";
 import { Section } from "@/components/ui/Section";
 import {
   isEspp,
-  isFrQualifiedRsu,
-  isFrQualifiedSo,
-  isUsQualifiedRsu,
-  isUsQualifiedSo,
+  isNonQualifiedRsu,
+  isNonQualifiedSo,
+  isQualifiedRsu,
+  isQualifiedSo,
 } from "@/lib/etrade/filters";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { MessageBox } from "@/components/ui/MessageBox";
@@ -72,11 +72,11 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
 
   const counts = useMemo(
     () => ({
-      frQualifiedSo: gainsAndLosses.filter(isFrQualifiedSo).length,
-      frQualifiedRsu: gainsAndLosses.filter(isFrQualifiedRsu).length,
+      frQualifiedSo: gainsAndLosses.filter(isQualifiedSo).length,
+      frQualifiedRsu: gainsAndLosses.filter(isQualifiedRsu).length,
       espp: gainsAndLosses.filter(isEspp).length,
-      usQualifiedSo: gainsAndLosses.filter(isUsQualifiedSo).length,
-      usQualifiedRsu: gainsAndLosses.filter(isUsQualifiedRsu).length,
+      frNonQualifiedSo: gainsAndLosses.filter(isNonQualifiedSo).length,
+      frNonQualifiedRsu: gainsAndLosses.filter(isNonQualifiedRsu).length,
     }),
     [gainsAndLosses],
   );
@@ -154,6 +154,11 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
             setShowModal={setShowFractionAssignmentModal}
             data={gainsAndLosses}
             confirm={setFractionsFrIncome}
+            setIsQualified={(isQualified) =>
+              setGainsAndLosses((prev) =>
+                prev.map((event) => ({ ...event, isQualified })),
+              )
+            }
             state={match<
               { isFetching: boolean; hasError: boolean },
               "loading" | "error" | "ok"
@@ -211,10 +216,10 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 <dd>{counts.frQualifiedRsu} events</dd>
                 <dt className="font-bold">ESPP</dt>
                 <dd>{counts.espp} events</dd>
-                <dt className="font-bold">US qualified SO</dt>
-                <dd>{counts.usQualifiedSo} events</dd>
-                <dt className="font-bold">US qualified RSU</dt>
-                <dd>{counts.usQualifiedRsu} events</dd>
+                <dt className="font-bold">FR non qualified SO</dt>
+                <dd>{counts.frNonQualifiedSo} events</dd>
+                <dt className="font-bold">FR non qualified RSU</dt>
+                <dd>{counts.frNonQualifiedRsu} events</dd>
               </dl>
             </div>
           </Section>

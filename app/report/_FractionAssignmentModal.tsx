@@ -13,6 +13,7 @@ interface FractionAssignmentModalProps {
   showModal: boolean;
   setShowModal: (show: boolean) => void;
   confirm: (fractions: number[]) => void;
+  setIsQualified: (value: boolean) => void;
   state: "loading" | "error" | "ok";
 }
 
@@ -39,12 +40,14 @@ export const FractionAssignmentModal = ({
   showModal,
   setShowModal,
   confirm,
+  setIsQualified,
   state,
 }: FractionAssignmentModalProps) => {
   // % are the same for each date acquired / date granted pair.
   const [pctMap, setPctMap] = useState<Map<string, number>>(
     new Map<string, number>(),
   );
+  const isQualified = data[0]?.isQualified ?? true;
 
   // Reset % if data changes
   useEffect(() => {
@@ -82,6 +85,17 @@ export const FractionAssignmentModal = ({
         {match(state)
           .with("ok", () => (
             <>
+              <div className="flex gap-2 items-baseline">
+                <input
+                  type="checkbox"
+                  id="isQualified"
+                  checked={isQualified}
+                  onChange={() => setIsQualified(!isQualified)}
+                />
+                <label htmlFor="isQualified">
+                  Is this a FR Qualified Plan?
+                </label>
+              </div>
               <div className="grid grid-cols-3 gap-4">
                 {["Grant Date", "Acquisition Date", "% FR"].map((h) => (
                   <div key={h} className="font-semibold">

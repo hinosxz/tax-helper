@@ -5,10 +5,10 @@ import type {
 } from "@/lib/etrade/etrade.types";
 import {
   isEspp,
-  isFrQualifiedRsu,
-  isFrQualifiedSo,
-  isUsQualifiedRsu,
-  isUsQualifiedSo,
+  isNonQualifiedRsu,
+  isNonQualifiedSo,
+  isQualifiedRsu,
+  isQualifiedSo,
 } from "@/lib/etrade/filters";
 import {
   floorNumber,
@@ -447,7 +447,7 @@ const getFrTaxableEventFromGainsAndLossEvent = (
   return {
     symbol: event.symbol,
     planType: event.planType,
-    qualifiedIn: "fr",
+    isQualified: event.isQualified,
     // ETrade Gans And Losses only lists sell events
     type: "sell",
     date: event.dateSold,
@@ -495,7 +495,7 @@ export const getFrTaxesForFrQualifiedSo = (
   },
   taxes: FrTaxes,
 ): FrTaxes => {
-  const qualifiedSo = gainsAndLosses.filter(isFrQualifiedSo);
+  const qualifiedSo = gainsAndLosses.filter(isQualifiedSo);
   // Explanations for the computations
   const explanations: FrTaxesExplain[] = [];
   // buffers for acquisition gains and capital gains
@@ -577,7 +577,7 @@ export const getFrTaxesForFrQualifiedRsu = (
   },
   taxes: FrTaxes,
 ): FrTaxes => {
-  const qualifiedRsu = gainsAndLosses.filter(isFrQualifiedRsu);
+  const qualifiedRsu = gainsAndLosses.filter(isQualifiedRsu);
   // Explanations for the computations
   const explanations: FrTaxesExplain[] = [];
   // buffers for acquisition gains and capital gains
@@ -755,7 +755,7 @@ export const getFrTaxesForNonFrQualifiedSo = (
 ): FrTaxes => {
   // Compute capital gains from gainsAndLosses
   const nonQualifiedSo = gainsAndLosses.filter((event) =>
-    isUsQualifiedSo(event),
+    isNonQualifiedSo(event),
   );
   const taxableEvents: TaxableEventFr[] = [];
 
@@ -821,7 +821,7 @@ export const getFrTaxesForNonFrQualifiedRsu = (
   taxes: FrTaxes,
 ): FrTaxes => {
   const nonQualifiedRsu = gainsAndLosses.filter((event) =>
-    isUsQualifiedRsu(event),
+    isNonQualifiedRsu(event),
   );
   const taxableEvents: TaxableEventFr[] = [];
 

@@ -1,23 +1,23 @@
 import { createEtradeGLFilter } from "@/lib/etrade/parse-etrade-gl";
 
-export const isFrQualifiedSo = createEtradeGLFilter({
+export const isQualifiedSo = createEtradeGLFilter({
   planType: "SO",
-  qualifiedIn: "fr",
+  isQualified: true,
 });
-export const isUsQualifiedSo = createEtradeGLFilter({
+export const isNonQualifiedSo = createEtradeGLFilter({
   planType: "SO",
-  qualifiedIn: "us",
+  isQualified: false,
 });
 
 export const isEspp = createEtradeGLFilter({
   planType: "ESPP",
 });
 
-export const isFrQualifiedRsu = createEtradeGLFilter({
+export const isQualifiedRsu = createEtradeGLFilter({
   planType: "RS",
-  qualifiedIn: "fr",
+  isQualified: true,
 });
-export const isUsQualifiedRsu = createEtradeGLFilter({
+export const isNonQualifiedRsu = createEtradeGLFilter({
   planType: "RS",
-  qualifiedIn: "us",
+  isQualified: false,
 });

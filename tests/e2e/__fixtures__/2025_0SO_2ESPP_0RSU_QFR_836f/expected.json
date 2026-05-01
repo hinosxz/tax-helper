@@ -17,7 +17,7 @@
         {
           "symbol": "DDOG",
           "planType": "ESPP",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-11-18",
           "dateGranted": "2025-05-16",
@@ -52,7 +52,7 @@
         {
           "symbol": "DDOG",
           "planType": "ESPP",
-          "qualifiedIn": "fr",
+          "isQualified": true,
           "type": "sell",
           "date": "2025-11-24",
           "dateGranted": "2025-05-16",

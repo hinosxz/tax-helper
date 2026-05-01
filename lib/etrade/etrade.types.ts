@@ -72,8 +72,8 @@ export interface GainAndLossEvent {
   dateGranted: string;
   dateAcquired: string;
   dateSold: string;
-  /** What kind of qualified plan is it? */
-  qualifiedIn: "fr" | "us";
+  /** Whether this plan is qualified under French tax law. */
+  isQualified: boolean;
 }
 
 export interface BenefitHistoryEvent {

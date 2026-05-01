@@ -44,7 +44,7 @@ const parseEtradeGLRow = (row: GainAndLossEventXlsxRow): GainAndLossEvent => {
   );
   // For now consider that a non-US qualified plan is FR qualified.
   // FIXME: this is actually wrong, ETrade doesn't fill in the "Qualified Plan" column for qualified RSU plans.
-  const qualifiedIn = row["Qualified Plan"] === "Qualified" ? "us" : "fr";
+  const isQualified = row["Qualified Plan"] !== "Qualified";
 
   // Make sure each row is valid
   return {
@@ -61,7 +61,7 @@ const parseEtradeGLRow = (row: GainAndLossEventXlsxRow): GainAndLossEvent => {
       purchaseDateFairMktValue,
       "purchaseDateFairMktValue",
     ),
-    qualifiedIn: ensureDefined(qualifiedIn, "qualifiedIn"),
+    isQualified: ensureDefined(isQualified, "isQualified"),
   };
 };
 
@@ -95,17 +95,17 @@ export const parseEtradeGL = async (
  * report:
  *
  * ```ts
- * const isFrQualifiedStock = createEtradeGLFilter({
+ * const isQualifiedStock = createEtradeGLFilter({
  *   planType: "SO",
- *   qualifiedIn: "fr",
+ *   isQualified: true,
  * });
  *
- * const frQualifiedStockEvents = gainAndLossEvents.filter(isFrQualifiedStock);
+ * const frQualifiedStockEvents = gainAndLossEvents.filter(isQualifiedStock);
  * ```
  */
 export const createEtradeGLFilter = (filter: {
   planType?: PlanType;
-  qualifiedIn?: "fr" | "us";
+  isQualified?: boolean;
 }) => {
   const filterKeys = Object.keys(filter) as (keyof typeof filter)[];
   return function filterEtradeGLFilter(event: GainAndLossEvent): boolean {
