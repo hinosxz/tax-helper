@@ -341,6 +341,19 @@ describe("getFrTaxesForFrQualifiedSo", () => {
     // cost = 20 / 1.12 = 17.8571428571
     // gain per share = 79.6460176991 - 17.8571428571 = 61.7888748419
     expect(taxes["1TT"]).toEqual(617.88875);
+
+    // At-loss entry is flagged on the taxable event inside explanations
+    const atLossEvents = taxes.explanations
+      .filter((e) => e.box === "1TT")
+      .flatMap((e) => e.taxableEvents)
+      .filter((e) => e.isQualifiedAtLoss);
+    expect(atLossEvents).toHaveLength(1);
+    const atLoss = atLossEvents[0];
+    expect(atLoss.symbol).toEqual("DDOG");
+    // sell price = acquisition value (proceeds / rateSold)
+    expect(atLoss.acquisition.valueEur.toFixed(6)).toEqual("79.646017");
+    // vesting price stored separately
+    expect(atLoss.acquisition.symbolPriceEur.toFixed(6)).toEqual("89.285714");
   });
 
   it("sell with gains", () => {
@@ -471,6 +484,19 @@ describe("getFrTaxesForFrQualifiedRsu()", () => {
     expect(taxes["1TZ"]).toEqual(398.230085);
     expect(taxes["1TT"]).toEqual(0);
     expect(taxes["1WZ"]).toEqual(398.230085);
+
+    // At-loss entry is flagged on the taxable event inside explanations
+    const atLossEvents = taxes.explanations
+      .filter((e) => e.box === "1TZ")
+      .flatMap((e) => e.taxableEvents)
+      .filter((e) => e.isQualifiedAtLoss);
+    expect(atLossEvents).toHaveLength(1);
+    const atLoss = atLossEvents[0];
+    expect(atLoss.symbol).toEqual("DDOG");
+    // sell price = acquisition value (proceeds / rateSold)
+    expect(atLoss.acquisition.valueEur.toFixed(6)).toEqual("79.646017");
+    // vesting price stored separately
+    expect(atLoss.acquisition.symbolPriceEur.toFixed(6)).toEqual("89.285714");
   });
 
   it("sell with gains", () => {

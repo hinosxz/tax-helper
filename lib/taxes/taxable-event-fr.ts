@@ -68,4 +68,11 @@ export interface TaxableEventFr {
     total: number;
     fractionFr: number;
   };
+  /**
+   * True when this is a FR-qualified plan sold at a loss (sell price < vesting/exercise price).
+   * Per Art. 150-0 D §11 and Art. 80 quaterdecies V CGI, the capital loss is
+   * deducted from the acquisition gain (1TT/1TZ) rather than entering the
+   * general capital-gains pool (3VG / Form 2074 cell 524).
+   */
+  isQualifiedAtLoss?: boolean;
 }
