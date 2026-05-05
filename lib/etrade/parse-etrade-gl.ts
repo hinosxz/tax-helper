@@ -85,7 +85,26 @@ export const parseEtradeGL = async (
     }
   }
 
-  return Promise.resolve(data);
+  return Promise.resolve(groupEtradeGL(data));
+};
+
+/**
+ * Group G&L entries by grant date, vest date, sell date, and sell price.
+ * Entries sharing the same key are merged by summing their quantities.
+ */
+export const groupEtradeGL = (
+  events: GainAndLossEvent[],
+): GainAndLossEvent[] => {
+  const groups = Map.groupBy(
+    events,
+    (event) =>
+      `${event.planType}|${event.symbol}|${event.dateGranted}|${event.dateAcquired}|${event.dateSold}|${event.proceeds}`,
+  );
+
+  return Array.from(groups.values()).map((group) => ({
+    ...group[0],
+    quantity: group.reduce((sum, event) => sum + event.quantity, 0),
+  }));
 };
 
 /**
