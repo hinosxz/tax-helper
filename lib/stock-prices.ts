@@ -1,5 +1,5 @@
 import type { SymbolDailyResponse } from "./symbol-daily.types";
-import { isNill } from "./is-nill";
+import { isNil } from "./is-nil";
 
 const YAHOO_FINANCE_API_URL =
   "https://query1.finance.yahoo.com/v8/finance/chart";
@@ -56,7 +56,7 @@ export const parseStockPricesResponse = (
   for (let i = 0; i < timestamp.length; i++) {
     const o = open[i];
     const c = close[i];
-    if (isNill(o) || isNill(c)) continue;
+    if (isNil(o) || isNil(c)) continue;
     const date = new Date(timestamp[i] * 1000).toISOString().slice(0, 10);
     data[date] = { opening: o, closing: c };
   }
