@@ -4,12 +4,16 @@ import { isNill } from "./is-nill";
 const YAHOO_FINANCE_API_URL =
   "https://query1.finance.yahoo.com/v8/finance/chart";
 
-const PRICE_HISTORY_START = Math.floor(new Date("2010-01-01").getTime() / 1000);
+export const PRICE_HISTORY_START = Math.floor(
+  new Date("2010-01-01").getTime() / 1000,
+);
 
-export const buildStockPricesUrl = (symbol: string): string => {
-  const period2 = Math.floor(Date.now() / 1000);
-  return `${YAHOO_FINANCE_API_URL}/${encodeURIComponent(symbol)}?interval=1d&period1=${PRICE_HISTORY_START}&period2=${period2}`;
-};
+export const buildStockPricesUrl = (
+  symbol: string,
+  period1 = PRICE_HISTORY_START,
+  period2 = Math.floor(Date.now() / 1000),
+): string =>
+  `${YAHOO_FINANCE_API_URL}/${encodeURIComponent(symbol)}?interval=1d&period1=${period1}&period2=${period2}`;
 
 export interface YahooFinanceResponse {
   chart: {

@@ -233,7 +233,10 @@ function resolveRate(date: string, allRates: Record<string, number>): number {
 // Yahoo Finance symbol prices
 // ---------------------------------------------------------------------------
 
-import type { YahooFinanceResponse } from "../../lib/stock-prices";
+import {
+  buildStockPricesUrl,
+  type YahooFinanceResponse,
+} from "../../lib/stock-prices";
 import type { SymbolDailyResponse } from "../../lib/symbol-daily.types";
 
 async function fetchSymbolPrices(
@@ -248,14 +251,7 @@ async function fetchSymbolPrices(
     new Date(Date.UTC(y, m - 1, d + 1)).getTime() / 1000,
   );
 
-  const url = new URL(
-    `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
-  );
-  url.searchParams.set("interval", "1d");
-  url.searchParams.set("period1", String(period1));
-  url.searchParams.set("period2", String(period2));
-
-  const res = await fetch(url.toString(), {
+  const res = await fetch(buildStockPricesUrl(symbol, period1, period2), {
     headers: { "User-Agent": "Mozilla/5.0" },
   });
   if (!res.ok) {
