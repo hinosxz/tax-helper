@@ -1,17 +1,18 @@
 import type { SymbolDailyResponse } from "./symbol-daily.types";
 import { isNil } from "./is-nil";
+import { ONE_SECOND } from "./constants";
 
 const YAHOO_FINANCE_API_URL =
   "https://query1.finance.yahoo.com/v8/finance/chart";
 
 export const PRICE_HISTORY_START = Math.floor(
-  new Date("2010-01-01").getTime() / 1000,
+  new Date("2010-01-01").getTime() / ONE_SECOND,
 );
 
 export const buildStockPricesUrl = (
   symbol: string,
   period1 = PRICE_HISTORY_START,
-  period2 = Math.floor(Date.now() / 1000),
+  period2 = Math.floor(Date.now() / ONE_SECOND),
 ): string =>
   `${YAHOO_FINANCE_API_URL}/${encodeURIComponent(symbol)}?interval=1d&period1=${period1}&period2=${period2}`;
 
@@ -40,13 +41,13 @@ export const parseStockPricesResponse = (
     );
   }
 
-  const result = response.chart.result?.[0];
+  const result = response.chart.result?.at(0);
   if (!result) {
     throw new Error(`No price data returned for symbol ${symbol}.`);
   }
 
   const { timestamp, indicators } = result;
-  const quote = indicators.quote[0];
+  const quote = indicators.quote.at(0);
   if (!quote) {
     throw new Error(`No price indicator data returned for symbol ${symbol}.`);
   }
@@ -57,7 +58,7 @@ export const parseStockPricesResponse = (
     const o = open[i];
     const c = close[i];
     if (isNil(o) || isNil(c)) continue;
-    const date = new Date(timestamp[i] * 1000).toISOString().slice(0, 10);
+    const date = new Date(timestamp[i] * ONE_SECOND).toISOString().slice(0, 10);
     data[date] = { opening: o, closing: c };
   }
 
