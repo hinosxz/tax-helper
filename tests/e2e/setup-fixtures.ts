@@ -233,20 +233,10 @@ function resolveRate(date: string, allRates: Record<string, number>): number {
 // Yahoo Finance symbol prices
 // ---------------------------------------------------------------------------
 
+import type { YahooFinanceResponse } from "../../lib/stock-prices";
+
 interface SymbolDailyResponse {
   [date: string]: { opening: number; closing: number };
-}
-
-interface YahooFinanceResponse {
-  chart: {
-    result?: Array<{
-      timestamp: number[];
-      indicators: {
-        quote: Array<{ open: (number | null)[]; close: (number | null)[] }>;
-      };
-    }>;
-    error?: { message: string };
-  };
 }
 
 async function fetchSymbolPrices(
@@ -277,7 +267,7 @@ async function fetchSymbolPrices(
 
   const data = (await res.json()) as YahooFinanceResponse;
   if (data.chart.error)
-    throw new Error(`Yahoo Finance: ${data.chart.error.message}`);
+    throw new Error(`Yahoo Finance: ${data.chart.error.description}`);
   if (!data.chart.result?.[0])
     throw new Error(`Yahoo Finance: no data for ${symbol}`);
 
