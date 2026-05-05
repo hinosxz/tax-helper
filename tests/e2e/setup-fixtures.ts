@@ -234,10 +234,7 @@ function resolveRate(date: string, allRates: Record<string, number>): number {
 // ---------------------------------------------------------------------------
 
 import type { YahooFinanceResponse } from "../../lib/stock-prices";
-
-interface SymbolDailyResponse {
-  [date: string]: { opening: number; closing: number };
-}
+import type { SymbolDailyResponse } from "../../lib/symbol-daily.types";
 
 async function fetchSymbolPrices(
   symbol: string,
