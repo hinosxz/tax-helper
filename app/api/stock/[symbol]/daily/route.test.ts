@@ -47,6 +47,7 @@ describe("GET /api/stock/[symbol]/daily", () => {
 
     expect(res.status).toBe(200);
     expect(body["2023-06-15"]).toEqual({ opening: 95, closing: 95.5 });
+    expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining("/AAPL?"));
   });
 
   it("skips entries with null open or close", async () => {
