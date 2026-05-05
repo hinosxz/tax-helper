@@ -6,7 +6,7 @@ const YAHOO_FINANCE_API_URL =
 
 export const buildStockPricesUrl = (symbol: string): string => {
   const period2 = Math.floor(Date.now() / 1000);
-  return `${YAHOO_FINANCE_API_URL}/${symbol}?interval=1d&period1=0&period2=${period2}`;
+  return `${YAHOO_FINANCE_API_URL}/${encodeURIComponent(symbol)}?interval=1d&period1=0&period2=${period2}`;
 };
 
 export interface YahooFinanceResponse {
