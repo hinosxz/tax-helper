@@ -7,11 +7,12 @@ const apiUrl = "/api/stock/{symbol}/daily";
 const fetchSymbolDaily = async (
   symbol: string,
 ): Promise<SymbolDailyResponse> => {
-  return fetch(`${apiUrl.replace("{symbol}", symbol)}`)
-    .then((res) => res.json())
-    .then((response: SymbolDailyResponse) => {
-      return response;
-    });
+  return fetch(`${apiUrl.replace("{symbol}", symbol)}`).then((res) => {
+    if (!res.ok) {
+      throw new Error(`Failed to fetch ${symbol} prices: ${res.status}`);
+    }
+    return res.json();
+  });
 };
 
 interface UseSymbolDailyResponse {
