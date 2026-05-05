@@ -260,9 +260,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
               </li>
               <li>
                 Stock prices are fetched from&nbsp;
-                <Link href="https://www.alphavantage.co/documentation/#daily">
-                  Alphavantage TIME_SERIES_DAILY
-                </Link>
+                <Link href="https://finance.yahoo.com/">Yahoo Finance</Link>
               </li>
             </ul>
           </Section>

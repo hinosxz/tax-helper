@@ -233,21 +233,11 @@ function resolveRate(date: string, allRates: Record<string, number>): number {
 // Yahoo Finance symbol prices
 // ---------------------------------------------------------------------------
 
-interface SymbolDailyResponse {
-  [date: string]: { opening: number; closing: number };
-}
-
-interface YahooFinanceResponse {
-  chart: {
-    result?: Array<{
-      timestamp: number[];
-      indicators: {
-        quote: Array<{ open: (number | null)[]; close: (number | null)[] }>;
-      };
-    }>;
-    error?: { message: string };
-  };
-}
+import {
+  buildStockPricesUrl,
+  type YahooFinanceResponse,
+} from "../../lib/stock-prices";
+import type { SymbolDailyResponse } from "../../lib/symbol-daily.types";
 
 async function fetchSymbolPrices(
   symbol: string,
@@ -261,14 +251,7 @@ async function fetchSymbolPrices(
     new Date(Date.UTC(y, m - 1, d + 1)).getTime() / 1000,
   );
 
-  const url = new URL(
-    `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
-  );
-  url.searchParams.set("interval", "1d");
-  url.searchParams.set("period1", String(period1));
-  url.searchParams.set("period2", String(period2));
-
-  const res = await fetch(url.toString(), {
+  const res = await fetch(buildStockPricesUrl(symbol, period1, period2), {
     headers: { "User-Agent": "Mozilla/5.0" },
   });
   if (!res.ok) {
@@ -277,7 +260,7 @@ async function fetchSymbolPrices(
 
   const data = (await res.json()) as YahooFinanceResponse;
   if (data.chart.error)
-    throw new Error(`Yahoo Finance: ${data.chart.error.message}`);
+    throw new Error(`Yahoo Finance: ${data.chart.error.description}`);
   if (!data.chart.result?.[0])
     throw new Error(`Yahoo Finance: no data for ${symbol}`);
 
