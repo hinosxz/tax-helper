@@ -115,10 +115,6 @@ export const enrichEtradeGlFrFr = (
   },
 ): GainAndLossEventWithRates[] => {
   return data
-    .sort((a, b) => {
-      // sort by dateSold
-      return new Date(a.dateSold).getTime() - new Date(b.dateSold).getTime();
-    })
     .map((event, eventIdx) => {
       const rateAcquired = rates[event.dateAcquired];
       const rateSold = rates[event.dateSold];
@@ -144,6 +140,9 @@ export const enrichEtradeGlFrFr = (
             : undefined,
         fractionFrIncome: eventIdx in fractions ? fractions[eventIdx] : 1,
       };
+    })
+    .sort((a, b) => {
+      return new Date(a.dateSold).getTime() - new Date(b.dateSold).getTime();
     });
 };
 
