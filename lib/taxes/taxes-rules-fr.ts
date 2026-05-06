@@ -9,7 +9,7 @@ import {
   isFrQualifiedSo,
   isUsQualifiedRsu,
   isUsQualifiedSo,
-} from "@/lib/etrade/filters";
+} from "@/lib/taxes/filters";
 import {
   floorNumber,
   ceilNumber,

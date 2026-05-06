@@ -1,7 +1,6 @@
 import type {
   GainAndLossEvent,
   GainAndLossEventXlsxRow,
-  PlanType,
 } from "./etrade.types";
 import { getDateString, parseEtradeDate } from "@/lib/date";
 import XLSX from "xlsx";
@@ -88,32 +87,3 @@ export const parseEtradeGL = async (
   return Promise.resolve(data);
 };
 
-/**
- * Create a filter function from provided filters.
- *
- * To get every FR qualified stock options events from the Etrade Gain/Loss
- * report:
- *
- * ```ts
- * const isFrQualifiedStock = createEtradeGLFilter({
- *   planType: "SO",
- *   qualifiedIn: "fr",
- * });
- *
- * const frQualifiedStockEvents = gainAndLossEvents.filter(isFrQualifiedStock);
- * ```
- */
-export const createEtradeGLFilter = (filter: {
-  planType?: PlanType;
-  qualifiedIn?: "fr" | "us";
-}) => {
-  const filterKeys = Object.keys(filter) as (keyof typeof filter)[];
-  return function filterEtradeGLFilter(event: GainAndLossEvent): boolean {
-    return filterKeys.every((key) => {
-      if (filter[key] === undefined) {
-        return true;
-      }
-      return event[key] === filter[key];
-    });
-  };
-};

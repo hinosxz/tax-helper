@@ -17,7 +17,7 @@ import {
   isFrQualifiedSo,
   isUsQualifiedRsu,
   isUsQualifiedSo,
-} from "@/lib/etrade/filters";
+} from "@/lib/taxes/filters";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { MessageBox } from "@/components/ui/MessageBox";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
@@ -70,17 +70,6 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
   const isFetching = isFetchingExr || isFetchingPrices;
   const hasError = couldNotFetchRates || couldNotFetchPrices;
 
-  const counts = useMemo(
-    () => ({
-      frQualifiedSo: gainsAndLosses.filter(isFrQualifiedSo).length,
-      frQualifiedRsu: gainsAndLosses.filter(isFrQualifiedRsu).length,
-      espp: gainsAndLosses.filter(isEspp).length,
-      usQualifiedSo: gainsAndLosses.filter(isUsQualifiedSo).length,
-      usQualifiedRsu: gainsAndLosses.filter(isUsQualifiedRsu).length,
-    }),
-    [gainsAndLosses],
-  );
-
   const enrichedEvents = useMemo<GainAndLossEventWithRates[]>(() => {
     if (gainsAndLosses.length === 0 || isFetching || hasError || !rates)
       return [];
@@ -97,6 +86,17 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     hasError,
     fractionsFrIncome,
   ]);
+
+  const counts = useMemo(
+    () => ({
+      frQualifiedSo: enrichedEvents.filter(isFrQualifiedSo).length,
+      frQualifiedRsu: enrichedEvents.filter(isFrQualifiedRsu).length,
+      espp: enrichedEvents.filter(isEspp).length,
+      usQualifiedSo: enrichedEvents.filter(isUsQualifiedSo).length,
+      usQualifiedRsu: enrichedEvents.filter(isUsQualifiedRsu).length,
+    }),
+    [enrichedEvents],
+  );
 
   const taxes = useMemo(() => {
     if (gainsAndLosses.length === 0 || isFetching || hasError || !rates) {
