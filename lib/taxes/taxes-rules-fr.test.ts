@@ -112,6 +112,64 @@ describe("enrichEtradeGlFrFr", () => {
       },
     ]);
   });
+  it("should keep fractions aligned with the original event order after sorting", () => {
+    const gainsAndLosses: GainAndLossEvent[] = [
+      {
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 117,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 0,
+        dateGranted: "2021-03-03",
+        dateAcquired: "2022-03-03",
+        dateSold: "2022-09-09",
+        qualifiedIn: "fr",
+      },
+      {
+        symbol: "DDOG",
+        planType: "RS",
+        quantity: 10,
+        proceeds: 117,
+        adjustedCost: 80,
+        purchaseDateFairMktValue: 80,
+        acquisitionCost: 0,
+        dateGranted: "2021-04-04",
+        dateAcquired: "2022-04-04",
+        dateSold: "2022-08-08",
+        qualifiedIn: "fr",
+      },
+    ];
+    const rates = {
+      "2022-03-03": 1.12,
+      "2022-04-04": 1.12,
+      "2022-08-08": 1.13,
+      "2022-09-09": 1.13,
+    };
+    const symbolPrices: { [symbol: string]: SymbolDailyResponse } = {
+      DDOG: {
+        "2022-03-03": { opening: 100, closing: 110 },
+        "2022-04-04": { opening: 100, closing: 110 },
+      },
+    };
+    const fractions = [0.25, 0.75];
+
+    const enriched = enrichEtradeGlFrFr(gainsAndLosses, {
+      rates,
+      symbolPrices,
+      fractions,
+    });
+
+    expect(enriched.map((event) => event.dateSold)).toEqual([
+      "2022-08-08",
+      "2022-09-09",
+    ]);
+    expect(enriched.map((event) => event.fractionFrIncome)).toEqual([
+      0.75,
+      0.25,
+    ]);
+  });
   it("should use previous day for symbol price if it is not available", () => {
     const gainsAndLosses: GainAndLossEvent[] = [
       {
