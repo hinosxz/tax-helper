@@ -306,7 +306,7 @@ const PAGE_510_LABELS = {
 
 const EMPTY_CELL = " ";
 
-const AUTOMATIC_REPORTING_LABELS = {
+const PAGE_11_LABELS = {
   line1133Description:
     "Valeurs mobilières, droits sociaux, titres assimilés sans abattement et éligibles à l'abattement de droit commun",
   titresA: "Titres A",
@@ -324,7 +324,7 @@ const AutomaticReportingTable: React.FunctionComponent<{
   const total = roundedGains - roundedLosses;
   const rows = [
     {
-      label: AUTOMATIC_REPORTING_LABELS.titresA,
+      label: PAGE_11_LABELS.titresA,
       gains: roundedGains,
       losses: roundedLosses > 0 ? roundedLosses : EMPTY_CELL,
       subtotal: total,
@@ -333,7 +333,7 @@ const AutomaticReportingTable: React.FunctionComponent<{
       highlight: true,
     },
     {
-      label: AUTOMATIC_REPORTING_LABELS.titresB,
+      label: PAGE_11_LABELS.titresB,
       gains: EMPTY_CELL,
       losses: EMPTY_CELL,
       subtotal: EMPTY_CELL,
@@ -342,7 +342,7 @@ const AutomaticReportingTable: React.FunctionComponent<{
       highlight: false,
     },
     {
-      label: AUTOMATIC_REPORTING_LABELS.titresC,
+      label: PAGE_11_LABELS.titresC,
       gains: EMPTY_CELL,
       losses: EMPTY_CELL,
       subtotal: EMPTY_CELL,
@@ -357,7 +357,7 @@ const AutomaticReportingTable: React.FunctionComponent<{
       <div className="automatic-reporting-print-inner min-w-[760px] pr-3 sm:min-w-[900px] sm:pr-4">
         <div className="mb-3 text-base leading-relaxed sm:mb-4">
           <span className="font-bold text-black">1133</span>{" "}
-          {AUTOMATIC_REPORTING_LABELS.line1133Description}
+          {PAGE_11_LABELS.line1133Description}
         </div>
         <div className="grid grid-cols-[130px_1fr_20px_1fr_20px_1fr_20px_1fr_20px_1fr] items-center gap-y-2 sm:grid-cols-[160px_1fr_28px_1fr_28px_1fr_28px_1fr_28px_1fr]">
           {rows.map((row) => (
@@ -397,7 +397,7 @@ const AutomaticReportingTable: React.FunctionComponent<{
             </Fragment>
           ))}
           <div className="pt-3 text-base font-semibold">
-            {AUTOMATIC_REPORTING_LABELS.totaux}
+            {PAGE_11_LABELS.totaux}
           </div>
           <div className="col-span-8" />
           <div className="pt-3">
