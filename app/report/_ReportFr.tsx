@@ -8,13 +8,14 @@ import { Currency } from "@/components/ui/Currency";
 import { Button } from "@/components/ui/Button";
 import { Drawer } from "@/components/ui/Drawer";
 import { PriceInEuro } from "@/components/ui/PriceInEuro";
+import { CopyButton } from "@/components/ui/CopyButton";
 import { match } from "ts-pattern";
 
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { CopyableCell } from "./_CopyableCell";
 
 interface ReportResidencyFrContentProps {
@@ -28,6 +29,8 @@ export const ReportFr = ({
   isPrintMode,
   taxes,
 }: ReportResidencyFrContentProps) => {
+  const form2074Line1133 = taxes["Form 2074"]["page 11"]["1133"];
+
   return (
     <>
       <Section title="Select Income Source and Annexes">
@@ -228,56 +231,54 @@ export const ReportFr = ({
           <Page510 taxes={taxes} isPrintMode={isPrintMode} />
         </div>
         <QualifiedAtLossSection taxes={taxes} isPrintMode={isPrintMode} />
-        {isPrintMode ? null : (
-          <div className="print:hidden mt-6">
-            <div className="text-lg font-bold my-auto mb-2">
-              One Last Step For Form 2074
-            </div>
-            {taxes["Form 2074"]["page 11"]["1133"].losses > 0 ? (
-              <>
-                <p>
-                  You must report{" "}
-                  <strong>
-                    <Currency
-                      unit="eur"
-                      value={taxes["Form 2074"]["page 11"]["1133"].gains}
-                    />
-                  </strong>{" "}
-                  (capital gains) and{" "}
-                  <strong>
-                    <Currency
-                      unit="eur"
-                      value={taxes["Form 2074"]["page 11"]["1133"].losses}
-                    />
-                  </strong>{" "}
-                  (capital losses) on line <strong>1133</strong>.
-                </p>
-              </>
-            ) : (
+        <div className="mt-6">
+          <div className="text-lg font-bold my-auto mb-2">
+            Automatic reporting from Form 2074
+          </div>
+          {form2074Line1133.losses > 0 ? (
+            <>
               <p>
                 You must report{" "}
                 <strong>
-                  <Currency
-                    unit="eur"
-                    value={taxes["Form 2074"]["page 11"]["1133"].gains}
-                  />
+                  <Currency unit="eur" value={form2074Line1133.gains} />
                 </strong>{" "}
-                on line <strong>1133</strong>.
+                (capital gains) and{" "}
+                <strong>
+                  <Currency unit="eur" value={form2074Line1133.losses} />
+                </strong>{" "}
+                (capital losses) on line <strong>1133</strong>.
               </p>
-            )}
+            </>
+          ) : (
+            <p>
+              You must report{" "}
+              <strong>
+                <Currency unit="eur" value={form2074Line1133.gains} />
+              </strong>{" "}
+              on line <strong>1133</strong>.
+            </p>
+          )}
+          <AutomaticReportingTable
+            gains={form2074Line1133.gains}
+            losses={form2074Line1133.losses}
+          />
+          <div className="mt-6 print:hidden">
+            <p className="mb-3 text-slate-700">
+              <strong>Hint:</strong> At the end of Form 2074, you should have{" "}
+              <strong>3VG</strong> with{" "}
+              <span className="font-semibold text-red-700">
+                "report activé"
+              </span>{" "}
+              in the automatic reporting table:
+            </p>
             <Image
-              src={
-                taxes["Form 2074"]["page 11"]["1133"].losses > 0
-                  ? "/images/fr-taxes/form-2074-1133-with-losses.png"
-                  : "/images/fr-taxes/form-2074-box-1133.png"
-              }
-              alt="Form 2074 - Box 1133"
+              alt="Form 2074 — automatic reporting table: 3VG with report activé"
+              src="/images/fr-taxes/form-2074-report-active.png"
               width={800}
-              height={500}
-              className="print:hidden"
+              height={480}
             />
           </div>
-        )}
+        </div>
       </Section>
     </>
   );
@@ -301,6 +302,142 @@ const PAGE_510_LABELS = {
   "525":
     "Je demande expressément à bénéficier de l'imputation des moins-values préalablement à l'annulation des titres cf. notice",
   "526": "Montant des moins-values imputées pour les titres concernés",
+};
+
+const EMPTY_CELL = " ";
+
+const AUTOMATIC_REPORTING_LABELS = {
+  line1133Description:
+    "Valeurs mobilières, droits sociaux, titres assimilés sans abattement et éligibles à l'abattement de droit commun",
+  titresA: "Titres A",
+  titresB: "Titres B",
+  titresC: "Titres C",
+  totaux: "Totaux",
+};
+
+const AutomaticReportingTable: React.FunctionComponent<{
+  gains: number;
+  losses: number;
+}> = ({ gains, losses }) => {
+  const roundedGains = Math.floor(gains);
+  const roundedLosses = Math.floor(losses);
+  const total = roundedGains - roundedLosses;
+  const rows = [
+    {
+      label: AUTOMATIC_REPORTING_LABELS.titresA,
+      gains: roundedGains,
+      losses: roundedLosses > 0 ? roundedLosses : EMPTY_CELL,
+      subtotal: total,
+      adjustment: EMPTY_CELL,
+      total,
+      highlight: true,
+    },
+    {
+      label: AUTOMATIC_REPORTING_LABELS.titresB,
+      gains: EMPTY_CELL,
+      losses: EMPTY_CELL,
+      subtotal: EMPTY_CELL,
+      adjustment: EMPTY_CELL,
+      total: EMPTY_CELL,
+      highlight: false,
+    },
+    {
+      label: AUTOMATIC_REPORTING_LABELS.titresC,
+      gains: EMPTY_CELL,
+      losses: EMPTY_CELL,
+      subtotal: EMPTY_CELL,
+      adjustment: EMPTY_CELL,
+      total: EMPTY_CELL,
+      highlight: false,
+    },
+  ];
+
+  return (
+    <div className="mt-4 overflow-x-auto p-3 sm:p-4 bg-blue-200 print:border print:overflow-x-visible print:overflow-y-visible">
+      <div className="min-w-[760px] pr-3 sm:min-w-[900px] sm:pr-4">
+        <div className="mb-3 text-base leading-relaxed sm:mb-4">
+          <span className="font-bold text-black">1133</span>{" "}
+          {AUTOMATIC_REPORTING_LABELS.line1133Description}
+        </div>
+        <div className="grid grid-cols-[130px_1fr_20px_1fr_20px_1fr_20px_1fr_20px_1fr] items-center gap-y-2 sm:grid-cols-[160px_1fr_28px_1fr_28px_1fr_28px_1fr_28px_1fr]">
+          {rows.map((row) => (
+            <Fragment key={row.label}>
+              <div
+                className={
+                  row.highlight ? "text-base font-semibold" : "text-base"
+                }
+              >
+                {row.label}
+              </div>
+              <Form2074Cell
+                value={row.gains}
+                copyValue={row.highlight ? roundedGains : undefined}
+              />
+              <div className="text-center text-base font-medium text-slate-700">
+                -
+              </div>
+              <Form2074Cell
+                value={row.losses}
+                copyValue={
+                  row.highlight && roundedLosses > 0 ? roundedLosses : undefined
+                }
+              />
+              <div className="text-center text-base font-medium text-slate-700">
+                =
+              </div>
+              <Form2074Cell value={row.subtotal} />
+              <div className="text-center text-base font-medium text-slate-700">
+                -
+              </div>
+              <Form2074Cell value={row.adjustment} />
+              <div className="text-center text-base font-medium text-slate-700">
+                =
+              </div>
+              <Form2074Cell value={row.total} />
+            </Fragment>
+          ))}
+          <div className="pt-3 text-base font-semibold">
+            {AUTOMATIC_REPORTING_LABELS.totaux}
+          </div>
+          <div className="col-span-8" />
+          <div className="pt-3">
+            <Form2074Cell value={total} emphasize />
+          </div>
+          <div className="col-span-9" />
+          <div className="pt-2 text-center text-sm font-medium text-blue-800">
+            Automatically reported to 3VG
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Form2074Cell: React.FunctionComponent<{
+  value: number | string;
+  copyValue?: number;
+  emphasize?: boolean;
+}> = ({ value, copyValue, emphasize }) => {
+  if (copyValue !== undefined) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="inline-flex h-[30px] min-w-[7rem] items-center justify-end border border-black bg-white px-3 text-right text-base">
+          {copyValue}
+        </span>
+        <CopyButton value={copyValue} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`flex h-[30px] min-w-[7rem] items-center justify-end border border-black bg-white px-3 text-right text-base ${
+        emphasize ? "font-semibold" : ""
+      }`}
+    >
+      {value}
+    </div>
+  );
 };
 
 const Page510: React.FunctionComponent<{
