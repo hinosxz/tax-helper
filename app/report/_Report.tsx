@@ -179,9 +179,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
         <p>Loading...</p>
       ) : (
         <div className="container flex flex-col gap-8">
-          <div className="print:hidden mt-4">
-            <div className="flex items-baseline gap-3">
-              <span>Selected "Gains and Losses" export:</span>
+          <div className="print:hidden">
+            <div className="flex items-baseline justify-between gap-3">
+              <span>Gains and Losses</span>
               <Button
                 label="Clear"
                 color="red"
