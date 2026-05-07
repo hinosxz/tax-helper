@@ -2,7 +2,7 @@ export type PlanType = "ESPP" | "RS" | "SO";
 export type PlanQualification = "Qualified" | "Non-Qualified";
 
 /**
- * Original format for the XLSX file rows in the Etrade Gain/Loss report.
+ * Original format for the XLSX file rows in the ETrade Gain/Loss report.
  */
 export interface GainAndLossEventXlsxRowPrior2025 {
   "Plan Type": PlanType;
@@ -36,7 +36,7 @@ export type GainAndLossEventXlsxRow =
   | GainAndLossEventXlsxRow2025;
 
 /**
- * Data format for a single sale event after parsing the Etrade Gain/Loss report.
+ * Data format for a single sale event after parsing the ETrade Gain/Loss report.
  */
 export interface GainAndLossEvent {
   planType: PlanType;
