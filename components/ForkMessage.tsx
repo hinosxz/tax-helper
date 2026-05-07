@@ -1,7 +1,7 @@
 import { MessageBox } from "@/components/ui/MessageBox";
 import { Link } from "@/components/ui/Link";
 import { headers } from "next/headers";
-import * as React from "react";
+import { BannerBadge } from "./BannerBadge";
 
 const OFFICIAL_HOSTNAME = "tax-helper-olive.vercel.app";
 const OFFICIAL_URL = `https://${OFFICIAL_HOSTNAME}/`;
@@ -18,7 +18,10 @@ export const ForkMessage = () => {
   if (isLocal) {
     return (
       <MessageBox title="" level="info">
-        THIS IS A LOCAL DEV ENVIRONMENT
+        <div className="flex flex-wrap items-center gap-2">
+          <span>THIS IS A LOCAL DEV ENVIRONMENT</span>
+          <BannerBadge />
+        </div>
       </MessageBox>
     );
   }

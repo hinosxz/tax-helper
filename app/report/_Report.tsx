@@ -29,13 +29,20 @@ import { ReportFr } from "./_ReportFr";
 import type { CountryCode } from "./types";
 import { ReportUs } from "./_ReportUs";
 import { ImportValidation } from "./_ImportValidation";
+import {
+  MOCK_ENRICHED_EVENTS,
+  MOCK_GAINS_AND_LOSSES,
+  MOCK_TAXES,
+} from "./_mockData";
 
 export interface ReportResidencyFrProps {
   taxResidency: CountryCode;
+  useMockData?: boolean;
 }
 
 export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
   taxResidency,
+  useMockData = false,
 }: ReportResidencyFrProps) => {
   const [showFractionAssignmentModal, setShowFractionAssignmentModal] =
     useState(false);
@@ -87,17 +94,6 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     fractionsFrIncome,
   ]);
 
-  const counts = useMemo(
-    () => ({
-      frQualifiedSo: enrichedEvents.filter(isFrQualifiedSo).length,
-      frQualifiedRsu: enrichedEvents.filter(isFrQualifiedRsu).length,
-      espp: enrichedEvents.filter(isEspp).length,
-      usQualifiedSo: enrichedEvents.filter(isUsQualifiedSo).length,
-      usQualifiedRsu: enrichedEvents.filter(isUsQualifiedRsu).length,
-    }),
-    [enrichedEvents],
-  );
-
   const taxes = useMemo(() => {
     if (gainsAndLosses.length === 0 || isFetching || hasError || !rates) {
       return getEmptyTaxes();
@@ -117,6 +113,29 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     hasError,
     fractionsFrIncome,
   ]);
+
+  const displayEvents = useMockData ? MOCK_GAINS_AND_LOSSES : gainsAndLosses;
+  const displayEnrichedEvents = useMockData
+    ? MOCK_ENRICHED_EVENTS
+    : enrichedEvents;
+  const displayTaxes = useMockData ? MOCK_TAXES : taxes;
+  const displayIsFetching = useMockData ? false : isFetching;
+  const shouldShowImportPrompt =
+    !useMockData &&
+    (gainsAndLosses.length === 0 ||
+      (gainsAndLosses.filter((e) => e.planType === "RS").length > 0 &&
+        fractionsFrIncome.length === 0));
+
+  const counts = useMemo(
+    () => ({
+      frQualifiedSo: displayEnrichedEvents.filter(isFrQualifiedSo).length,
+      frQualifiedRsu: displayEnrichedEvents.filter(isFrQualifiedRsu).length,
+      espp: displayEnrichedEvents.filter(isEspp).length,
+      usQualifiedSo: displayEnrichedEvents.filter(isUsQualifiedSo).length,
+      usQualifiedRsu: displayEnrichedEvents.filter(isUsQualifiedRsu).length,
+    }),
+    [displayEnrichedEvents],
+  );
 
   return (
     <div>
@@ -148,9 +167,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
           but it is not used by this report.
         </div>
       </div>
-      {gainsAndLosses.length === 0 ||
-      (gainsAndLosses.filter((e) => e.planType === "RS").length > 0 &&
-        fractionsFrIncome.length === 0) ? (
+      {shouldShowImportPrompt ? (
         <div className="flex items-baseline justify-center gap-3">
           <span>Import the Gains and Losses CSV file: </span>
           <FractionAssignmentModal
@@ -179,21 +196,23 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
             }}
           />
         </div>
-      ) : isFetching ? (
+      ) : displayIsFetching ? (
         <p>Loading...</p>
       ) : (
         <div className="container flex flex-col gap-8">
-          <div className="print:hidden">
+          <div className="print:hidden mt-4">
             <div className="flex items-baseline justify-between gap-3">
               <span>Gains and Losses</span>
-              <Button
-                label="Clear"
-                color="red"
-                onClick={() => {
-                  setGainsAndLosses([]);
-                  setFractionsFrIncome([]);
-                }}
-              />
+              {useMockData ? null : (
+                <Button
+                  label="Clear"
+                  color="red"
+                  onClick={() => {
+                    setGainsAndLosses([]);
+                    setFractionsFrIncome([]);
+                  }}
+                />
+              )}
             </div>
             <div className="flex gap-2 items-baseline justify-items-start">
               <input
@@ -223,18 +242,18 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
             </div>
           </Section>
           <div className="print:hidden">
-            <ImportValidation events={enrichedEvents} />
+            <ImportValidation events={displayEnrichedEvents} />
           </div>
           {match({ taxResidency })
             .with({ taxResidency: "fr" }, () => (
               <ReportFr
-                hasSoldShares={gainsAndLosses.length > 0}
+                hasSoldShares={displayEvents.length > 0}
                 isPrintMode={isPrintMode}
-                taxes={taxes}
+                taxes={displayTaxes}
               />
             ))
             .with({ taxResidency: "us" }, () => (
-              <ReportUs isPrintMode={isPrintMode} taxes={taxes} />
+              <ReportUs isPrintMode={isPrintMode} taxes={displayTaxes} />
             ))
             .exhaustive()}
           <Section title="Source of information">

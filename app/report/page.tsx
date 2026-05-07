@@ -5,9 +5,11 @@ import { Report } from "./_Report";
 import type { Option } from "@/components/ui/ButtonGroup";
 import { ButtonGroup } from "@/components/ui/ButtonGroup";
 import type { CountryCode } from "./types";
+import { useIsMockMode } from "@/hooks/use-is-mock-mode";
 
 export default function Page() {
   const [taxResidency, setTaxResidency] = useState<CountryCode>("fr");
+  const isMockMode = useIsMockMode();
   const options: Option<CountryCode>[] = [
     { value: "fr", label: "FR" },
     { value: "us", label: "US" },
@@ -21,7 +23,7 @@ export default function Page() {
         <div>Residency:</div>
         <ButtonGroup onClick={setTaxResidency} options={options} />
       </div>
-      <Report taxResidency={taxResidency} />
+      <Report taxResidency={taxResidency} useMockData={isMockMode} />
     </div>
   );
 }
