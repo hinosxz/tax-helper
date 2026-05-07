@@ -353,8 +353,8 @@ const AutomaticReportingTable: React.FunctionComponent<{
   ];
 
   return (
-    <div className="mt-4 overflow-x-auto p-3 sm:p-4 bg-blue-200 print:border print:overflow-x-visible print:overflow-y-visible">
-      <div className="min-w-[760px] pr-3 sm:min-w-[900px] sm:pr-4">
+    <div className="automatic-reporting-print-root mt-4 overflow-x-auto p-3 sm:p-4 bg-blue-200 print:border print:overflow-x-visible print:overflow-y-visible">
+      <div className="automatic-reporting-print-inner min-w-[760px] pr-3 sm:min-w-[900px] sm:pr-4">
         <div className="mb-3 text-base leading-relaxed sm:mb-4">
           <span className="font-bold text-black">1133</span>{" "}
           {AUTOMATIC_REPORTING_LABELS.line1133Description}
