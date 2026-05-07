@@ -264,7 +264,7 @@ export const ReportFr = ({
           />
           <div className="mt-6 print:hidden">
             <p className="mb-3 text-slate-700">
-              <strong>Hint:</strong> At the end of Form 2074, you should have{" "}
+              <strong>Note:</strong> At the end of Form 2074, you should have{" "}
               <strong>3VG</strong> with{" "}
               <span className="font-semibold text-red-700">
                 "report activé"
