@@ -27,13 +27,14 @@ export const EtradeGainAndLossesFileInput: React.FunctionComponent<
       accept=".xlsx"
       id={id}
       label={label}
-      onUpload={async (file) => {
-        if (!file) {
+      multiple
+      onUpload={async (files) => {
+        if (files.length === 0) {
           return handleError("couldn't import file");
         }
         try {
-          const data = await parseEtradeGL(file);
-          setData(data);
+          const perFile = await Promise.all(files.map(parseEtradeGL));
+          setData(perFile.flat());
         } catch (e) {
           handleError(`Failed to import,
                 please verify you imported the correct file.`);

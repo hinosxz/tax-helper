@@ -6,13 +6,15 @@ interface FileInputProps {
   id: string;
   isDisabled?: boolean;
   label: string;
-  onUpload: (file: File | undefined) => void;
+  multiple?: boolean;
+  onUpload: (files: File[]) => void;
 }
 
 export const FileInput = ({
   accept,
   id,
   isDisabled,
+  multiple,
   onUpload,
   label,
 }: FileInputProps) => (
@@ -34,13 +36,14 @@ export const FileInput = ({
       id={id}
       type="file"
       disabled={isDisabled}
-      // Clear on every click
+      multiple={multiple}
       onClick={(event) => {
         (event.target as HTMLInputElement).value = "";
       }}
       onInput={(event) => {
-        const file = (event.target as HTMLInputElement).files?.[0];
-        onUpload(file);
+        const fileList = (event.target as HTMLInputElement).files;
+        const files = fileList ? Array.from(fileList) : [];
+        onUpload(files);
       }}
     />
   </div>
