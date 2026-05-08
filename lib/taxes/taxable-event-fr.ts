@@ -3,7 +3,7 @@ export interface TaxableEventFr {
   symbol: string;
   planType: "ESPP" | "RS" | "SO";
   /** Whether this plan is qualified under French rules. */
-  isQualified: boolean;
+  isFrQualified: boolean;
   /** Taxable event type */
   type: "vesting" | "sell" | "exercise";
   /**

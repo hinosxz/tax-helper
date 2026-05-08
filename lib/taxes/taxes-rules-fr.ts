@@ -453,7 +453,7 @@ const getFrTaxableEventFromGainsAndLossEvent = (
   return {
     symbol: event.symbol,
     planType: event.planType,
-    isQualified: event.isFrQualified,
+    isFrQualified: event.isFrQualified,
     // ETrade Gans And Losses only lists sell events
     type: "sell",
     date: event.dateSold,
