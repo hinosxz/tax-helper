@@ -5,10 +5,10 @@ import type {
 } from "@/lib/etrade/etrade.types";
 import {
   isEspp,
+  isFrNonQualifiedRsu,
+  isFrNonQualifiedSo,
   isFrQualifiedRsu,
   isFrQualifiedSo,
-  isUsQualifiedRsu,
-  isUsQualifiedSo,
 } from "@/lib/taxes/filters";
 import {
   floorNumber,
@@ -22,6 +22,7 @@ export interface GainAndLossEventWithRates extends GainAndLossEvent {
   rateAcquired: number;
   rateSold: number;
   symbolPriceAcquired: number;
+  isFrQualified: boolean;
   /** People that have spent time abroad and have vested stocks in another country
    * will only have a fraction of the income to report to the French authorities.
    * 0 < `fractionFrIncome` < 1. By default, fractionFrIncome = 1.
@@ -104,6 +105,7 @@ export const enrichEtradeGlFrFr = (
   data: GainAndLossEvent[],
   {
     fractions,
+    isFrQualified = [],
     rates,
     symbolPrices,
   }: {
@@ -112,6 +114,7 @@ export const enrichEtradeGlFrFr = (
     };
     symbolPrices: { [symbol: string]: SymbolDailyResponse };
     fractions: number[];
+    isFrQualified?: boolean[];
   },
 ): GainAndLossEventWithRates[] => {
   return data
@@ -139,6 +142,10 @@ export const enrichEtradeGlFrFr = (
             ? dateSymbolPriceAcquired
             : undefined,
         fractionFrIncome: eventIdx in fractions ? fractions[eventIdx] : 1,
+        isFrQualified:
+          eventIdx in isFrQualified
+            ? isFrQualified[eventIdx]
+            : event.qualifiedIn === "fr",
       };
     })
     .sort((a, b) => {
@@ -446,7 +453,7 @@ const getFrTaxableEventFromGainsAndLossEvent = (
   return {
     symbol: event.symbol,
     planType: event.planType,
-    qualifiedIn: "fr",
+    isFrQualified: event.isFrQualified,
     // ETrade Gans And Losses only lists sell events
     type: "sell",
     date: event.dateSold,
@@ -761,7 +768,7 @@ export const getFrTaxesForNonFrQualifiedSo = (
 ): FrTaxes => {
   // Compute capital gains from gainsAndLosses
   const nonQualifiedSo = gainsAndLosses.filter((event) =>
-    isUsQualifiedSo(event),
+    isFrNonQualifiedSo(event),
   );
   const taxableEvents: TaxableEventFr[] = [];
 
@@ -827,7 +834,7 @@ export const getFrTaxesForNonFrQualifiedRsu = (
   taxes: FrTaxes,
 ): FrTaxes => {
   const nonQualifiedRsu = gainsAndLosses.filter((event) =>
-    isUsQualifiedRsu(event),
+    isFrNonQualifiedRsu(event),
   );
   const taxableEvents: TaxableEventFr[] = [];
 
@@ -898,6 +905,7 @@ export const applyFrTaxes = ({
   rates,
   symbolPrices,
   fractions,
+  isFrQualified = [],
 }: {
   gainsAndLosses: GainAndLossEvent[];
   benefits: BenefitHistoryEvent[];
@@ -908,6 +916,7 @@ export const applyFrTaxes = ({
     [symbol: string]: SymbolDailyResponse;
   };
   fractions: number[];
+  isFrQualified?: boolean[];
 }): FrTaxes => {
   return [
     getFrTaxesForFrQualifiedSo,
@@ -923,6 +932,7 @@ export const applyFrTaxes = ({
             rates,
             symbolPrices,
             fractions,
+            isFrQualified,
           }),
           benefits: enrichEtradeBenefitsFrFr(benefits, {
             rates,
