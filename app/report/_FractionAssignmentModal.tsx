@@ -17,16 +17,17 @@ interface FractionAssignmentModalProps {
 }
 
 const toKey = (e: GainAndLossEvent) =>
-  `${e.symbol},${e.dateGranted},${e.dateAcquired}`;
+  `${e.symbol},${e.planType},${e.dateGranted},${e.dateAcquired}`;
 const fromKey = (pair: string) => pair.split(",");
 
 const sortByDates = (pairA: string, pairB: string) => {
-  const [aSymbol, aGranted, aAcquired] = fromKey(pairA);
-  const [bSymbol, bGranted, bAcquired] = fromKey(pairB);
+  const [aSymbol, aPlanType, aGranted, aAcquired] = fromKey(pairA);
+  const [bSymbol, bPlanType, bGranted, bAcquired] = fromKey(pairB);
   return (
     aAcquired.localeCompare(bAcquired) ||
     aGranted.localeCompare(bGranted) ||
-    aSymbol.localeCompare(bSymbol)
+    aSymbol.localeCompare(bSymbol) ||
+    aPlanType.localeCompare(bPlanType)
   );
 };
 
@@ -100,9 +101,10 @@ export const FractionAssignmentModal = ({
         {match(state)
           .with("ok", () => (
             <>
-              <div className="grid grid-cols-5 gap-4">
+              <div className="grid grid-cols-6 gap-4">
                 {[
                   "Ticker",
+                  "Plan Type",
                   "Grant Date",
                   "Acquisition Date",
                   "Is Plan FR Qualified?",
@@ -115,7 +117,8 @@ export const FractionAssignmentModal = ({
                 {Array.from(salesByDates.keys())
                   .sort(sortByDates)
                   .map((datePair) => {
-                    const [symbol, granted, acquired] = fromKey(datePair);
+                    const [symbol, planType, granted, acquired] =
+                      fromKey(datePair);
                     const events = salesByDates.get(datePair) ?? [];
                     const defaultIsFrQualified =
                       events[0]?.qualifiedIn !== "us";
@@ -124,6 +127,7 @@ export const FractionAssignmentModal = ({
                     return (
                       <Fragment key={datePair}>
                         <div>{symbol}</div>
+                        <div>{planType}</div>
                         <div>{granted}</div>
                         <div>{acquired}</div>
                         <div className="flex w-full items-center pl-8">
