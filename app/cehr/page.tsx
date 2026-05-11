@@ -199,9 +199,9 @@ export default function CehrPage() {
           Puis-je réduire une partie de mes impôts ?
         </h1>
         <p className="text-sm text-gray-600 mt-2 max-w-3xl">
-          Si vous avez eu une année de revenus exceptionnellement élevée (vente
-          d&apos;actions, RSU, stock-options, prime ou indemnité importante),
-          vous avez peut-être payé une surtaxe appelée
+          Si vous avez eu une année de revenus exceptionnellement élevée à cause
+          de cessions d&apos;actions (RSU, ESPP ou stock-options), vous avez
+          peut-être payé une surtaxe appelée
           <strong>
             {" "}
             Contribution Exceptionnelle sur les Hauts Revenus (CEHR)

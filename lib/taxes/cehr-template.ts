@@ -110,7 +110,7 @@ ${p("Nous revenons", "Je reviens")} vers vous suite à la réception de ${p("not
 
 Compte tenu de ${p("notre", "mon")} revenu fiscal de référence (RFR) ${yearN}, ${p("nous avons", "j'ai")} été soumis${isCouple ? "" : "·e"} à la Contribution Exceptionnelle sur les Hauts Revenus. Cependant, ${p("nos", "mes")} revenus ${yearN} sont composés en partie de revenus considérés comme exceptionnels. En effet, ${p("notre", "mon")} RFR ${yearN} est plus élevé que les années précédentes du fait des cessions de ${introPhrases} intervenues en ${yearN}.
 
-Veuillez noter qu'en ${yearN}, ${p("nos", "mes")} revenus étaient constitués en majorité de revenus issus des cessions de valeurs mobilières (${introPhrases}) qui ont fortement impacté ${p("notre revenu global", "mon revenu global")} et également ${p("notre", "mon")} revenu fiscal de référence.
+Veuillez noter qu'en ${yearN}, ${p("nos", "mes")} revenus comportaient une part significative de revenus issus des cessions de valeurs mobilières (${introPhrases}) qui ont fortement impacté ${p("notre revenu global", "mon revenu global")} et également ${p("notre", "mon")} revenu fiscal de référence.
 
 Sur ${p("notre", "mon")} avis d'impôt ${yearNp1} sur les revenus ${yearN}, la CEHR a été appliquée sans application du système du quotient et a été calculée comme suit :
 
