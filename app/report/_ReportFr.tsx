@@ -16,6 +16,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { CopyableCell } from "./_CopyableCell";
+import { AutomaticReportingTable } from "./_AutomaticReportingTable";
 
 interface ReportResidencyFrContentProps {
   hasSoldShares: boolean;
@@ -28,6 +29,8 @@ export const ReportFr = ({
   isPrintMode,
   taxes,
 }: ReportResidencyFrContentProps) => {
+  const form2074Line1133 = taxes["Form 2074"]["page 11"]["1133"];
+
   return (
     <>
       <Section title="Select Income Source and Annexes">
@@ -228,56 +231,54 @@ export const ReportFr = ({
           <Page510 taxes={taxes} isPrintMode={isPrintMode} />
         </div>
         <QualifiedAtLossSection taxes={taxes} isPrintMode={isPrintMode} />
-        {isPrintMode ? null : (
-          <div className="print:hidden mt-6">
-            <div className="text-lg font-bold my-auto mb-2">
-              One Last Step For Form 2074
-            </div>
-            {taxes["Form 2074"]["page 11"]["1133"].losses > 0 ? (
-              <>
-                <p>
-                  You must report{" "}
-                  <strong>
-                    <Currency
-                      unit="eur"
-                      value={taxes["Form 2074"]["page 11"]["1133"].gains}
-                    />
-                  </strong>{" "}
-                  (capital gains) and{" "}
-                  <strong>
-                    <Currency
-                      unit="eur"
-                      value={taxes["Form 2074"]["page 11"]["1133"].losses}
-                    />
-                  </strong>{" "}
-                  (capital losses) on line <strong>1133</strong>.
-                </p>
-              </>
-            ) : (
+        <div className="mt-6">
+          <div className="text-lg font-bold my-auto mb-2">
+            Automatic reporting from Form 2074
+          </div>
+          {form2074Line1133.losses > 0 ? (
+            <>
               <p>
                 You must report{" "}
                 <strong>
-                  <Currency
-                    unit="eur"
-                    value={taxes["Form 2074"]["page 11"]["1133"].gains}
-                  />
+                  <Currency unit="eur" value={form2074Line1133.gains} />
                 </strong>{" "}
-                on line <strong>1133</strong>.
+                (capital gains) and{" "}
+                <strong>
+                  <Currency unit="eur" value={form2074Line1133.losses} />
+                </strong>{" "}
+                (capital losses) on line <strong>1133</strong>.
               </p>
-            )}
+            </>
+          ) : (
+            <p>
+              You must report{" "}
+              <strong>
+                <Currency unit="eur" value={form2074Line1133.gains} />
+              </strong>{" "}
+              on line <strong>1133</strong>.
+            </p>
+          )}
+          <AutomaticReportingTable
+            gains={form2074Line1133.gains}
+            losses={form2074Line1133.losses}
+          />
+          <div className="mt-6 print:hidden">
+            <p className="mb-3 text-slate-700">
+              <strong>Note:</strong> At the end of Form 2074, you should have{" "}
+              <strong>3VG</strong> with{" "}
+              <span className="font-semibold text-red-700">
+                "report activé"
+              </span>{" "}
+              in the automatic reporting table:
+            </p>
             <Image
-              src={
-                taxes["Form 2074"]["page 11"]["1133"].losses > 0
-                  ? "/images/fr-taxes/form-2074-1133-with-losses.png"
-                  : "/images/fr-taxes/form-2074-box-1133.png"
-              }
-              alt="Form 2074 - Box 1133"
+              alt="Form 2074 — automatic reporting table: 3VG with report activé"
+              src="/images/fr-taxes/form-2074-report-active.png"
               width={800}
-              height={500}
-              className="print:hidden"
+              height={480}
             />
           </div>
-        )}
+        </div>
       </Section>
     </>
   );

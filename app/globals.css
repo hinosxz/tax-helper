@@ -23,3 +23,26 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Horizontal scroll wrappers clip content when printing PDFs unless overflow stays visible */
+@media print {
+  .automatic-reporting-print-root {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+  }
+
+  /* Inner block keeps layout width without being trapped in the scroll viewport */
+  .automatic-reporting-print-inner {
+    max-width: none !important;
+  }
+
+  /* Nested Tailwind `.container` values cap width; allow printable width across the report stack */
+  .container {
+    max-width: 100% !important;
+  }
+
+  html,
+  body {
+    overflow-x: visible !important;
+  }
+}

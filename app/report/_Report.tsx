@@ -211,7 +211,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 checked={isPrintMode}
                 onChange={() => setIsPrintMode(!isPrintMode)}
               />
-              <label htmlFor="printMode">Print mode</label>
+              <label htmlFor="printMode">
+                Print mode (expands all sections, e.g. for the tax office)
+              </label>
             </div>
           </div>
 
