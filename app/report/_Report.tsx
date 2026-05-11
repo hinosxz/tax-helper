@@ -144,9 +144,13 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
           </p>
         </MessageBox>
         <div className="my-2">
-          Based on the <b>expanded</b> exports both for Gain And Losses (At Work
-          &gt; My Account &gt; Gains and losses) and Benefit History (At Work
-          &gt; My Account &gt; Benefit History) from Etrade.
+          Based on the <b>expanded</b> export of "Gain And Losses" (At Work &gt;
+          My Account &gt; Gains and losses) from ETrade.
+        </div>
+        <div>
+          <b>Note:</b> You can also export the "Benefit History" (At Work &gt;
+          My Account &gt; Benefit History) from ETrade for your own information,
+          but it is not used by this report.
         </div>
       </div>
       {gainsAndLosses.length === 0 ||
@@ -246,7 +250,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
             <div>Some external sources are used to compute data:</div>
             <ul className="list-disc pl-6 mt-2 flex flex-col gap-y-">
               <li>
-                Etrade Gains and Losses{" "}
+                ETrade Gains and Losses{" "}
                 <Link href="https://us.etrade.com/etx/pxy/my-account/export">
                   Expanded
                 </Link>
