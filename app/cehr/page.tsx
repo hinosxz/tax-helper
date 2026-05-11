@@ -198,19 +198,28 @@ export default function CehrPage() {
         <h1 className="text-3xl font-semibold">
           Puis-je réduire une partie de mes impôts ?
         </h1>
-        <p className="text-sm text-gray-600 mt-2 max-w-3xl">
-          Si vous avez eu une année de revenus exceptionnellement élevée à cause
-          de cessions d&apos;actions (RSU, ESPP ou stock-options), vous avez
-          peut-être payé une surtaxe appelée
+        <p className="text-sm text-gray-600 mt-3 max-w-3xl">
+          Une année avec beaucoup de cessions d&apos;actions (RSU, ESPP,
+          stock-options) peut déclencher la{" "}
           <strong>
-            {" "}
             Contribution Exceptionnelle sur les Hauts Revenus (CEHR)
           </strong>
-          . La loi prévoit un mécanisme de « lissage » qui permet de la
-          recalculer en tenant compte de vos revenus des deux années précédentes
-          — et donc, souvent, de la réduire fortement. Cet outil vérifie si vous
-          y avez droit, calcule l&apos;économie potentielle, et génère le
-          courrier de réclamation à envoyer aux impôts.
+          , une surtaxe de 3 à 4 % qui s&apos;applique au-delà d&apos;un certain
+          seuil de revenu fiscal de référence. Le code des impôts prévoit un
+          mécanisme de lissage qui ramène la base de calcul à un niveau plus
+          proche de la moyenne de vos années précédentes — ce qui peut
+          sérieusement réduire la facture.
+        </p>
+        <p className="text-sm text-gray-600 mt-3 max-w-3xl">
+          Ce lissage est censé être appliqué automatiquement, mais il arrive que
+          le SIP l&apos;oublie. Et si votre situation familiale a changé sur la
+          période (mariage, PACS, divorce, décès), c&apos;est à vous de faire la
+          démarche pour fournir les bons revenus de référence.
+        </p>
+        <p className="text-sm text-gray-600 mt-3 max-w-3xl">
+          Cet outil estime ce que votre CEHR <em>devrait</em> être avec lissage,
+          et génère le courrier de réclamation à envoyer aux impôts si
+          nécessaire.
         </p>
       </header>
 
@@ -218,13 +227,6 @@ export default function CehrPage() {
         <div className="flex flex-col gap-4">
           <div>
             <div className="text-sm font-medium mb-2">Situation familiale</div>
-            <div className="text-xs text-gray-500 mb-2 max-w-3xl">
-              Cet outil suppose que la situation familiale est restée identique
-              sur les trois années (N-2, N-1, N). Si elle a changé (mariage,
-              PACS, divorce, décès), les seuils CEHR applicables aux RFR
-              antérieurs peuvent différer — vérifiez manuellement avant
-              d&apos;envoyer le courrier.
-            </div>
             <div className="inline-flex rounded-md shadow-sm border border-gray-300 overflow-hidden">
               {SITUATION_OPTIONS.map((opt, idx) => {
                 const active = situation === opt.value;
@@ -598,32 +600,32 @@ export default function CehrPage() {
       <Section title="Références">
         <ul className="text-sm space-y-2 text-gray-700">
           <li>
-            <strong>Article 223 sexies du Code Général des Impôts</strong> —
-            base légale de la CEHR et, à son V, du mécanisme de lissage via le
-            système du quotient. À rechercher sur{" "}
             <a
-              href="https://www.legifrance.gouv.fr/"
+              href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000036427364"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
             >
-              legifrance.gouv.fr
-            </a>
-            .
+              Article 223 sexies du Code Général des Impôts (Légifrance)
+            </a>{" "}
+            — base légale de la CEHR (I) et du mécanisme de lissage (II.1). Le
+            II.2 précise le cas spécifique d&apos;une modification de la
+            situation familiale, pour lequel le dépôt d&apos;une réclamation est
+            explicitement requis.
           </li>
           <li>
-            <strong>BOFiP-Impôts</strong> — doctrine administrative officielle
-            sur la contribution exceptionnelle sur les hauts revenus. À
-            consulter sur{" "}
             <a
-              href="https://bofip.impots.gouv.fr/"
+              href="https://bofip.impots.gouv.fr/bofip/7804-PGP.html/identifiant=BOI-IR-CHR-20170711"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
             >
-              bofip.impots.gouv.fr
+              BOI-IR-CHR — Contribution exceptionnelle sur les hauts revenus
+              (BOFiP)
             </a>{" "}
-            (rechercher « contribution exceptionnelle hauts revenus »).
+            — doctrine administrative officielle de la DGFiP : champ
+            d&apos;application, calcul, mécanisme de lissage et procédure de
+            réclamation.
           </li>
           <li>
             <a
