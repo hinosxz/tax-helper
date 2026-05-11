@@ -13,10 +13,10 @@ import type { GainAndLossEventWithRates } from "@/lib/taxes/taxes-rules-fr";
 import { Section } from "@/components/ui/Section";
 import {
   isEspp,
+  isFrNonQualifiedRsu,
+  isFrNonQualifiedSo,
   isFrQualifiedRsu,
   isFrQualifiedSo,
-  isUsQualifiedRsu,
-  isUsQualifiedSo,
 } from "@/lib/taxes/filters";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { MessageBox } from "@/components/ui/MessageBox";
@@ -41,6 +41,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     useState(false);
   const [gainsAndLosses, setGainsAndLosses] = useState<GainAndLossEvent[]>([]);
   const [fractionsFrIncome, setFractionsFrIncome] = useState<number[]>([]);
+  const [isFrQualified, setIsFrQualified] = useState<boolean[]>([]);
   const [isPrintMode, setIsPrintMode] = useState(false);
 
   const {
@@ -75,6 +76,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
       return [];
     return enrichEtradeGlFrFr(gainsAndLosses, {
       fractions: fractionsFrIncome,
+      isFrQualified,
       rates,
       symbolPrices,
     });
@@ -85,6 +87,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     isFetching,
     hasError,
     fractionsFrIncome,
+    isFrQualified,
   ]);
 
   const counts = useMemo(
@@ -92,8 +95,8 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
       frQualifiedSo: enrichedEvents.filter(isFrQualifiedSo).length,
       frQualifiedRsu: enrichedEvents.filter(isFrQualifiedRsu).length,
       espp: enrichedEvents.filter(isEspp).length,
-      usQualifiedSo: enrichedEvents.filter(isUsQualifiedSo).length,
-      usQualifiedRsu: enrichedEvents.filter(isUsQualifiedRsu).length,
+      frNonQualifiedSo: enrichedEvents.filter(isFrNonQualifiedSo).length,
+      frNonQualifiedRsu: enrichedEvents.filter(isFrNonQualifiedRsu).length,
     }),
     [enrichedEvents],
   );
@@ -108,6 +111,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
       rates,
       symbolPrices,
       fractions: fractionsFrIncome,
+      isFrQualified,
     });
   }, [
     gainsAndLosses,
@@ -116,6 +120,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     isFetching,
     hasError,
     fractionsFrIncome,
+    isFrQualified,
   ]);
 
   return (
@@ -139,9 +144,13 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
           </p>
         </MessageBox>
         <div className="my-2">
-          Based on the <b>expanded</b> exports both for Gain And Losses (At Work
-          &gt; My Account &gt; Gains and losses) and Benefit History (At Work
-          &gt; My Account &gt; Benefit History) from Etrade.
+          Based on the <b>expanded</b> export of "Gain And Losses" (At Work &gt;
+          My Account &gt; Gains and losses) from ETrade.
+        </div>
+        <div>
+          <b>Note:</b> You can also export the "Benefit History" (At Work &gt;
+          My Account &gt; Benefit History) from ETrade for your own information,
+          but it is not used by this report.
         </div>
       </div>
       {gainsAndLosses.length === 0 ||
@@ -153,7 +162,10 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
             showModal={showFractionAssignmentModal}
             setShowModal={setShowFractionAssignmentModal}
             data={gainsAndLosses}
-            confirm={setFractionsFrIncome}
+            confirm={(fractions, isFrQualifiedValues) => {
+              setFractionsFrIncome(fractions);
+              setIsFrQualified(isFrQualifiedValues);
+            }}
             state={match<
               { isFetching: boolean; hasError: boolean },
               "loading" | "error" | "ok"
@@ -188,6 +200,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 onClick={() => {
                   setGainsAndLosses([]);
                   setFractionsFrIncome([]);
+                  setIsFrQualified([]);
                 }}
               />
             </div>
@@ -213,10 +226,10 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 <dd>{counts.frQualifiedRsu} events</dd>
                 <dt className="font-bold">ESPP</dt>
                 <dd>{counts.espp} events</dd>
-                <dt className="font-bold">US qualified SO</dt>
-                <dd>{counts.usQualifiedSo} events</dd>
-                <dt className="font-bold">US qualified RSU</dt>
-                <dd>{counts.usQualifiedRsu} events</dd>
+                <dt className="font-bold">FR non qualified SO</dt>
+                <dd>{counts.frNonQualifiedSo} events</dd>
+                <dt className="font-bold">FR non qualified RSU</dt>
+                <dd>{counts.frNonQualifiedRsu} events</dd>
               </dl>
             </div>
           </Section>
@@ -239,7 +252,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
             <div>Some external sources are used to compute data:</div>
             <ul className="list-disc pl-6 mt-2 flex flex-col gap-y-">
               <li>
-                Etrade Gains and Losses{" "}
+                ETrade Gains and Losses{" "}
                 <Link href="https://us.etrade.com/etx/pxy/my-account/export">
                   Expanded
                 </Link>
