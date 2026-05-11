@@ -12,12 +12,21 @@ export default function Home() {
       <div className="flex flex-col w-96 mx-auto items-stretch text-center gap-10">
         <Link
           className={`
-          bg-green-200 px-12 py-4 rounded shadow 
+          bg-green-200 px-12 py-4 rounded shadow
           hover:opacity-75 text-base font-semibold
         `}
           href="/report"
         >
           Compute my French tax report
+        </Link>
+        <Link
+          className={`
+          bg-blue-200 px-12 py-4 rounded shadow
+          hover:opacity-75 text-base font-semibold
+        `}
+          href="/cehr"
+        >
+          Lissage CEHR (système du quotient)
         </Link>
       </div>
     </main>
