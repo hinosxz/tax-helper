@@ -23,6 +23,10 @@ const BRACKETS: Record<FoyerSituation, CehrBrackets> = {
 export const cehrEntryThreshold = (situation: FoyerSituation): number =>
   BRACKETS[situation].rate3From;
 
+/** Formats a number as a French-locale euro amount rounded to the nearest unit. */
+export const fmtEur = (n: number): string =>
+  `${Math.round(n).toLocaleString("fr-FR")} €`;
+
 export type FieldStatus = "neutral" | "passed" | "failed";
 
 /**
@@ -77,13 +81,15 @@ export const computeCehr = (
   const base4 = Math.max(0, rfr - b.rate4From);
   const amount3 = base3 * 0.03;
   const amount4 = base4 * 0.04;
+  // Per BOFiP: la contribution est arrondie à l'euro le plus proche.
+  const total = Math.round(amount3 + amount4);
   return {
     rfr,
     base3,
     base4,
     amount3,
     amount4,
-    total: amount3 + amount4,
+    total,
   };
 };
 
@@ -113,8 +119,6 @@ export interface QuotientResult {
   savings: number;
 }
 
-const fmt = (n: number): string => `${Math.round(n).toLocaleString("fr-FR")} €`;
-
 export const computeQuotient = ({
   rfrN,
   rfrNm1,
@@ -128,29 +132,29 @@ export const computeQuotient = ({
 
   const checks: EligibilityCheck[] = [
     {
-      label: `RFR N supérieur au seuil d'application de la CEHR (${fmt(
+      label: `RFR N supérieur au seuil d'application de la CEHR (${fmtEur(
         entryThreshold,
       )})`,
-      detail: `RFR N = ${fmt(rfrN)}`,
+      detail: `RFR N = ${fmtEur(rfrN)}`,
       passed: cehrWithoutQuotient.total > 0,
     },
     {
       label: "RFR N ≥ 1,5 × moyenne des RFR N-1 et N-2",
-      detail: `RFR N = ${fmt(rfrN)} vs 1,5 × moyenne = ${fmt(threshold)}`,
+      detail: `RFR N = ${fmtEur(rfrN)} vs 1,5 × moyenne = ${fmtEur(threshold)}`,
       passed: rfrN >= threshold,
     },
     {
-      label: `RFR N-1 sous le seuil d'application de la CEHR (≤ ${fmt(
+      label: `RFR N-1 sous le seuil d'application de la CEHR (≤ ${fmtEur(
         entryThreshold,
       )})`,
-      detail: `RFR N-1 = ${fmt(rfrNm1)}`,
+      detail: `RFR N-1 = ${fmtEur(rfrNm1)}`,
       passed: rfrNm1 <= entryThreshold,
     },
     {
-      label: `RFR N-2 sous le seuil d'application de la CEHR (≤ ${fmt(
+      label: `RFR N-2 sous le seuil d'application de la CEHR (≤ ${fmtEur(
         entryThreshold,
       )})`,
-      detail: `RFR N-2 = ${fmt(rfrNm2)}`,
+      detail: `RFR N-2 = ${fmtEur(rfrNm2)}`,
       passed: rfrNm2 <= entryThreshold,
     },
   ];
@@ -176,7 +180,10 @@ export const computeQuotient = ({
   const midpoint = averagePrevious + delta / 2;
   const cehrOnAverage = computeCehr(averagePrevious, situation).total;
   const cehrOnMidpoint = computeCehr(midpoint, situation).total;
-  const cehrWithQuotient = cehrOnAverage + 2 * (cehrOnMidpoint - cehrOnAverage);
+  // Per BOFiP: la contribution finale est arrondie à l'euro le plus proche.
+  const cehrWithQuotient = Math.round(
+    cehrOnAverage + 2 * (cehrOnMidpoint - cehrOnAverage),
+  );
 
   return {
     eligible: true,
@@ -188,6 +195,6 @@ export const computeQuotient = ({
     cehrWithQuotient,
     cehrOnAverage,
     cehrOnMidpoint,
-    savings: cehrWithoutQuotient.total - cehrWithQuotient,
+    savings: Math.round(cehrWithoutQuotient.total - cehrWithQuotient),
   };
 };

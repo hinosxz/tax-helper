@@ -10,7 +10,8 @@ describe("computeCehr", () => {
     const r = computeCehr(1_285_760, "couple");
     expect(r.amount3).toBeCloseTo(15_000, 2);
     expect(r.amount4).toBeCloseTo(11_430.4, 2);
-    expect(r.total).toBeCloseTo(26_430.4, 2);
+    // Total is rounded to the nearest euro per BOFiP.
+    expect(r.total).toBe(26_430);
   });
 
   it("applies the single brackets", () => {

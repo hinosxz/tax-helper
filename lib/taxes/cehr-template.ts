@@ -1,4 +1,4 @@
-import type { QuotientResult } from "./cehr";
+import { fmtEur, type QuotientResult } from "./cehr";
 
 export type AssetType = "rsu" | "espp" | "so";
 
@@ -55,9 +55,6 @@ interface TemplateInputs {
   assetTypes: AssetType[];
   situation: "single" | "couple";
 }
-
-const fmtEur = (n: number): string =>
-  `${Math.round(n).toLocaleString("fr-FR")} €`;
 
 const joinFr = (items: string[]): string => {
   if (items.length === 0) return "";
