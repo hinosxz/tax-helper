@@ -296,8 +296,8 @@ export default function CehrPage() {
             explanation={
               <>
                 Le RFR de l&apos;année précédant l&apos;année concernée doit
-                être <strong>strictement inférieur</strong> au seuil
-                d&apos;entrée de la CEHR (
+                être <strong>inférieur ou égal</strong> au seuil d&apos;entrée
+                de la CEHR (
                 <strong>{fmtEur(cehrEntryThreshold(situation))}</strong> pour la
                 situation choisie). Si vous étiez déjà soumis à la CEHR cette
                 année-là, le lissage n&apos;est pas applicable.
@@ -315,7 +315,7 @@ export default function CehrPage() {
             explanation={
               <>
                 Même condition deux ans en arrière : le RFR doit être{" "}
-                <strong>strictement inférieur</strong> à{" "}
+                <strong>inférieur ou égal</strong> à{" "}
                 <strong>{fmtEur(cehrEntryThreshold(situation))}</strong>. Les
                 deux années antérieures doivent être hors-CEHR pour que le
                 revenu de l&apos;année N soit considéré comme exceptionnel par
