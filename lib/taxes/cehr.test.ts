@@ -1,227 +1,184 @@
-import { computeCehr, computeQuotient, evaluateFieldStatus } from "./cehr";
+import {
+  computeCehr,
+  computeQuotient,
+  evaluateFieldStatus,
+  type FieldStatus,
+  type FoyerSituation,
+} from "./cehr";
+import { buildCehrEmail } from "./cehr-template";
 
 describe("computeCehr", () => {
-  it("returns zero below the first bracket (couple)", () => {
-    expect(computeCehr(400_000, "couple").total).toBe(0);
-  });
+  it.each([
+    [400_000, "couple", 0],
+    [1_285_760, "couple", 26_430],
+    [600_000, "single", 11_500],
+  ] satisfies Array<[number, FoyerSituation, number]>)(
+    "computes CEHR for %s / %s",
+    (rfr, situation, total) => {
+      expect(computeCehr(rfr, situation).total).toBe(total);
+    },
+  );
 
-  it("applies 3% then 4% for a couple above 1M", () => {
-    // RFR 1,285,760 € → 500k @ 3% = 15,000 ; 285,760 @ 4% = 11,430.4
-    const r = computeCehr(1_285_760, "couple");
-    expect(r.amount3).toBeCloseTo(15_000, 2);
-    expect(r.amount4).toBeCloseTo(11_430.4, 2);
-    // Total is rounded to the nearest euro per BOFiP.
-    expect(r.total).toBe(26_430);
-  });
-
-  it("applies the single brackets", () => {
-    const r = computeCehr(600_000, "single");
-    expect(r.base3).toBe(250_000);
-    expect(r.base4).toBe(100_000);
-    expect(r.total).toBeCloseTo(0.03 * 250_000 + 0.04 * 100_000, 2);
+  it("exposes the single 3% and 4% bases", () => {
+    expect(computeCehr(600_000, "single")).toMatchObject({
+      base3: 250_000,
+      base4: 100_000,
+    });
   });
 });
 
 describe("computeQuotient", () => {
   it("reproduces the 2021 Datadog case (couple)", () => {
-    // RFR N-2 = 116,701 ; RFR N-1 = 249,113 ; RFR N = 1,285,760
     const r = computeQuotient({
       rfrN: 1_285_760,
       rfrNm1: 249_113,
       rfrNm2: 116_701,
       situation: "couple",
     });
+
     expect(r.eligible).toBe(true);
-    expect(r.cehrWithoutQuotient.total).toBeCloseTo(26_430.4, 0);
-    // Administration's accepted result was 14,060 €
-    expect(Math.round(r.cehrWithQuotient)).toBe(14_060);
+    expect(r.cehrWithoutQuotient.total).toBe(26_430);
+    expect(r.cehrWithQuotient).toBe(14_060);
   });
 
-  it("marks the request ineligible when RFR does not exceed 1.5× average", () => {
-    const r = computeQuotient({
-      rfrN: 550_000,
-      rfrNm1: 400_000,
-      rfrNm2: 400_000,
-      situation: "couple",
+  it.each([
+    [550_000, 400_000, 400_000, "couple", 1],
+    [1_500_000, 600_000, 100_000, "couple", 2],
+    [100_000, 50_000, 50_000, "single", 0],
+  ] satisfies Array<[number, number, number, FoyerSituation, number]>)(
+    "rejects ineligible quotient case %#",
+    (rfrN, rfrNm1, rfrNm2, situation, failedCheck) => {
+      const r = computeQuotient({
+        rfrN,
+        rfrNm1,
+        rfrNm2,
+        situation,
+      });
+
+      expect(r.eligible).toBe(false);
+      expect(r.checks[failedCheck].passed).toBe(false);
+      expect(r.cehrWithQuotient).toBe(r.cehrWithoutQuotient.total);
+    },
+  );
+
+  it.each([
+    [1_500_000, 500_000, 100_000, "couple"],
+    [600_000, 0, 0, "single"],
+  ] satisfies Array<[number, number, number, FoyerSituation]>)(
+    "accepts eligible quotient case %#",
+    (rfrN, rfrNm1, rfrNm2, situation) => {
+      expect(
+        computeQuotient({
+          rfrN,
+          rfrNm1,
+          rfrNm2,
+          situation,
+        }).eligible,
+      ).toBe(true);
+    },
+  );
+
+  it("uses raw intermediate CEHR totals before rounding the quotient result", () => {
+    expect(
+      computeQuotient({
+        rfrN: 500_040,
+        rfrNm1: 0,
+        rfrNm2: 0,
+        situation: "single",
+      }).cehrWithQuotient,
+    ).toBe(1);
+  });
+});
+
+describe("evaluateFieldStatus", () => {
+  it.each([
+    ["Nm1", null, null, null, "single", "neutral"],
+    ["Nm1", null, 100_000, null, "single", "passed"],
+    ["Nm1", null, 300_000, null, "single", "failed"],
+    ["Nm2", null, null, 400_000, "couple", "passed"],
+    ["Nm2", null, null, 500_000, "couple", "passed"],
+    ["Nm2", null, null, 600_000, "couple", "failed"],
+    ["N", 800_000, 100_000, null, "single", "neutral"],
+    ["N", 100_000, null, null, "single", "failed"],
+    ["N", 100_000, 50_000, 50_000, "single", "failed"],
+    ["N", 800_000, 100_000, 200_000, "single", "passed"],
+    ["N", 200_000, 100_000, 200_000, "single", "failed"],
+  ] satisfies Array<
+    [
+      "N" | "Nm1" | "Nm2",
+      number | null,
+      number | null,
+      number | null,
+      FoyerSituation,
+      FieldStatus,
+    ]
+  >)(
+    "returns %s status for case %#",
+    (field, rfrN, rfrNm1, rfrNm2, situation, expected) => {
+      expect(
+        evaluateFieldStatus({ rfrN, rfrNm1, rfrNm2, situation, field }),
+      ).toBe(expected);
+    },
+  );
+});
+
+describe("buildCehrEmail", () => {
+  const quotient = computeQuotient({
+    rfrN: 600_000,
+    rfrNm1: 0,
+    rfrNm2: 0,
+    situation: "single",
+  });
+
+  it("includes the numeric conditions and quotient calculation details", () => {
+    const email = buildCehrEmail({
+      yearN: 2025,
+      rfrN: 600_000,
+      rfrNm1: 0,
+      rfrNm2: 0,
+      quotient,
+      assetTypes: ["rsu"],
+      situation: "single",
     });
-    expect(r.eligible).toBe(false);
-    // CEHR>0 check passes (RFR N > 500k entry threshold)
-    expect(r.checks[0].passed).toBe(true);
-    // 1.5× check fails (550k < 1.5×400k = 600k)
-    expect(r.checks[1].passed).toBe(false);
+
+    expect(email).toContain("Réclamation contentieuse");
+    expect(email).toContain("conditions chiffrées");
+    expect(email).not.toContain("conditions d'application sont remplies");
+    expect(email).toContain("La moyenne des RFR 2023 et 2024 est donc de");
+    expect(email).toContain(
+      "Le RFR 2025 est au moins égal à 1,5 fois cette moyenne",
+    );
+    expect(email).toContain("3. Calcul de la CEHR avec quotient");
+    expect(email).toContain("- Base lissée retenue pour le quotient :");
+    expect(email).toContain("- Montant total de CEHR après quotient :");
+    expect(email).not.toContain("(× 2 quotient)");
+    expect(email).toContain(
+      "Les avis d'impôt joints pour les revenus 2023, 2024 et 2025",
+    );
   });
 
-  it("rejects when a previous RFR exceeded the CEHR entry threshold", () => {
-    const r = computeQuotient({
-      rfrN: 1_500_000,
-      rfrNm1: 600_000,
-      rfrNm2: 100_000,
-      situation: "couple",
-    });
-    expect(r.eligible).toBe(false);
-    // N-1 check (index 2) fails: 600k > 500k seuil couple
-    expect(r.checks[2].passed).toBe(false);
-  });
-
-  it("accepts a previous RFR exactly at the CEHR entry threshold", () => {
-    // RFR N-1 = 500k for a couple → CEHR(500k) = 0, still under the bracket.
-    const r = computeQuotient({
+  it("uses plural wording for a couple", () => {
+    const coupleQuotient = computeQuotient({
       rfrN: 1_500_000,
       rfrNm1: 500_000,
       rfrNm2: 100_000,
       situation: "couple",
     });
-    expect(r.eligible).toBe(true);
-  });
-
-  it("stays eligible when both previous RFRs are zero", () => {
-    const r = computeQuotient({
-      rfrN: 600_000,
-      rfrNm1: 0,
-      rfrNm2: 0,
-      situation: "single",
+    const email = buildCehrEmail({
+      yearN: 2025,
+      rfrN: 1_500_000,
+      rfrNm1: 500_000,
+      rfrNm2: 100_000,
+      quotient: coupleQuotient,
+      assetTypes: ["rsu"],
+      situation: "couple",
     });
-    expect(r.eligible).toBe(true);
-  });
 
-  it("rejects when RFR N does not trigger any CEHR liability", () => {
-    // Single: avg = 50k, RFR N = 100k (>= 1.5×avg), N-1 and N-2 < 250k seuil,
-    // but RFR N is below CEHR entry → no CEHR is actually due.
-    const r = computeQuotient({
-      rfrN: 100_000,
-      rfrNm1: 50_000,
-      rfrNm2: 50_000,
-      situation: "single",
-    });
-    expect(r.cehrWithoutQuotient.total).toBe(0);
-    expect(r.eligible).toBe(false);
-    expect(r.checks[0].passed).toBe(false);
-  });
-});
-
-describe("evaluateFieldStatus", () => {
-  const base = { rfrN: null, rfrNm1: null, rfrNm2: null } as const;
-
-  it("returns neutral when the targeted field is empty", () => {
-    expect(
-      evaluateFieldStatus({
-        ...base,
-        situation: "single",
-        field: "Nm1",
-      }),
-    ).toBe("neutral");
-    expect(
-      evaluateFieldStatus({
-        ...base,
-        situation: "single",
-        field: "Nm2",
-      }),
-    ).toBe("neutral");
-  });
-
-  it("validates RFR N-1 independently of the others (single)", () => {
-    expect(
-      evaluateFieldStatus({
-        rfrN: null,
-        rfrNm1: 100_000,
-        rfrNm2: null,
-        situation: "single",
-        field: "Nm1",
-      }),
-    ).toBe("passed");
-    expect(
-      evaluateFieldStatus({
-        rfrN: null,
-        rfrNm1: 300_000,
-        rfrNm2: null,
-        situation: "single",
-        field: "Nm1",
-      }),
-    ).toBe("failed");
-  });
-
-  it("validates RFR N-2 independently of the others (couple)", () => {
-    expect(
-      evaluateFieldStatus({
-        rfrN: null,
-        rfrNm1: null,
-        rfrNm2: 400_000,
-        situation: "couple",
-        field: "Nm2",
-      }),
-    ).toBe("passed");
-    expect(
-      evaluateFieldStatus({
-        rfrN: null,
-        rfrNm1: null,
-        rfrNm2: 500_000,
-        situation: "couple",
-        field: "Nm2",
-      }),
-    ).toBe("passed"); // boundary: exactly at threshold → no CEHR due
-    expect(
-      evaluateFieldStatus({
-        rfrN: null,
-        rfrNm1: null,
-        rfrNm2: 600_000,
-        situation: "couple",
-        field: "Nm2",
-      }),
-    ).toBe("failed");
-  });
-
-  it("keeps RFR N neutral until both previous RFRs are filled", () => {
-    expect(
-      evaluateFieldStatus({
-        rfrN: 800_000,
-        rfrNm1: 100_000,
-        rfrNm2: null,
-        situation: "single",
-        field: "N",
-      }),
-    ).toBe("neutral");
-  });
-
-  it("fails RFR N immediately when it is below the CEHR threshold", () => {
-    // single, RFR N = 100k < 250k entry → no CEHR is due, fail early
-    expect(
-      evaluateFieldStatus({
-        rfrN: 100_000,
-        rfrNm1: null,
-        rfrNm2: null,
-        situation: "single",
-        field: "N",
-      }),
-    ).toBe("failed");
-    expect(
-      evaluateFieldStatus({
-        rfrN: 100_000,
-        rfrNm1: 50_000,
-        rfrNm2: 50_000,
-        situation: "single",
-        field: "N",
-      }),
-    ).toBe("failed");
-  });
-
-  it("validates RFR N once both previous RFRs are known", () => {
-    expect(
-      evaluateFieldStatus({
-        rfrN: 800_000,
-        rfrNm1: 100_000,
-        rfrNm2: 200_000,
-        situation: "single",
-        field: "N",
-      }),
-    ).toBe("passed");
-    expect(
-      evaluateFieldStatus({
-        rfrN: 200_000,
-        rfrNm1: 100_000,
-        rfrNm2: 200_000,
-        situation: "single",
-        field: "N",
-      }),
-    ).toBe("failed");
+    expect(email).toContain("Nous vous adressons");
+    expect(email).toContain("Sauf erreur de notre part");
+    expect(email).toContain("Nous sollicitons");
+    expect(email).toContain("notre dossier fiscal");
+    expect(email).toContain("nos salutations distinguées");
+    expect(email).not.toContain("Je vous adresse");
   });
 });

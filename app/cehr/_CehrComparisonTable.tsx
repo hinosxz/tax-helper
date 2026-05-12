@@ -1,5 +1,4 @@
-import { useState } from "react";
-import classNames from "classnames";
+import { useState, type ReactNode } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import { Section } from "@/components/ui/Section";
 import {
@@ -17,6 +16,23 @@ interface Props {
   midpointBreakdown: CehrBreakdown;
 }
 
+interface ComparisonRow {
+  label: ReactNode;
+  withoutQuotient: number;
+  withQuotient: number;
+  showQuotientMultiplier?: boolean;
+}
+
+const QuotientMultiplierBadge = () => (
+  <span
+    className="ml-1 text-xs font-semibold text-green-700"
+    title="Montant doublé par le mécanisme du quotient"
+    aria-label="montant doublé par le mécanisme du quotient"
+  >
+    quotient ×2
+  </span>
+);
+
 export const CehrComparisonTable = ({
   result,
   rfrN,
@@ -26,6 +42,61 @@ export const CehrComparisonTable = ({
   midpointBreakdown,
 }: Props) => {
   const [showSteps, setShowSteps] = useState(false);
+  const excess = rfrN - result.averagePrevious;
+  const halfExcess = excess / 2;
+  const rows: ComparisonRow[] = [
+    {
+      label: "Base 3 %",
+      withoutQuotient: result.cehrWithoutQuotient.base3,
+      withQuotient: midpointBreakdown.base3,
+    },
+    {
+      label: "Base 4 %",
+      withoutQuotient: result.cehrWithoutQuotient.base4,
+      withQuotient: midpointBreakdown.base4,
+    },
+    {
+      label: "CEHR à 3 %",
+      withoutQuotient: result.cehrWithoutQuotient.amount3,
+      withQuotient: midpointBreakdown.amount3 * 2,
+      showQuotientMultiplier: true,
+    },
+    {
+      label: "CEHR à 4 %",
+      withoutQuotient: result.cehrWithoutQuotient.amount4,
+      withQuotient: midpointBreakdown.amount4 * 2,
+      showQuotientMultiplier: true,
+    },
+  ];
+  const steps: ReactNode[] = [
+    <>
+      Moyenne des deux années précédentes :{" "}
+      <span className="font-mono">
+        ({fmtEur(rfrNm2)} + {fmtEur(rfrNm1)}) / 2 ={" "}
+        <strong>{fmtEur(result.averagePrevious)}</strong>
+      </span>
+    </>,
+    <>
+      Fraction excédentaire :{" "}
+      <span className="font-mono">
+        {fmtEur(rfrN)} − {fmtEur(result.averagePrevious)} ={" "}
+        <strong>{fmtEur(excess)}</strong>
+      </span>
+    </>,
+    <>
+      Fraction divisée par deux :{" "}
+      <span className="font-mono">
+        {fmtEur(excess)} / 2 = <strong>{fmtEur(halfExcess)}</strong>
+      </span>
+    </>,
+    <>
+      Base lissée :{" "}
+      <span className="font-mono">
+        {fmtEur(result.averagePrevious)} + {fmtEur(halfExcess)} ={" "}
+        <strong className="text-green-700">{fmtEur(midpoint)}</strong>
+      </span>
+    </>,
+  ];
 
   return (
     <Section title="Comparaison du calcul CEHR">
@@ -46,10 +117,7 @@ export const CehrComparisonTable = ({
                 <button
                   type="button"
                   onClick={() => setShowSteps((s) => !s)}
-                  className={classNames(
-                    "flex items-center gap-1",
-                    "hover:text-gray-900 cursor-pointer",
-                  )}
+                  className="flex items-center gap-1 hover:text-gray-900 cursor-pointer"
                 >
                   Base imposable
                   {showSteps ? (
@@ -69,95 +137,36 @@ export const CehrComparisonTable = ({
                     Détail du calcul de la <strong>base lissée</strong> (colonne
                     « Avec quotient ») :
                   </div>
-                  <ol
-                    className={classNames(
-                      "list-decimal pl-6 space-y-1",
-                      "text-xs text-gray-700",
-                    )}
-                  >
-                    <li>
-                      Moyenne des deux années précédentes :{" "}
-                      <span className="font-mono">
-                        ({fmtEur(rfrNm2)} + {fmtEur(rfrNm1)}) / 2 ={" "}
-                        <strong>{fmtEur(result.averagePrevious)}</strong>
-                      </span>
-                    </li>
-                    <li>
-                      Fraction excédentaire :{" "}
-                      <span className="font-mono">
-                        {fmtEur(rfrN)} − {fmtEur(result.averagePrevious)} ={" "}
-                        <strong>{fmtEur(rfrN - result.averagePrevious)}</strong>
-                      </span>
-                    </li>
-                    <li>
-                      Fraction divisée par deux :{" "}
-                      <span className="font-mono">
-                        {fmtEur(rfrN - result.averagePrevious)} / 2 ={" "}
-                        <strong>
-                          {fmtEur((rfrN - result.averagePrevious) / 2)}
-                        </strong>
-                      </span>
-                    </li>
-                    <li>
-                      Base lissée :{" "}
-                      <span className="font-mono">
-                        {fmtEur(result.averagePrevious)} +{" "}
-                        {fmtEur((rfrN - result.averagePrevious) / 2)} ={" "}
-                        <strong className="text-green-700">
-                          {fmtEur(midpoint)}
-                        </strong>
-                      </span>
-                    </li>
+                  <ol className="list-decimal pl-6 space-y-1 text-xs text-gray-700">
+                    {steps.map((step, index) => (
+                      <li key={index}>{step}</li>
+                    ))}
                   </ol>
                 </td>
               </tr>
             )}
-            <tr>
-              <td className="p-3 text-gray-600">Base 3 %</td>
-              <td className="p-3 text-right">
-                {fmtEur(result.cehrWithoutQuotient.base3)}
-              </td>
-              <td className="p-3 text-right bg-green-50">
-                {fmtEur(midpointBreakdown.base3)}
-              </td>
-            </tr>
-            <tr>
-              <td className="p-3 text-gray-600">Base 4 %</td>
-              <td className="p-3 text-right">
-                {fmtEur(result.cehrWithoutQuotient.base4)}
-              </td>
-              <td className="p-3 text-right bg-green-50">
-                {fmtEur(midpointBreakdown.base4)}
-              </td>
-            </tr>
-            <tr>
-              <td className="p-3 text-gray-600">
-                CEHR à 3 %
-                <span className="text-xs text-gray-400 ml-1">
-                  (× 2 quotient)
-                </span>
-              </td>
-              <td className="p-3 text-right">
-                {fmtEur(result.cehrWithoutQuotient.amount3)}
-              </td>
-              <td className="p-3 text-right bg-green-50">
-                {fmtEur(midpointBreakdown.amount3 * 2)}
-              </td>
-            </tr>
-            <tr>
-              <td className="p-3 text-gray-600">
-                CEHR à 4 %
-                <span className="text-xs text-gray-400 ml-1">
-                  (× 2 quotient)
-                </span>
-              </td>
-              <td className="p-3 text-right">
-                {fmtEur(result.cehrWithoutQuotient.amount4)}
-              </td>
-              <td className="p-3 text-right bg-green-50">
-                {fmtEur(midpointBreakdown.amount4 * 2)}
-              </td>
-            </tr>
+            {rows.map(
+              (
+                {
+                  label,
+                  withoutQuotient,
+                  withQuotient,
+                  showQuotientMultiplier,
+                },
+                index,
+              ) => (
+                <tr key={index}>
+                  <td className="p-3 text-gray-600">{label}</td>
+                  <td className="p-3 text-right">{fmtEur(withoutQuotient)}</td>
+                  <td className="p-3 text-right bg-green-50">
+                    <span className="inline-flex items-baseline justify-end">
+                      {fmtEur(withQuotient)}
+                      {showQuotientMultiplier && <QuotientMultiplierBadge />}
+                    </span>
+                  </td>
+                </tr>
+              ),
+            )}
             <tr className="bg-gray-50">
               <td className="p-3 font-semibold">CEHR totale</td>
               <td className="p-3 text-right font-semibold">
@@ -170,13 +179,7 @@ export const CehrComparisonTable = ({
           </tbody>
         </table>
       </div>
-      <div
-        className={classNames(
-          "mt-4 p-4 rounded-md",
-          "bg-green-100 border border-green-300",
-          "flex items-baseline justify-between flex-wrap gap-2",
-        )}
-      >
+      <div className="mt-4 p-4 rounded-md bg-green-100 border border-green-300 flex items-baseline justify-between flex-wrap gap-2">
         <span className="text-sm text-green-900">
           Gain total grâce au lissage
           <span className="text-xs text-green-700 ml-2">

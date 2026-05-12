@@ -44,8 +44,19 @@ const EMPTY_BREAKDOWN: CehrBreakdown = {
   base4: 0,
   amount3: 0,
   amount4: 0,
+  rawTotal: 0,
   total: 0,
 };
+
+const failedPreviousDetail = (
+  label: "N-1" | "N-2",
+  value: number | null,
+  threshold: number,
+  status: CheckStatus,
+) =>
+  status === "failed" && value !== null
+    ? `RFR ${label} = ${fmtEur(value)} > ${fmtEur(threshold)}`
+    : undefined;
 
 export const useCehrCalculator = ({
   yearN,
@@ -57,38 +68,24 @@ export const useCehrCalculator = ({
 }: Inputs): CehrCalculatorView => {
   const allFilled = rfrN !== null && rfrNm1 !== null && rfrNm2 !== null;
   const entryThreshold = cehrEntryThreshold(situation);
+  const statusFor = (field: "N" | "Nm1" | "Nm2") =>
+    evaluateFieldStatus({ rfrN, rfrNm1, rfrNm2, situation, field });
 
-  const statusNm1 = evaluateFieldStatus({
-    rfrN,
+  const statusNm1 = statusFor("Nm1");
+  const statusNm2 = statusFor("Nm2");
+  const statusN = statusFor("N");
+  const detailNm1 = failedPreviousDetail(
+    "N-1",
     rfrNm1,
+    entryThreshold,
+    statusNm1,
+  );
+  const detailNm2 = failedPreviousDetail(
+    "N-2",
     rfrNm2,
-    situation,
-    field: "Nm1",
-  });
-  const detailNm1 =
-    statusNm1 === "failed" && rfrNm1 !== null
-      ? `RFR N-1 = ${fmtEur(rfrNm1)} ≥ ${fmtEur(entryThreshold)}`
-      : undefined;
-
-  const statusNm2 = evaluateFieldStatus({
-    rfrN,
-    rfrNm1,
-    rfrNm2,
-    situation,
-    field: "Nm2",
-  });
-  const detailNm2 =
-    statusNm2 === "failed" && rfrNm2 !== null
-      ? `RFR N-2 = ${fmtEur(rfrNm2)} ≥ ${fmtEur(entryThreshold)}`
-      : undefined;
-
-  const statusN = evaluateFieldStatus({
-    rfrN,
-    rfrNm1,
-    rfrNm2,
-    situation,
-    field: "N",
-  });
+    entryThreshold,
+    statusNm2,
+  );
   const detailN = (() => {
     if (statusN !== "failed" || rfrN === null) return undefined;
     if (rfrN <= entryThreshold) {

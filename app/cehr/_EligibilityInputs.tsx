@@ -1,10 +1,7 @@
 import classNames from "classnames";
+import { ButtonGroup } from "@/components/ui/ButtonGroup";
 import { Section } from "@/components/ui/Section";
-import {
-  cehrEntryThreshold,
-  fmtEur,
-  type FoyerSituation,
-} from "@/lib/taxes/cehr";
+import { fmtEur, type FoyerSituation } from "@/lib/taxes/cehr";
 import { RfrField } from "./_RfrField";
 import type { CehrCalculatorView } from "./_useCehrCalculator";
 
@@ -46,27 +43,12 @@ export const EligibilityInputs = ({
     <div className="flex flex-col gap-4">
       <div>
         <div className="text-sm font-medium mb-2">Situation familiale</div>
-        <div className="inline-flex rounded-md shadow-sm border border-gray-300 overflow-hidden">
-          {SITUATION_OPTIONS.map((opt, idx) => {
-            const active = situation === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => onSituationChange(opt.value)}
-                className={classNames(
-                  "px-4 py-1.5 text-sm transition-colors",
-                  idx > 0 && "border-l border-gray-300",
-                  active
-                    ? "bg-gray-100 text-gray-900 font-bold"
-                    : "bg-white text-gray-600 hover:bg-gray-50",
-                )}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
+        <ButtonGroup
+          value={situation}
+          variant="segmented"
+          options={SITUATION_OPTIONS}
+          onClick={onSituationChange}
+        />
       </div>
 
       <RfrField
@@ -116,9 +98,9 @@ export const EligibilityInputs = ({
           <>
             Le RFR de l&apos;année précédant l&apos;année concernée doit être{" "}
             <strong>inférieur ou égal</strong> au seuil d&apos;entrée de la CEHR
-            (<strong>{fmtEur(cehrEntryThreshold(situation))}</strong> pour la
-            situation choisie). Si vous étiez déjà soumis à la CEHR cette
-            année-là, le lissage n&apos;est pas applicable.
+            (<strong>{fmtEur(view.entryThreshold)}</strong> pour la situation
+            choisie). Si vous étiez déjà soumis à la CEHR cette année-là, le
+            lissage n&apos;est pas applicable.
           </>
         }
         value={rfrNm1}
@@ -134,10 +116,10 @@ export const EligibilityInputs = ({
           <>
             Même condition deux ans en arrière : le RFR doit être{" "}
             <strong>inférieur ou égal</strong> à{" "}
-            <strong>{fmtEur(cehrEntryThreshold(situation))}</strong>. Les deux
-            années antérieures doivent être hors-CEHR pour que le revenu de
+            <strong>{fmtEur(view.entryThreshold)}</strong>. Les deux années
+            antérieures doivent être hors-CEHR pour que le revenu de
             l&apos;année N soit considéré comme exceptionnel par l&apos;article
-            223 sexies V du CGI.
+            223 sexies II du CGI.
           </>
         }
         value={rfrNm2}

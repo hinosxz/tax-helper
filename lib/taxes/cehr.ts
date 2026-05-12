@@ -1,21 +1,9 @@
-/**
- * Contribution Exceptionnelle sur les Hauts Revenus (CEHR)
- * Article 223 sexies du Code Général des Impôts.
- *
- * Lissage via le système du quotient applicable aux revenus exceptionnels
- * lorsque le RFR de l'année dépasse de plus de 1,5 fois la moyenne des deux
- * années précédentes (article 223 sexies V CGI).
- */
-
 export type FoyerSituation = "single" | "couple";
 
-interface CehrBrackets {
-  rate3From: number;
-  rate3To: number;
-  rate4From: number;
-}
-
-const BRACKETS: Record<FoyerSituation, CehrBrackets> = {
+const BRACKETS: Record<
+  FoyerSituation,
+  { rate3From: number; rate3To: number; rate4From: number }
+> = {
   single: { rate3From: 250_000, rate3To: 500_000, rate4From: 500_000 },
   couple: { rate3From: 500_000, rate3To: 1_000_000, rate4From: 1_000_000 },
 };
@@ -23,44 +11,34 @@ const BRACKETS: Record<FoyerSituation, CehrBrackets> = {
 export const cehrEntryThreshold = (situation: FoyerSituation): number =>
   BRACKETS[situation].rate3From;
 
-/** Formats a number as a French-locale euro amount rounded to the nearest unit. */
 export const fmtEur = (n: number): string =>
   `${Math.round(n).toLocaleString("fr-FR")} €`;
 
 export type FieldStatus = "neutral" | "passed" | "failed";
 
-/**
- * Evaluates the eligibility status of a single RFR input,
- * independently of the other inputs when possible.
- * - RFR N-1 / N-2: only requires their own value (passed if < seuil CEHR).
- * - RFR N: requires the two previous values to compute the 1.5 × average rule.
- */
-export const evaluateFieldStatus = (params: {
+export const evaluateFieldStatus = ({
+  rfrN,
+  rfrNm1,
+  rfrNm2,
+  situation,
+  field,
+}: {
   rfrN: number | null;
   rfrNm1: number | null;
   rfrNm2: number | null;
   situation: FoyerSituation;
   field: "N" | "Nm1" | "Nm2";
 }): FieldStatus => {
-  const { rfrN, rfrNm1, rfrNm2, situation, field } = params;
   const entry = cehrEntryThreshold(situation);
 
-  if (field === "Nm1") {
-    if (rfrNm1 === null) return "neutral";
-    return rfrNm1 <= entry ? "passed" : "failed";
-  }
-  if (field === "Nm2") {
-    if (rfrNm2 === null) return "neutral";
-    return rfrNm2 <= entry ? "passed" : "failed";
-  }
-  // field === "N"
+  if (field === "Nm1")
+    return rfrNm1 === null ? "neutral" : rfrNm1 <= entry ? "passed" : "failed";
+  if (field === "Nm2")
+    return rfrNm2 === null ? "neutral" : rfrNm2 <= entry ? "passed" : "failed";
   if (rfrN === null) return "neutral";
-  // Standalone check: RFR N must exceed the CEHR entry threshold,
-  // otherwise no CEHR is due and the quotient is moot.
   if (rfrN <= entry) return "failed";
   if (rfrNm1 === null || rfrNm2 === null) return "neutral";
-  const avg = (rfrNm1 + rfrNm2) / 2;
-  return rfrN >= 1.5 * avg ? "passed" : "failed";
+  return rfrN >= 1.5 * ((rfrNm1 + rfrNm2) / 2) ? "passed" : "failed";
 };
 
 export interface CehrBreakdown {
@@ -69,6 +47,7 @@ export interface CehrBreakdown {
   base4: number;
   amount3: number;
   amount4: number;
+  rawTotal: number;
   total: number;
 }
 
@@ -81,15 +60,15 @@ export const computeCehr = (
   const base4 = Math.max(0, rfr - b.rate4From);
   const amount3 = base3 * 0.03;
   const amount4 = base4 * 0.04;
-  // Per BOFiP: la contribution est arrondie à l'euro le plus proche.
-  const total = Math.round(amount3 + amount4);
+  const rawTotal = amount3 + amount4;
   return {
     rfr,
     base3,
     base4,
     amount3,
     amount4,
-    total,
+    rawTotal,
+    total: Math.round(rawTotal),
   };
 };
 
@@ -178,9 +157,8 @@ export const computeQuotient = ({
 
   const delta = rfrN - averagePrevious;
   const midpoint = averagePrevious + delta / 2;
-  const cehrOnAverage = computeCehr(averagePrevious, situation).total;
-  const cehrOnMidpoint = computeCehr(midpoint, situation).total;
-  // Per BOFiP: la contribution finale est arrondie à l'euro le plus proche.
+  const cehrOnAverage = computeCehr(averagePrevious, situation).rawTotal;
+  const cehrOnMidpoint = computeCehr(midpoint, situation).rawTotal;
   const cehrWithQuotient = Math.round(
     cehrOnAverage + 2 * (cehrOnMidpoint - cehrOnAverage),
   );

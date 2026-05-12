@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import Link from "next/link";
+import PageLink from "@/components/ui/PageLink";
 
 export default function Home() {
   return (
@@ -10,24 +10,10 @@ export default function Home() {
     >
       <header className="text-4xl font-semibold">Tax Helper</header>
       <div className="flex flex-col w-96 mx-auto items-stretch text-center gap-10">
-        <Link
-          className={`
-          bg-green-200 px-12 py-4 rounded shadow
-          hover:opacity-75 text-base font-semibold
-        `}
-          href="/report"
-        >
-          Compute my French tax report
-        </Link>
-        <Link
-          className={`
-          bg-blue-200 px-12 py-4 rounded shadow
-          hover:opacity-75 text-base font-semibold
-        `}
-          href="/cehr"
-        >
+        <PageLink href="/report">Compute my French tax report</PageLink>
+        <PageLink href="/cehr" color="blue">
           Lissage CEHR (système du quotient)
-        </Link>
+        </PageLink>
       </div>
     </main>
   );

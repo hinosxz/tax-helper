@@ -1,13 +1,11 @@
-import { fmtEur, type QuotientResult } from "./cehr";
+import { computeCehr, fmtEur, type QuotientResult } from "./cehr";
 
 export type AssetType = "rsu" | "espp" | "so";
 
 export interface AssetDefinition {
   id: AssetType;
   label: string;
-  // Short phrase used inside the intro sentence after "cessions de"
   intro: string;
-  // Asset-specific supporting documents
   justificatifs: string[];
 }
 
@@ -57,9 +55,8 @@ interface TemplateInputs {
 }
 
 const joinFr = (items: string[]): string => {
-  if (items.length === 0) return "";
-  if (items.length === 1) return items[0];
-  return `${items.slice(0, -1).join(", ")} et ${items[items.length - 1]}`;
+  if (items.length <= 1) return items[0] ?? "";
+  return `${items.slice(0, -1).join(", ")} et ${items.at(-1)}`;
 };
 
 export const buildCehrEmail = ({
@@ -80,6 +77,11 @@ export const buildCehrEmail = ({
   const yearNm1 = yearN - 1;
   const yearNm2 = yearN - 2;
   const c = quotient.cehrWithoutQuotient;
+  const excess = rfrN - quotient.averagePrevious;
+  const halfExcess = excess / 2;
+  const midpoint = quotient.averagePrevious + halfExcess;
+  const lissed = computeCehr(midpoint, situation);
+  const threshold150 = 1.5 * quotient.averagePrevious;
 
   const introPhrases = joinFr(
     assetTypes.map((t) => ASSET_DEFINITIONS[t].intro),
@@ -89,53 +91,71 @@ export const buildCehrEmail = ({
   );
 
   const isCouple = situation === "couple";
-  const p = (we: string, i: string): string => (isCouple ? we : i);
+  const p = (coupleText: string, singleText: string): string =>
+    isCouple ? coupleText : singleText;
 
-  const signatureLines = isCouple
-    ? [
-        "[Nom(s)]",
-        "Numéro fiscal déclarant 1 : [XX XX XXX XXX XXX]",
-        "Numéro fiscal déclarant 2 : [XX XX XXX XXX XXX]",
-      ]
-    : ["[Nom]", "Numéro fiscal : [XX XX XXX XXX XXX]"];
+  const signature = isCouple
+    ? "[Nom(s)]\nNuméro fiscal déclarant 1 : [XX XX XXX XXX XXX]\nNuméro fiscal déclarant 2 : [XX XX XXX XXX XXX]"
+    : "[Nom]\nNuméro fiscal : [XX XX XXX XXX XXX]";
 
-  return `Objet : Demande de lissage de la Contribution Exceptionnelle sur les Hauts Revenus — application du système du quotient — Revenus ${yearN}
+  return `Objet : Réclamation contentieuse — application du mécanisme de quotient prévu à l'article 223 sexies II du CGI — CEHR sur les revenus ${yearN}
 
 Madame, Monsieur,
 
-${p("Nous revenons", "Je reviens")} vers vous suite à la réception de ${p("notre", "mon")} avis d'imposition des revenus ${yearN} établi en ${yearNp1}.
+${p("Nous vous adressons", "Je vous adresse")} une réclamation concernant la Contribution Exceptionnelle sur les Hauts Revenus (CEHR) établie au titre des revenus ${yearN}, sur l'avis d'impôt émis en ${yearNp1}.
 
-Compte tenu de ${p("notre", "mon")} revenu fiscal de référence (RFR) ${yearN}, ${p("nous avons", "j'ai")} été soumis${isCouple ? "" : "·e"} à la Contribution Exceptionnelle sur les Hauts Revenus. Cependant, ${p("nos", "mes")} revenus ${yearN} sont composés en partie de revenus considérés comme exceptionnels. En effet, ${p("notre", "mon")} RFR ${yearN} est plus élevé que les années précédentes du fait des cessions de ${introPhrases} intervenues en ${yearN}.
+${p("Sauf erreur de notre part", "Sauf erreur de ma part")}, le mécanisme de quotient prévu à l'article 223 sexies II du Code général des impôts n'a pas été appliqué, alors que les conditions chiffrées d'application ressortent des revenus fiscaux de référence des trois années concernées.
 
-Veuillez noter qu'en ${yearN}, ${p("nos", "mes")} revenus comportaient une part significative de revenus issus des cessions de valeurs mobilières (${introPhrases}) qui ont fortement impacté ${p("notre revenu global", "mon revenu global")} et également ${p("notre", "mon")} revenu fiscal de référence.
+${p("Nous sollicitons", "Je sollicite")} donc le recalcul de la CEHR avec application de ce mécanisme, ainsi que le dégrèvement ou la restitution de la différence correspondante.
 
-Sur ${p("notre", "mon")} avis d'impôt ${yearNp1} sur les revenus ${yearN}, la CEHR a été appliquée sans application du système du quotient et a été calculée comme suit :
+1. RFR concernés et conditions chiffrées du quotient CEHR
 
-Calcul de la CEHR (sans mécanisme du quotient)
-- RFR ${yearN} : ${fmtEur(rfrN)}
-- Base CEHR 3 % : ${fmtEur(c.base3)}
-- Base CEHR 4 % : ${fmtEur(c.base4)}
-- Montant CEHR à 3 % : ${fmtEur(c.amount3)}
-- Montant CEHR à 4 % : ${fmtEur(c.amount4)}
-- Montant CEHR Total : ${fmtEur(c.total)}
-
-${p("Nous remplissons", "Je remplis")} les conditions légales pour bénéficier du quotient. ${p("Nos", "Mes")} trois derniers revenus fiscaux de référence sont les suivants :
+Les revenus fiscaux de référence figurant sur les avis d'imposition concernés sont les suivants :
 
 - RFR ${yearNm2} : ${fmtEur(rfrNm2)}
 - RFR ${yearNm1} : ${fmtEur(rfrNm1)}
 - RFR ${yearN} : ${fmtEur(rfrN)}
 
-Selon ${p("nos", "mes")} estimations, avec application du mécanisme du quotient, le montant de la contribution devrait s'élever à ${fmtEur(quotient.cehrWithQuotient)}.
+La moyenne des RFR ${yearNm2} et ${yearNm1} est donc de ${fmtEur(quotient.averagePrevious)}. Le seuil de comparaison de 1,5 × cette moyenne est de ${fmtEur(threshold150)}.
 
-Ainsi, ${p("nous vous demandons", "je vous demande")}, par la présente, de bien vouloir revoir le calcul de ${p("notre", "mon")} impôt sur les revenus ${yearN} avec notamment le recalcul du montant de la Contribution Exceptionnelle sur les Hauts Revenus avec application du système du quotient.
+Ces montants satisfont les conditions chiffrées suivantes prévues par l'article 223 sexies II du CGI :
 
-Vous trouverez ci-joint l'ensemble des justificatifs relatifs aux cessions ${yearN} :
+- Le RFR ${yearN} dépasse le seuil d'entrée de la CEHR applicable au foyer fiscal : ${fmtEur(rfrN)} > ${fmtEur(quotient.entryThreshold)}.
+- Le RFR ${yearN} est au moins égal à 1,5 fois cette moyenne : ${fmtEur(rfrN)} ≥ ${fmtEur(threshold150)}.
+- Les RFR ${yearNm1} et ${yearNm2} restent chacun inférieurs ou égaux au seuil d'entrée de la CEHR applicable au foyer fiscal : ${fmtEur(rfrNm1)} ≤ ${fmtEur(quotient.entryThreshold)} et ${fmtEur(rfrNm2)} ≤ ${fmtEur(quotient.entryThreshold)}.
+- Les avis d'impôt joints pour les revenus ${yearNm2}, ${yearNm1} et ${yearN} permettent de vérifier la continuité du dossier fiscal sur les trois années concernées.
+
+La hausse du RFR ${yearN} provient notamment de cessions de ${introPhrases} intervenues en ${yearN}, comme indiqué dans les justificatifs joints.
+
+2. Calcul de la CEHR sans quotient
+
+- RFR ${yearN} : ${fmtEur(rfrN)}
+- Base CEHR 3 % : ${fmtEur(c.base3)}
+- Base CEHR 4 % : ${fmtEur(c.base4)}
+- Montant CEHR à 3 % : ${fmtEur(c.amount3)}
+- Montant CEHR à 4 % : ${fmtEur(c.amount4)}
+- Montant total de CEHR : ${fmtEur(c.total)}
+
+3. Calcul de la CEHR avec quotient
+
+- Fraction du RFR ${yearN} au-dessus de cette moyenne : ${fmtEur(rfrN)} - ${fmtEur(quotient.averagePrevious)} = ${fmtEur(excess)}
+- Base lissée retenue pour le quotient : moyenne + moitié de cette fraction, soit ${fmtEur(quotient.averagePrevious)} + (${fmtEur(excess)} / 2) = ${fmtEur(midpoint)}
+- CEHR calculée sur cette base lissée : base à 3 % de ${fmtEur(lissed.base3)} et base à 4 % de ${fmtEur(lissed.base4)}.
+- Montant total de CEHR après quotient : la CEHR calculée sur cette base lissée est doublée, puis le résultat est arrondi à l'euro, soit ${fmtEur(quotient.cehrWithQuotient)}.
+
+La différence entre le calcul sans quotient et le calcul avec quotient est donc estimée à ${fmtEur(quotient.savings)}.
+
+${p("Nous vous remercions", "Je vous remercie")} en conséquence de bien vouloir appliquer le mécanisme de quotient prévu à l'article 223 sexies II du CGI, recalculer la CEHR due au titre des revenus ${yearN}, et procéder au dégrèvement ou à la restitution du trop-versé.
+
+Pièces jointes proposées :
 
 ${[...assetJustificatifs, `Avis d'imposition des revenus ${yearNm2}, ${yearNm1} et ${yearN}`].map((j, i) => `${i + 1}. ${j}`).join("\n")}
 
-En vous remerciant pour votre réponse, ${p("nous vous prions", "je vous prie")} d'agréer, Madame, Monsieur, ${p("nos", "mes")} sincères salutations.
+${p("Nous restons", "Je reste")} à votre disposition pour tout complément ou tout recalcul à partir des montants exacts retenus dans ${p("notre", "mon")} dossier fiscal.
+
+${p("Nous vous prions", "Je vous prie")} d'agréer, Madame, Monsieur, l'expression de ${p("nos", "mes")} salutations distinguées.
 
 Cordialement,
-${signatureLines.join("\n")}
+${signature}
 `;
 };

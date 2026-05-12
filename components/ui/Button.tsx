@@ -7,7 +7,7 @@ interface ButtonProps {
   isDisabled?: boolean;
   label?: string;
   onClick: () => void;
-  color?: "green" | "red";
+  color?: "green" | "red" | "blue" | "softGreen";
 }
 
 export const Button = ({
@@ -26,6 +26,8 @@ export const Button = ({
       {
         "rounded shadow px-3 py-1.5": !isBorderless,
         "bg-green-200 text-base": color === "green",
+        "bg-blue-100": color === "blue",
+        "bg-green-200": color === "softGreen",
         "bg-red-400 text-white": color === "red",
       },
     )}
