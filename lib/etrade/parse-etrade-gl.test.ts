@@ -2,7 +2,8 @@
  * @jest-environment node
  */
 import XLSX from "xlsx";
-import { parseEtradeGL } from "./parse-etrade-gl";
+import { groupEtradeGL, parseEtradeGL } from "./parse-etrade-gl";
+import type { GainAndLossEvent } from "./etrade.types";
 
 function buildXlsx(headers: string[], dataRows: unknown[][]): File {
   const summaryRow = new Array(headers.length).fill("");
@@ -144,5 +145,80 @@ describe("parseEtradeGL", () => {
       ],
     ]);
     await expect(parseEtradeGL(file)).rejects.toMatch("is not supported");
+  });
+});
+
+const baseEvent: GainAndLossEvent = {
+  planType: "RS",
+  symbol: "DDOG",
+  quantity: 10,
+  dateGranted: "2021-06-01",
+  dateAcquired: "2023-03-01",
+  dateSold: "2023-06-15",
+  proceeds: 95,
+  adjustedCost: 80,
+  acquisitionCost: 0,
+  purchaseDateFairMktValue: 0,
+  qualifiedIn: "fr",
+};
+
+describe("groupEtradeGL", () => {
+  it("returns a single entry when all fields match", () => {
+    const events: GainAndLossEvent[] = [
+      { ...baseEvent, quantity: 10 },
+      { ...baseEvent, quantity: 5 },
+    ];
+    const result = groupEtradeGL(events);
+    expect(result).toHaveLength(1);
+    expect(result[0].quantity).toBe(15);
+  });
+
+  it("keeps entries separate when grant date differs", () => {
+    const events: GainAndLossEvent[] = [
+      { ...baseEvent, dateGranted: "2021-06-01" },
+      { ...baseEvent, dateGranted: "2022-06-01" },
+    ];
+    expect(groupEtradeGL(events)).toHaveLength(2);
+  });
+
+  it("keeps entries separate when vest date differs", () => {
+    const events: GainAndLossEvent[] = [
+      { ...baseEvent, dateAcquired: "2023-03-01" },
+      { ...baseEvent, dateAcquired: "2023-06-01" },
+    ];
+    expect(groupEtradeGL(events)).toHaveLength(2);
+  });
+
+  it("keeps entries separate when sell date differs", () => {
+    const events: GainAndLossEvent[] = [
+      { ...baseEvent, dateSold: "2023-06-15" },
+      { ...baseEvent, dateSold: "2023-07-01" },
+    ];
+    expect(groupEtradeGL(events)).toHaveLength(2);
+  });
+
+  it("keeps entries separate when sell price differs", () => {
+    const events: GainAndLossEvent[] = [
+      { ...baseEvent, proceeds: 95 },
+      { ...baseEvent, proceeds: 100 },
+    ];
+    expect(groupEtradeGL(events)).toHaveLength(2);
+  });
+
+  it("keeps entries separate when plan type differs", () => {
+    const events: GainAndLossEvent[] = [
+      { ...baseEvent, planType: "RS" },
+      { ...baseEvent, planType: "SO" },
+    ];
+    expect(groupEtradeGL(events)).toHaveLength(2);
+  });
+
+  it("preserves all other fields from the first entry in the group", () => {
+    const events: GainAndLossEvent[] = [
+      { ...baseEvent, quantity: 10 },
+      { ...baseEvent, quantity: 5 },
+    ];
+    const result = groupEtradeGL(events);
+    expect(result[0]).toEqual({ ...baseEvent, quantity: 15 });
   });
 });
