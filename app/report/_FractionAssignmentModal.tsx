@@ -70,12 +70,7 @@ export const FractionAssignmentModal = ({
     setQualifiedMap(new Map<string, boolean>());
   }, [data]);
 
-  const salesByDates = Map.groupBy(
-    data
-      .map((e, eventIdx) => ({ ...e, index: eventIdx }))
-      .filter((e) => e.planType === "RS"), // origin of income only applies to RSUs
-    toKey,
-  );
+  const salesByDates = Map.groupBy(data, toKey);
 
   return (
     <Modal show={showModal}>
@@ -94,10 +89,6 @@ export const FractionAssignmentModal = ({
           For each sale, please confirm the % of French income. If you have
           never moved abroad, it should be 100%.
         </div>
-        <MessageBox level="info" title="Note: this only applies to RSUs.">
-          If you would like support for other types of equity (e.g. stock
-          options), please reach out with examples.
-        </MessageBox>
         {match(state)
           .with("ok", () => (
             <>

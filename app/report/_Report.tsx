@@ -153,9 +153,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
           but it is not used by this report.
         </div>
       </div>
-      {gainsAndLosses.length === 0 ||
-      (gainsAndLosses.filter((e) => e.planType === "RS").length > 0 &&
-        fractionsFrIncome.length === 0) ? (
+      {gainsAndLosses.length === 0 || fractionsFrIncome.length === 0 ? (
         <div className="flex items-baseline justify-center gap-3">
           <span>Import the Gains and Losses CSV file: </span>
           <FractionAssignmentModal
@@ -180,8 +178,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
           <EtradeGainAndLossesFileInput
             setData={(data) => {
               setGainsAndLosses(data);
-              if (data.filter((e) => e.planType === "RS").length > 0) {
-                // Show fraction assignment modal if you sold RSUs
+              if (data.length > 0) {
                 setShowFractionAssignmentModal(true);
               }
             }}
