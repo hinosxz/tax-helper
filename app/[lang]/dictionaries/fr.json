@@ -140,6 +140,11 @@
           "lossDeducted": "Perte déduite du gain d'acquisition"
         },
         "totalRow": "Perte totale déduite du gain d'acquisition"
+      },
+      "explanations": {
+        "esppAcquisitionGain": "Les gains d'acquisition issus des cessions d'ESPP sont dus l'année de l'acquisition. Déjà déclarés par votre employeur et non encore disponibles dans cet outil.",
+        "qualifiedSoAcquisitionGain": "Gains d'acquisition issus des cessions de SO qualifiées.",
+        "qualifiedSoCapitalGain": "Plus-values issues des cessions de SO qualifiées FR."
       }
     },
     "fractionAssignmentModal": {

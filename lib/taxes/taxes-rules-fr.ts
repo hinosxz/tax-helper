@@ -39,6 +39,19 @@ export interface GainAndLossEventWithRates extends GainAndLossEvent {
 
 export interface BenefitEventWithRates extends BenefitHistoryEvent {}
 
+export interface FrTaxesExplanationsDict {
+  esppAcquisitionGain: string;
+  qualifiedSoAcquisitionGain: string;
+  qualifiedSoCapitalGain: string;
+}
+
+const defaultExplanationsDict: FrTaxesExplanationsDict = {
+  esppAcquisitionGain:
+    "Acquisition gains from ESPP sales are due the year of acquisition. Already reported by your employer and not yet available in this tool.",
+  qualifiedSoAcquisitionGain: "Acquisition gains from Qualified SO sales.",
+  qualifiedSoCapitalGain: "Capital gains from FR qualified SO sales.",
+};
+
 /** French taxes uses 6 digit precision for Form 2074 */
 const floorNumber6Digits = (value: number): number => floorNumber(value, 6);
 const floorNumber0Digits = (value: number): number => floorNumber(value, 0);
@@ -496,8 +509,10 @@ const getFrTaxableEventFromGainsAndLossEvent = (
 export const getFrTaxesForFrQualifiedSo = (
   {
     gainsAndLosses,
+    explanationsDict = defaultExplanationsDict,
   }: {
     gainsAndLosses: GainAndLossEventWithRates[];
+    explanationsDict?: FrTaxesExplanationsDict;
   },
   taxes: FrTaxes,
 ): FrTaxes => {
@@ -563,14 +578,14 @@ export const getFrTaxesForFrQualifiedSo = (
   taxes["1TT"] += floorAcquisitionGainEur;
   explanations.push({
     box: "1TT",
-    description: `Acquisition gains from Qualified SO sales. (${formatNumber(floorAcquisitionGainEur)}€)`,
+    description: `${explanationsDict.qualifiedSoAcquisitionGain} (${formatNumber(floorAcquisitionGainEur)}€)`,
     taxableEvents,
   });
   taxes["explanations"] = [...taxes["explanations"], ...explanations];
   // Add capital gains information to Form 2074
   taxes = getFrTaxesCapitalGain(
     {
-      description: "Capital gains from FR qualified SO sales.",
+      description: explanationsDict.qualifiedSoCapitalGain,
       taxableEvents,
     },
     taxes,
@@ -696,8 +711,10 @@ const isRoughlyEqual = (
 export const getFrTaxesForEspp = (
   {
     gainsAndLosses,
+    explanationsDict = defaultExplanationsDict,
   }: {
     gainsAndLosses: GainAndLossEventWithRates[];
+    explanationsDict?: FrTaxesExplanationsDict;
   },
   taxes: FrTaxes,
 ): FrTaxes => {
@@ -742,8 +759,7 @@ export const getFrTaxesForEspp = (
     ...taxes["explanations"],
     {
       box: "1AJ",
-      description:
-        "Acquisition gains from ESPP sales are due the year of acquisition. Already reported by your employer and not yet available in this tool.",
+      description: explanationsDict.esppAcquisitionGain,
       taxableEvents: [],
     },
   ];
@@ -906,6 +922,7 @@ export const applyFrTaxes = ({
   symbolPrices,
   fractions,
   isFrQualified = [],
+  explanationsDict,
 }: {
   gainsAndLosses: GainAndLossEvent[];
   benefits: BenefitHistoryEvent[];
@@ -917,6 +934,7 @@ export const applyFrTaxes = ({
   };
   fractions: number[];
   isFrQualified?: boolean[];
+  explanationsDict?: FrTaxesExplanationsDict;
 }): FrTaxes => {
   return [
     getFrTaxesForFrQualifiedSo,
@@ -938,6 +956,7 @@ export const applyFrTaxes = ({
             rates,
             symbolPrices,
           }),
+          explanationsDict,
         },
         taxes,
       ),

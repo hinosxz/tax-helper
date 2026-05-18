@@ -140,6 +140,11 @@
           "lossDeducted": "Loss deducted from acquisition gain"
         },
         "totalRow": "Total loss deducted from acquisition gain"
+      },
+      "explanations": {
+        "esppAcquisitionGain": "Acquisition gains from ESPP sales are due the year of acquisition. Already reported by your employer and not yet available in this tool.",
+        "qualifiedSoAcquisitionGain": "Acquisition gains from Qualified SO sales.",
+        "qualifiedSoCapitalGain": "Capital gains from FR qualified SO sales."
       }
     },
     "fractionAssignmentModal": {

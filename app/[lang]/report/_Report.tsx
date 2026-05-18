@@ -116,6 +116,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
       symbolPrices,
       fractions: fractionsFrIncome,
       isFrQualified,
+      explanationsDict: reportDict.fr.explanations,
     });
   }, [
     gainsAndLosses,
@@ -125,6 +126,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     hasError,
     fractionsFrIncome,
     isFrQualified,
+    reportDict.fr.explanations,
   ]);
 
   return (
