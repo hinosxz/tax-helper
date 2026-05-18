@@ -263,9 +263,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
             <div>{reportDict.sources.intro}</div>
             <ul className="list-disc pl-6 mt-2 flex flex-col gap-y-">
               <li>
-                {reportDict.sources.etradeLabel}
+                ETrade Gains and Losses{" "}
                 <Link href="https://us.etrade.com/etx/pxy/my-account/export">
-                  {reportDict.sources.etradeLinkLabel}
+                  Expanded
                 </Link>
               </li>
               <li>

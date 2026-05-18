@@ -30,8 +30,6 @@
   "report": {
     "title": "Déclaration d'impôts",
     "residency": "Résidence :",
-    "residencyFr": "FR",
-    "residencyUs": "US",
     "disclaimer": {
       "title": "Avertissement",
       "line1": "Ces calculs sont fournis à titre informatif uniquement et ne doivent pas être considérés comme un conseil financier.",
@@ -41,7 +39,7 @@
       "guideLineSuffix": " envoyé par l'équipe equity en 2021 a été utilisé pour créer ce calculateur"
     },
     "etradeInstructions": {
-      "expandedNote": "Basé sur l'export détaillé de « Gain And Losses » (At Work > My Account > Gains and losses) depuis ETrade.",
+      "expandedNote": "Basé sur l'export détaillé (\"expanded export\") de « Gain And Losses » (At Work > My Account > Gains and losses) depuis ETrade.",
       "benefitHistoryNote": "Note : Vous pouvez également exporter le « Benefit History » (At Work > My Account > Benefit History) depuis ETrade pour votre information personnelle, mais il n'est pas utilisé par ce rapport."
     },
     "import": {
@@ -74,8 +72,6 @@
     },
     "sources": {
       "intro": "Des sources externes sont utilisées pour calculer les données :",
-      "etradeLabel": "ETrade Gains and Losses ",
-      "etradeLinkLabel": "Expanded",
       "ecbLabelPrefix": "Les taux de change sont récupérés depuis l'",
       "ecbLinkLabel": "API de la Banque centrale européenne",
       "yahooLabelPrefix": "Les cours des actions sont récupérés depuis ",
@@ -213,11 +209,6 @@
       }
     },
     "automaticReporting": {
-      "line1133Description": "Valeurs mobilières, droits sociaux, titres assimilés sans abattement et éligibles à l'abattement de droit commun",
-      "titresA": "Titres A",
-      "titresB": "Titres B",
-      "titresC": "Titres C",
-      "totaux": "Totaux",
       "automaticReportedTo3VG": "Reporté automatiquement vers 3VG"
     },
     "page510Labels": {

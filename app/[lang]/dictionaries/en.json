@@ -30,8 +30,6 @@
   "report": {
     "title": "Tax Report",
     "residency": "Residency:",
-    "residencyFr": "FR",
-    "residencyUs": "US",
     "disclaimer": {
       "title": "Disclaimer",
       "line1": "These calculations are for informational purposes only and should not be considered financial advice.",
@@ -74,8 +72,6 @@
     },
     "sources": {
       "intro": "Some external sources are used to compute data:",
-      "etradeLabel": "ETrade Gains and Losses ",
-      "etradeLinkLabel": "Expanded",
       "ecbLabelPrefix": "The exchange rates are fetched from the ",
       "ecbLinkLabel": "European Central Bank API",
       "yahooLabelPrefix": "Stock prices are fetched from ",
@@ -213,11 +209,6 @@
       }
     },
     "automaticReporting": {
-      "line1133Description": "Valeurs mobilières, droits sociaux, titres assimilés sans abattement et éligibles à l'abattement de droit commun",
-      "titresA": "Titres A",
-      "titresB": "Titres B",
-      "titresC": "Titres C",
-      "totaux": "Totaux",
       "automaticReportedTo3VG": "Automatically reported to 3VG"
     },
     "page510Labels": {

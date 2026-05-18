@@ -14,8 +14,8 @@ interface ReportPageProps {
 export const ReportPage = ({ dict }: ReportPageProps) => {
   const [taxResidency, setTaxResidency] = useState<CountryCode>("fr");
   const options: Option<CountryCode>[] = [
-    { value: "fr", label: dict.report.residencyFr },
-    { value: "us", label: dict.report.residencyUs },
+    { value: "fr", label: "FR" },
+    { value: "us", label: "US" },
   ];
 
   return (
