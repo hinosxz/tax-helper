@@ -17,6 +17,7 @@
   },
   "nav": {
     "back": "Previous",
+    "selectLanguage": "Select language",
     "forkMessage": {
       "local": "THIS IS A LOCAL DEV ENVIRONMENT",
       "forkPrefix": "THIS IS A FORK, OFFICIAL TAX HELPER IS AT "

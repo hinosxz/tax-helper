@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import QueryProvider from "@/components/QueryProvider";
 import { Back } from "@/components/Back";
 import { ForkMessage } from "@/components/ForkMessage";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 import "../globals.css";
 import { getDictionary, hasLocale, type Locale } from "./dictionaries";
@@ -49,7 +50,13 @@ export default async function RootLayout({
           <div className="min-h-screen">
             <header>
               <ForkMessage dict={dict.nav.forkMessage} />
-              <Back label={dict.nav.back} />
+              <div className="flex items-center justify-between gap-2 pr-4">
+                <Back label={dict.nav.back} />
+                <LanguageToggle
+                  currentLang={lang}
+                  label={dict.nav.selectLanguage}
+                />
+              </div>
             </header>
             <main className="container mx-auto mb-8">{children}</main>
           </div>

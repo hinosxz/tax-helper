@@ -17,6 +17,7 @@
   },
   "nav": {
     "back": "Précédent",
+    "selectLanguage": "Sélectionner la langue",
     "forkMessage": {
       "local": "CECI EST UN ENVIRONNEMENT DE DÉVELOPPEMENT LOCAL",
       "forkPrefix": "CECI EST UN FORK, L'ASSISTANT FISCAL OFFICIEL EST DISPONIBLE SUR "
