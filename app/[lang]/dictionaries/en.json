@@ -54,6 +54,11 @@
     },
     "gainsAndLosses": "Gains and Losses",
     "printMode": "Print mode (expands all sections, e.g. for the tax office)",
+    "planTypes": {
+      "ESPP": "ESPP",
+      "RS": "RSU",
+      "SO": "Stock Options"
+    },
     "sections": {
       "summary": "Summary",
       "selectIncomeSource": "Select Income Source and Annexes",
@@ -134,12 +139,7 @@
           "lossPerShare": "Loss/share",
           "lossDeducted": "Loss deducted from acquisition gain"
         },
-        "totalRow": "Total loss deducted from acquisition gain",
-        "planTypes": {
-          "SO": "Stock Options",
-          "RS": "RSU",
-          "ESPP": "ESPP"
-        }
+        "totalRow": "Total loss deducted from acquisition gain"
       }
     },
     "fractionAssignmentModal": {
@@ -177,11 +177,6 @@
       "footerPlural": "operations found in your import file (sorted by sale date)."
     },
     "taxableEvent": {
-      "assets": {
-        "ESPP": "ESPP",
-        "RS": "RSU",
-        "SO": "Stock options"
-      },
       "triggers": {
         "vesting": "vested",
         "sell": "sold",

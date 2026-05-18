@@ -23,11 +23,12 @@ export const TaxableEventFr: React.FunctionComponent<{
   dict,
 }) => {
   const teDict = dict.report.taxableEvent;
+  const planTypes = dict.report.planTypes;
 
   const asset = match(event.planType)
-    .with("ESPP", () => teDict.assets.ESPP)
-    .with("RS", () => teDict.assets.RS)
-    .with("SO", () => teDict.assets.SO)
+    .with("ESPP", () => planTypes.ESPP)
+    .with("RS", () => planTypes.RS)
+    .with("SO", () => planTypes.SO)
     .exhaustive();
 
   const trigger = match(event.type)

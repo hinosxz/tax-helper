@@ -398,7 +398,7 @@ const QualifiedAtLossSection: React.FunctionComponent<{
   if (!entries.length) return null;
 
   const planDescription = (planType: TaxableEventFr["planType"]) =>
-    lossDict.planTypes[planType];
+    dict.report.planTypes[planType];
 
   return (
     <Drawer title={lossDict.drawerTitle} forceOpen={isPrintMode}>
