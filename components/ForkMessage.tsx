@@ -6,7 +6,12 @@ import * as React from "react";
 const OFFICIAL_HOSTNAME = "tax-helper-olive.vercel.app";
 const OFFICIAL_URL = `https://${OFFICIAL_HOSTNAME}/`;
 
-export const ForkMessage = () => {
+interface ForkMessageDict {
+  local: string;
+  forkPrefix: string;
+}
+
+export const ForkMessage = ({ dict }: { dict: ForkMessageDict }) => {
   const headersList = headers();
   const hostname =
     typeof window !== "undefined"
@@ -18,7 +23,7 @@ export const ForkMessage = () => {
   if (isLocal) {
     return (
       <MessageBox title="" level="info">
-        THIS IS A LOCAL DEV ENVIRONMENT
+        {dict.local}
       </MessageBox>
     );
   }
@@ -27,7 +32,7 @@ export const ForkMessage = () => {
   if (isFork) {
     return (
       <MessageBox title="" level="warning">
-        THIS IS A FORK, OFFICIAL TAX HELPER IS AT{" "}
+        {dict.forkPrefix}
         <Link href={OFFICIAL_URL}>{OFFICIAL_URL}</Link>
       </MessageBox>
     );

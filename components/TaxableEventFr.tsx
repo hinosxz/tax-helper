@@ -1,5 +1,4 @@
 import type { TaxableEventFr as TaxableEventFrProps } from "@/lib/taxes/taxable-event-fr";
-import { match } from "ts-pattern";
 import { Drawer } from "./ui/Drawer";
 import { Currency } from "@/components/ui/Currency";
 import { PriceInEuro } from "./ui/PriceInEuro";
@@ -7,29 +6,24 @@ import { formatDateFr } from "@/lib/date";
 import { Tooltip } from "./ui/Tooltip";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { formatNumber } from "@/lib/format-number";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 export const TaxableEventFr: React.FunctionComponent<{
   event: TaxableEventFrProps;
   showAcquisitionGains?: boolean;
   showCapitalGains?: boolean;
   forceOpen?: boolean;
+  dict: Dictionary;
 }> = ({
   event,
   showCapitalGains = false,
   showAcquisitionGains = false,
   forceOpen,
+  dict,
 }) => {
-  const asset = match(event.planType)
-    .with("ESPP", () => "ESPP")
-    .with("RS", () => "RSU")
-    .with("SO", () => "Stock options")
-    .exhaustive();
-
-  const trigger = match(event.type)
-    .with("vesting", () => "vested")
-    .with("sell", () => "sold")
-    .with("exercise", () => "exercised")
-    .exhaustive();
+  const teDict = dict.report.taxableEvent;
+  const asset = teDict.assets[event.planType];
+  const trigger = teDict.triggers[event.type];
 
   return (
     <Drawer
@@ -37,13 +31,14 @@ export const TaxableEventFr: React.FunctionComponent<{
       title={
         <div className="flex items-baseline justify-start gap-2">
           <h2 className="font-bold text-lg">
-            On {formatDateFr(event.date)} {trigger} {event.quantity} {asset}
+            {teDict.headlinePrefix} {formatDateFr(event.date)} {trigger}{" "}
+            {event.quantity} {asset}
           </h2>
 
           <dl className="flex items-baseline justify-start gap-2">
             {showCapitalGains && (
               <>
-                <dt className="font-bold">Capital gain</dt>
+                <dt className="font-bold">{teDict.capitalGain}</dt>
                 <dd>
                   <Currency value={event.capitalGain.total} unit="eur" />
                 </dd>
@@ -51,7 +46,7 @@ export const TaxableEventFr: React.FunctionComponent<{
             )}
             {showAcquisitionGains && (
               <>
-                <dt className="font-bold">Acquisition gain</dt>
+                <dt className="font-bold">{teDict.acquisitionGain}</dt>
                 <dd>
                   <Currency value={event.acquisitionGain.total} unit="eur" />
                 </dd>
@@ -61,22 +56,25 @@ export const TaxableEventFr: React.FunctionComponent<{
         </div>
       }
     >
-      <TaxableEventFrLine title="Dates">
+      <TaxableEventFrLine title={teDict.lines.dates}>
         <div className="flex gap-4">
           <p>
-            <strong>Granted:</strong> {formatDateFr(event.dateGranted)}.
+            <strong>{teDict.lines.granted}</strong>{" "}
+            {formatDateFr(event.dateGranted)}.
           </p>
           <p>
-            <strong>Acquired:</strong> {formatDateFr(event.acquisition.date)}.
+            <strong>{teDict.lines.acquired}</strong>{" "}
+            {formatDateFr(event.acquisition.date)}.
           </p>
           {event.sell && (
             <p>
-              <strong>Sold:</strong> {formatDateFr(event.sell.date)}.
+              <strong>{teDict.lines.sold}</strong>{" "}
+              {formatDateFr(event.sell.date)}.
             </p>
           )}
         </div>
       </TaxableEventFrLine>
-      <TaxableEventFrLine title="Acquisition cost">
+      <TaxableEventFrLine title={teDict.lines.acquisitionCost}>
         <PriceInEuro
           eur={event.acquisition.costEur}
           usd={event.acquisition.costUsd}
@@ -84,9 +82,9 @@ export const TaxableEventFr: React.FunctionComponent<{
           date={event.acquisition.date}
           precision={7}
         />{" "}
-        per share.
+        {teDict.lines.perShare}
       </TaxableEventFrLine>
-      <TaxableEventFrLine title="Acquisition value">
+      <TaxableEventFrLine title={teDict.lines.acquisitionValue}>
         <PriceInEuro
           eur={event.acquisition.valueEur}
           usd={event.acquisition.valueUsd}
@@ -94,17 +92,17 @@ export const TaxableEventFr: React.FunctionComponent<{
           date={event.acquisition.date}
           precision={7}
         />{" "}
-        per share ({event.acquisition.description})
+        {teDict.lines.perShareWithDesc} ({event.acquisition.description})
       </TaxableEventFrLine>
       {event.acquisitionGain.fractionFr < 1 ? (
-        <TaxableEventFrLine title="% of French Origin">
+        <TaxableEventFrLine title={teDict.lines.fractionFrenchOrigin}>
           <span className="font-semibold">
             {formatNumber(event.acquisitionGain.fractionFr * 100)}%
           </span>
         </TaxableEventFrLine>
       ) : null}
       {event.sell && (
-        <TaxableEventFrLine title="Sell price">
+        <TaxableEventFrLine title={teDict.lines.sellPrice}>
           <PriceInEuro
             eur={event.sell.eur}
             usd={event.sell.usd}
@@ -112,10 +110,12 @@ export const TaxableEventFr: React.FunctionComponent<{
             date={event.sell.date}
             precision={7}
           />{" "}
-          per share.
+          {teDict.lines.perShare}
         </TaxableEventFrLine>
       )}
-      <TaxableEventFrLine title={`${event.symbol} price:`}>
+      <TaxableEventFrLine
+        title={`${event.symbol} ${teDict.lines.symbolPriceSuffix}`}
+      >
         <p>
           <PriceInEuro
             eur={event.acquisition.symbolPriceEur}
@@ -127,15 +127,16 @@ export const TaxableEventFr: React.FunctionComponent<{
             }
             precision={7}
           />{" "}
-          at opening on acquisition day.
+          {teDict.lines.atOpeningOnAcquisitionDay}
         </p>
         {event.acquisition.dateSymbolPriceAcquired && (
           <p>
             <ExclamationTriangleIcon className="h-4 w-4 text-yellow-500" />
-            {event.symbol} price was not available on{" "}
-            {formatDateFr(event.acquisition.date)}, last known price (on{" "}
-            {formatDateFr(event.acquisition.dateSymbolPriceAcquired)}) was used
-            instead.
+            {event.symbol} {teDict.lines.priceNotAvailablePrefix}{" "}
+            {formatDateFr(event.acquisition.date)}
+            {teDict.lines.priceNotAvailableMiddle}{" "}
+            {formatDateFr(event.acquisition.dateSymbolPriceAcquired)}
+            {teDict.lines.priceNotAvailableSuffix}
           </p>
         )}
       </TaxableEventFrLine>
@@ -144,7 +145,7 @@ export const TaxableEventFr: React.FunctionComponent<{
       )}
       {showAcquisitionGains && (
         <TaxableEventFrLine
-          title="Acquisition gain"
+          title={teDict.acquisitionGain}
           tooltip={`acq. value - acq. cost: ${event.acquisition.valueEur} - ${event.acquisition.costEur}`}
         >
           <Currency
@@ -152,12 +153,12 @@ export const TaxableEventFr: React.FunctionComponent<{
             unit="eur"
             precision={7}
           />{" "}
-          per share.
+          {teDict.lines.perShare}
         </TaxableEventFrLine>
       )}
       {showCapitalGains && (
         <TaxableEventFrLine
-          title="Capital gain"
+          title={teDict.capitalGain}
           tooltip={`sell price - acq. cession: ${event.sell?.eur} - ${event.acquisition.valueEur}`}
         >
           <Currency
@@ -165,7 +166,7 @@ export const TaxableEventFr: React.FunctionComponent<{
             unit="eur"
             precision={7}
           />{" "}
-          per share.
+          {teDict.lines.perShare}
         </TaxableEventFrLine>
       )}
     </Drawer>

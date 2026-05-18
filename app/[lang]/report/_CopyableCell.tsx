@@ -1,14 +1,16 @@
 import { CopyButton } from "@/components/ui/CopyButton";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 export const CopyableCell: React.FunctionComponent<{
   value: string | number;
-}> = ({ value }) => {
+  dict: Dictionary;
+}> = ({ value, dict }) => {
   return (
     <div className="flex items-center gap-2">
       <span className="inline-block w-32 p-1 bg-white border border-black">
         {value}
       </span>
-      <CopyButton value={value} />
+      <CopyButton value={value} dict={dict} />
     </div>
   );
 };
