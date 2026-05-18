@@ -7,6 +7,7 @@ import { Tooltip } from "./ui/Tooltip";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { formatNumber } from "@/lib/format-number";
 import type { Dictionary } from "@/app/[lang]/dictionaries";
+import { match } from "ts-pattern";
 
 export const TaxableEventFr: React.FunctionComponent<{
   event: TaxableEventFrProps;
@@ -22,8 +23,18 @@ export const TaxableEventFr: React.FunctionComponent<{
   dict,
 }) => {
   const teDict = dict.report.taxableEvent;
-  const asset = teDict.assets[event.planType];
-  const trigger = teDict.triggers[event.type];
+
+  const asset = match(event.planType)
+    .with("ESPP", () => teDict.assets.ESPP)
+    .with("RS", () => teDict.assets.RS)
+    .with("SO", () => teDict.assets.SO)
+    .exhaustive();
+
+  const trigger = match(event.type)
+    .with("vesting", () => teDict.triggers.vesting)
+    .with("sell", () => teDict.triggers.sell)
+    .with("exercise", () => teDict.triggers.exercise)
+    .exhaustive();
 
   return (
     <Drawer
