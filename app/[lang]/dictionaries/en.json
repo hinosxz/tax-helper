@@ -196,7 +196,7 @@
         "perShareWithDesc": "per share",
         "fractionFrenchOrigin": "% of French Origin",
         "sellPrice": "Sell price",
-        "symbolPriceSuffix": "price:",
+        "symbolPriceTitle": "{symbol} price:",
         "atOpeningOnAcquisitionDay": "at opening on acquisition day.",
         "priceNotAvailablePrefix": "price was not available on",
         "priceNotAvailableMiddle": ", last known price (on",

@@ -126,7 +126,7 @@ export const TaxableEventFr: React.FunctionComponent<{
         </TaxableEventFrLine>
       )}
       <TaxableEventFrLine
-        title={`${event.symbol} ${teDict.lines.symbolPriceSuffix}`}
+        title={teDict.lines.symbolPriceTitle.replace("{symbol}", event.symbol)}
       >
         <p>
           <PriceInEuro

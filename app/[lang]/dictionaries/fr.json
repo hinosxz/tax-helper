@@ -196,7 +196,7 @@
         "perShareWithDesc": "par action",
         "fractionFrenchOrigin": "% d'origine française",
         "sellPrice": "Prix de vente",
-        "symbolPriceSuffix": "cours :",
+        "symbolPriceTitle": "Cours du {symbol} :",
         "atOpeningOnAcquisitionDay": "à l'ouverture le jour de l'acquisition.",
         "priceNotAvailablePrefix": "le cours n'était pas disponible le",
         "priceNotAvailableMiddle": ", le dernier cours connu (le",
