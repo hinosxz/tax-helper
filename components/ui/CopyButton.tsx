@@ -2,12 +2,14 @@ import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import classNames from "classnames";
 import Tippy from "@tippyjs/react";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 interface CopyButtonProps {
   value: string | number | null;
+  dict: Dictionary;
 }
 
-export const CopyButton = ({ value }: CopyButtonProps) => {
+export const CopyButton = ({ value, dict }: CopyButtonProps) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -19,7 +21,10 @@ export const CopyButton = ({ value }: CopyButtonProps) => {
   };
 
   return (
-    <Tippy content={copied ? "Copied!" : "Copy to clipboard"} placement="right">
+    <Tippy
+      content={copied ? dict.common.copied : dict.common.copyToClipboard}
+      placement="right"
+    >
       <button
         onClick={handleCopy}
         className={classNames(
@@ -33,7 +38,7 @@ export const CopyButton = ({ value }: CopyButtonProps) => {
           },
         )}
         disabled={value === null}
-        aria-label="Copy value to clipboard"
+        aria-label={dict.common.copyValueToClipboard}
       >
         {copied ? (
           <CheckIcon className="h-4 w-4 transition-transform duration-200 transform scale-110" />

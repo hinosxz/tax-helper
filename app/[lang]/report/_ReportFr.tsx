@@ -17,23 +17,28 @@ import {
 import { useState } from "react";
 import { CopyableCell } from "./_CopyableCell";
 import { AutomaticReportingTable } from "./_AutomaticReportingTable";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 interface ReportResidencyFrContentProps {
   hasSoldShares: boolean;
   isPrintMode: boolean;
   taxes: FrTaxes;
+  dict: Dictionary;
 }
 
 export const ReportFr = ({
   hasSoldShares,
   isPrintMode,
   taxes,
+  dict,
 }: ReportResidencyFrContentProps) => {
+  const reportDict = dict.report;
+  const frDict = reportDict.fr;
   const form2074Line1133 = taxes["Form 2074"]["page 11"]["1133"];
 
   return (
     <>
-      <Section title="Select Income Source and Annexes">
+      <Section title={reportDict.sections.selectIncomeSource}>
         <div className="flex gap-2 justify-items-center items-start">
           <div>
             {match({
@@ -47,7 +52,7 @@ export const ReportFr = ({
                 },
                 () => (
                   <Image
-                    alt="select 'Salaires, gains d'actionnariat salarié' and 'Plus-values et gains divers'"
+                    alt={frDict.alts.selectIncomeBoth}
                     src="/images/fr-taxes/select-income-capital-gains-and-acquisition-gains.png"
                     width={400}
                     height={500}
@@ -61,7 +66,7 @@ export const ReportFr = ({
                 },
                 () => (
                   <Image
-                    alt="select 'Plus-values et gains divers'"
+                    alt={frDict.alts.selectIncomeCapitalOnly}
                     src="/images/fr-taxes/select-income-capital-gains-only.png"
                     width={400}
                     height={500}
@@ -75,7 +80,7 @@ export const ReportFr = ({
                 },
                 () => (
                   <Image
-                    alt="select 'Salaires, gains d'actionnariat salarié'"
+                    alt={frDict.alts.selectIncomeAcquisitionOnly}
                     src="/images/fr-taxes/select-income-acquisition-gains-only.png"
                     width={400}
                     height={500}
@@ -89,7 +94,7 @@ export const ReportFr = ({
                 },
                 () => (
                   <Image
-                    alt="No specific income selection"
+                    alt={frDict.alts.selectIncomeNoShares}
                     src="/images/fr-taxes/select-income-no-shares.png"
                     width={400}
                     height={500}
@@ -99,7 +104,7 @@ export const ReportFr = ({
               .exhaustive()}
             <Image
               className="mt-1"
-              alt="Compte a l'etranger"
+              alt={frDict.alts.foreignAccount}
               src="/images/fr-taxes/comptes-a-l-etranger.png"
               width={400}
               height={500}
@@ -108,14 +113,14 @@ export const ReportFr = ({
           <div>
             {hasSoldShares ? (
               <Image
-                alt="Select Anexes N° 2074 and N° 3916 - 3916 bis"
+                alt={frDict.alts.annexesWithSales}
                 src="/images/fr-taxes/select-anexes-with-share-sales.png"
                 width={400}
                 height={500}
               />
             ) : (
               <Image
-                alt="Select Anexes N° 3916 - 3916 bis"
+                alt={frDict.alts.annexesWithoutSales}
                 src="/images/fr-taxes/select-anexes-with-no-share-sales.png"
                 width={400}
                 height={500}
@@ -124,26 +129,27 @@ export const ReportFr = ({
           </div>
         </div>
       </Section>
-      <Section title="Foreign accounts">
+      <Section title={reportDict.sections.foreignAccounts}>
         <div className="flex justify-between">
           <div className="flex flex-col justify-between">
             <div>
               <p>
-                Make sure you check <strong>8UU</strong>
+                {frDict.foreignAccounts.check8uuPrefix}
+                <strong>8UU</strong>
               </p>
               <Image
                 src="/images/fr-taxes/foreign-account-8uu.png"
-                alt="Check 8UU"
+                alt={frDict.alts.check8uu}
                 width={400}
                 height={500}
               />
             </div>
             <div className="flex gap-1 items-start justify-start">
-              <span>Find your Morgan Stanley's accounts details in </span>
+              <span>{frDict.foreignAccounts.morganStanleyPrefix}</span>
               <Link href="https://us.etrade.com/etx/pxy/my-profile/account-preferences">
                 <Image
                   src="/images/fr-taxes/etrade-account-details.png"
-                  alt="profile > account preferences"
+                  alt={frDict.alts.etradeAccountDetails}
                   width={150}
                   height={150}
                 />
@@ -152,7 +158,7 @@ export const ReportFr = ({
           </div>
           <div>
             <Image
-              alt="Compte a l'etranger"
+              alt={frDict.alts.foreignAccountForm}
               src="/images/fr-taxes/foreign-account-form.png"
               width={400}
               height={500}
@@ -160,67 +166,73 @@ export const ReportFr = ({
           </div>
         </div>
       </Section>
-      <Section title="French Taxes">
+      <Section title={reportDict.sections.frenchTaxes}>
         <div>
           <TaxReportBox
             id="1AJ"
-            title="Total income. Depending on your situation, you might use 1BJ instead. WARNING: unqualified options acquisition gain is not yet computed."
+            title={frDict.boxes["1AJ"]}
             amount={taxes["1AJ"]}
             explanations={taxes.explanations}
             gainType="acquisition"
             forceOpen={isPrintMode}
+            dict={dict}
           />
           <TaxReportBox
             id="1TT"
-            title="Qualified RSUs acquisition gain above 300K€ and qualified Stock options acquisition gain."
+            title={frDict.boxes["1TT"]}
             amount={taxes["1TT"]}
             explanations={taxes.explanations}
             gainType="acquisition"
             forceOpen={isPrintMode}
+            dict={dict}
           />
           <TaxReportBox
             id="1TZ"
-            title="Qualified RSUs acquisition gain below 300K€ with 50% discount."
+            title={frDict.boxes["1TZ"]}
             amount={taxes["1TZ"]}
             explanations={taxes.explanations}
             gainType="acquisition"
             forceOpen={isPrintMode}
+            dict={dict}
           />
           <TaxReportBox
             id="1WZ"
-            title="Qualified RSUs acquisition gain below 300K€ benefits from a 50% reduction declared here."
+            title={frDict.boxes["1WZ"]}
             amount={taxes["1WZ"]}
             explanations={taxes.explanations}
             gainType="acquisition"
             forceOpen={isPrintMode}
+            dict={dict}
           />
           <TaxReportBox
             id="3VG"
-            title="Total net taxable capital gains"
+            title={frDict.boxes["3VG"]}
             amount={taxes["3VG"]}
             explanations={taxes.explanations}
             gainType="capital"
             forceOpen={isPrintMode}
+            dict={dict}
           />
           <TaxReportBox
             id="3VH"
-            title="If you have capital losses from previous years, you can deduct them here."
+            title={frDict.boxes["3VH"]}
             amount="???"
             explanations={taxes.explanations}
             gainType="capital"
             forceOpen={isPrintMode}
+            dict={dict}
           />
         </div>
       </Section>
-      <Section title="Form 2074">
+      <Section title={reportDict.sections.form2074}>
         <div>
           <p>
-            You must report{" "}
-            <strong>{taxes["Form 2074"]["Page 510"].length}</strong> in this
-            form.
+            {frDict.form2074.reportPagesPrefix}
+            <strong>{taxes["Form 2074"]["Page 510"].length}</strong>
+            {frDict.form2074.reportPagesSuffix}
           </p>
           <Image
-            alt="Form 2074 - Page 1"
+            alt={frDict.alts.form2074Page1}
             src="/images/fr-taxes/form-2074-page-1.png"
             width={800}
             height={500}
@@ -228,51 +240,61 @@ export const ReportFr = ({
           />
         </div>
         <div className="mt-6">
-          <Page510 taxes={taxes} isPrintMode={isPrintMode} />
+          <Page510 taxes={taxes} isPrintMode={isPrintMode} dict={dict} />
         </div>
-        <QualifiedAtLossSection taxes={taxes} isPrintMode={isPrintMode} />
+        <QualifiedAtLossSection
+          taxes={taxes}
+          isPrintMode={isPrintMode}
+          dict={dict}
+        />
         <div className="mt-6">
           <div className="text-lg font-bold my-auto mb-2">
-            Automatic reporting from Form 2074
+            {frDict.form2074.automaticReportingTitle}
           </div>
           {form2074Line1133.losses > 0 ? (
             <>
               <p>
-                You must report{" "}
+                {frDict.form2074.reportGainsAndLossesPrefix}
                 <strong>
                   <Currency unit="eur" value={form2074Line1133.gains} />
-                </strong>{" "}
-                (capital gains) and{" "}
+                </strong>
+                {frDict.form2074.reportGainsAndLossesMiddle}
                 <strong>
                   <Currency unit="eur" value={form2074Line1133.losses} />
-                </strong>{" "}
-                (capital losses) on line <strong>1133</strong>.
+                </strong>
+                {frDict.form2074.reportGainsAndLossesLosses}
+                <strong>1133</strong>
+                {frDict.form2074.lineSuffix}
               </p>
             </>
           ) : (
             <p>
-              You must report{" "}
+              {frDict.form2074.reportGainsAndLossesPrefix}
               <strong>
                 <Currency unit="eur" value={form2074Line1133.gains} />
-              </strong>{" "}
-              on line <strong>1133</strong>.
+              </strong>
+              {frDict.form2074.reportGainsOnly}
+              <strong>1133</strong>
+              {frDict.form2074.lineSuffix}
             </p>
           )}
           <AutomaticReportingTable
             gains={form2074Line1133.gains}
             losses={form2074Line1133.losses}
+            dict={dict}
           />
           <div className="mt-6 print:hidden">
             <p className="mb-3 text-slate-700">
-              <strong>Note:</strong> At the end of Form 2074, you should have{" "}
-              <strong>3VG</strong> with{" "}
+              <strong>{frDict.form2074.noteAtEndPrefix}</strong>
+              <strong>3VG</strong>
+              {frDict.form2074.noteAtEndMiddle}
               <span className="font-semibold text-red-700">
-                "report activé"
-              </span>{" "}
-              in the automatic reporting table:
+                {frDict.form2074.noteAtEndStatus}
+              </span>
+              {frDict.form2074.noteAtEndSuffix}
             </p>
             <Image
-              alt="Form 2074 — automatic reporting table: 3VG with report activé"
+              alt={frDict.alts.form2074ReportActive}
               src="/images/fr-taxes/form-2074-report-active.png"
               width={800}
               height={480}
@@ -284,33 +306,16 @@ export const ReportFr = ({
   );
 };
 
-const PAGE_510_LABELS = {
-  "511": "Désignation des titres et des intermédiaires financiers",
-  "512": "Date de la cession ou du rachat jj/mm/aaaa",
-  "513": "Nombre de titres cédés ou rachetés",
-  "514": "Valeur unitaire de cession",
-  "515": "Nombre de titres cédés",
-  "516": "Montant global lignes (514 x 515)",
-  "517": "Frais de cession cf. notice",
-  "518": "Prix de cession net lignes (516 - 517)",
-  "519": "Détermination du prix de revient des titres",
-  "520": "Prix ou valeur d'acquisition unitaire cf. notice",
-  "521": "Prix d'acquisition global cf. notice",
-  "522": "Frais d'acquisition",
-  "523": "Prix de revient lignes (521 + 522)",
-  "524": "Résultat précédé du signe + ou - lignes (518 - 523)",
-  "525":
-    "Je demande expressément à bénéficier de l'imputation des moins-values préalablement à l'annulation des titres cf. notice",
-  "526": "Montant des moins-values imputées pour les titres concernés",
-};
-
 const Page510: React.FunctionComponent<{
   taxes: FrTaxes;
   isPrintMode?: boolean;
-}> = ({ taxes, isPrintMode }) => {
+  dict: Dictionary;
+}> = ({ taxes, isPrintMode, dict }) => {
+  const frDict = dict.report.fr;
+  const labels = dict.report.page510Labels;
   const [currentIndex, setCurrentIndex] = useState(0);
   if (!taxes["Form 2074"]["Page 510"].length) {
-    return <p>No taxable events to report.</p>;
+    return <p>{frDict.form2074.noEvents}</p>;
   }
   const pagesToDisplay = isPrintMode
     ? taxes["Form 2074"]["Page 510"]
@@ -320,7 +325,7 @@ const Page510: React.FunctionComponent<{
       {pagesToDisplay.map((currentPage, index) => (
         <div key={index} className="m-t-2 print:border print:mb-2">
           <h2 className="text-lg text-center">
-            Page {(isPrintMode ? index : currentIndex) + 1}
+            {frDict.form2074.page} {(isPrintMode ? index : currentIndex) + 1}
           </h2>
           <table className="my-2 border-collapse text-sm">
             <tbody>
@@ -332,12 +337,15 @@ const Page510: React.FunctionComponent<{
                     className="border-y-2 border-white bg-blue-200 *:p-2"
                   >
                     <th>{key}</th>
-                    <td>{PAGE_510_LABELS[key as keyof typeof currentPage]}</td>
+                    <td>{labels[key as keyof typeof labels]}</td>
                     <td>
                       {typeof value === "boolean" ? (
                         <input type="checkbox" checked={value} readOnly />
                       ) : value !== undefined ? (
-                        <CopyableCell value={value as string | number} />
+                        <CopyableCell
+                          value={value as string | number}
+                          dict={dict}
+                        />
                       ) : null}
                     </td>
                   </tr>
@@ -350,14 +358,14 @@ const Page510: React.FunctionComponent<{
       {!isPrintMode && (
         <div className="flex justify-between print:hidden">
           <Button
-            label="Previous"
+            label={dict.common.previous}
             icon={ChevronDoubleLeftIcon}
             onClick={() => setCurrentIndex(currentIndex - 1)}
             isDisabled={currentIndex === 0}
             color={"green"}
           />
           <Button
-            label="Next"
+            label={dict.common.next}
             icon={ChevronDoubleRightIcon}
             onClick={() => setCurrentIndex(currentIndex + 1)}
             isDisabled={
@@ -374,7 +382,9 @@ const Page510: React.FunctionComponent<{
 const QualifiedAtLossSection: React.FunctionComponent<{
   taxes: FrTaxes;
   isPrintMode?: boolean;
-}> = ({ taxes, isPrintMode }) => {
+  dict: Dictionary;
+}> = ({ taxes, isPrintMode, dict }) => {
+  const lossDict = dict.report.fr.qualifiedAtLoss;
   const entries = taxes.explanations
     .filter((e) => e.box === "1TT" || e.box === "1TZ")
     .flatMap((e) => e.taxableEvents)
@@ -388,32 +398,28 @@ const QualifiedAtLossSection: React.FunctionComponent<{
   if (!entries.length) return null;
 
   const planDescription = (planType: TaxableEventFr["planType"]) =>
-    planType === "SO" ? "Stock Options" : planType === "RS" ? "RSU" : "ESPP";
+    dict.report.planTypes[planType];
 
   return (
-    <Drawer
-      title="Some events are not reported in Form 2074, expand to learn why"
-      forceOpen={isPrintMode}
-    >
+    <Drawer title={lossDict.drawerTitle} forceOpen={isPrintMode}>
       <div className="mt-4 text-sm text-gray-700">
         <p className="mb-3">
-          The following events are not reported in Form 2074 because the sale
-          price is below the vesting/exercise value. Per{" "}
+          {lossDict.explanationPrefix}
           <Link href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000026947022/2024-03-22/">
-            Art. 150-0 D §11 / Art. 80 quaterdecies V CGI
+            {lossDict.legifranceLinkLabel}
           </Link>
-          , the loss is deducted from the acquisition gain (1TT/1TZ) instead.
+          {lossDict.explanationSuffix}
         </p>
         <table className="border-collapse w-full">
           <thead>
             <tr className="bg-blue-300 *:p-2 text-left">
-              <th>Symbol</th>
-              <th>Date of sale</th>
-              <th>Qty</th>
-              <th>Sale price/share</th>
-              <th>Vesting price/share</th>
-              <th>Loss/share</th>
-              <th>Loss deducted from acquisition gain</th>
+              <th>{lossDict.headers.symbol}</th>
+              <th>{lossDict.headers.dateOfSale}</th>
+              <th>{lossDict.headers.qty}</th>
+              <th>{lossDict.headers.salePricePerShare}</th>
+              <th>{lossDict.headers.vestingPricePerShare}</th>
+              <th>{lossDict.headers.lossPerShare}</th>
+              <th>{lossDict.headers.lossDeducted}</th>
             </tr>
           </thead>
           <tbody>
@@ -465,7 +471,7 @@ const QualifiedAtLossSection: React.FunctionComponent<{
           </tbody>
           <tfoot>
             <tr className="bg-blue-200 *:p-2 font-bold">
-              <td colSpan={6}>Total loss deducted from acquisition gain</td>
+              <td colSpan={6}>{lossDict.totalRow}</td>
               <td className="text-red-700">
                 <Currency
                   unit="eur"

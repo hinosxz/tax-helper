@@ -3,16 +3,19 @@ import type { FrTaxes } from "@/lib/taxes/taxes-rules-fr";
 import Image from "next/image";
 import { TaxReportBox } from "./_TaxReportBox";
 import { match } from "ts-pattern";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 interface ReportUsProps {
   isPrintMode: boolean;
   taxes: FrTaxes;
+  dict: Dictionary;
 }
 
-export const ReportUs = ({ isPrintMode, taxes }: ReportUsProps) => {
+export const ReportUs = ({ isPrintMode, taxes, dict }: ReportUsProps) => {
+  const reportDict = dict.report;
   return (
     <>
-      <Section title="Select Income Source and Annexes">
+      <Section title={reportDict.sections.selectIncomeSource}>
         <div className="flex gap-2 justify-items-center items-start">
           <div>
             {match({
@@ -24,7 +27,7 @@ export const ReportUs = ({ isPrintMode, taxes }: ReportUsProps) => {
                 },
                 () => (
                   <Image
-                    alt="select 'Salaires, gains d'actionnariat salarié'"
+                    alt={reportDict.fr.alts.selectIncomeAcquisitionOnly}
                     src="/images/fr-taxes/select-income-acquisition-gains-only.png"
                     width={400}
                     height={500}
@@ -37,7 +40,7 @@ export const ReportUs = ({ isPrintMode, taxes }: ReportUsProps) => {
                 },
                 () => (
                   <Image
-                    alt="No specific income selection"
+                    alt={reportDict.fr.alts.selectIncomeNoShares}
                     src="/images/fr-taxes/select-income-no-shares.png"
                     width={400}
                     height={500}
@@ -48,39 +51,43 @@ export const ReportUs = ({ isPrintMode, taxes }: ReportUsProps) => {
           </div>
         </div>
       </Section>
-      <Section title="French Taxes">
+      <Section title={reportDict.sections.frenchTaxes}>
         <div>
           <TaxReportBox
             id="1AJ"
-            title="Total income. Depending on your situation, you might use 1BJ instead. WARNING: unqualified options acquisition gain is not yet computed."
+            title={reportDict.fr.boxes["1AJ"]}
             amount={taxes["1AJ"]}
             explanations={taxes.explanations}
             gainType="acquisition"
             forceOpen={isPrintMode}
+            dict={dict}
           />
           <TaxReportBox
             id="1TT"
-            title="Qualified RSUs acquisition gain above 300K€ and qualified Stock options acquisition gain."
+            title={reportDict.fr.boxes["1TT"]}
             amount={taxes["1TT"]}
             explanations={taxes.explanations}
             gainType="acquisition"
             forceOpen={isPrintMode}
+            dict={dict}
           />
           <TaxReportBox
             id="1TZ"
-            title="Qualified RSUs acquisition gain below 300K€ with 50% discount."
+            title={reportDict.fr.boxes["1TZ"]}
             amount={taxes["1TZ"]}
             explanations={taxes.explanations}
             gainType="acquisition"
             forceOpen={isPrintMode}
+            dict={dict}
           />
           <TaxReportBox
             id="1WZ"
-            title="Qualified RSUs acquisition gain below 300K€ benefits from a 50% reduction declared here."
+            title={reportDict.fr.boxes["1WZ"]}
             amount={taxes["1WZ"]}
             explanations={taxes.explanations}
             gainType="acquisition"
             forceOpen={isPrintMode}
+            dict={dict}
           />
         </div>
       </Section>

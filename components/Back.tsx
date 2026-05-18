@@ -6,9 +6,11 @@ import classNames from "classnames";
 export interface BackProps {
   /** Add an extra className to Back wrapper */
   className?: string;
+  /** Label to display next to the back arrow */
+  label: string;
 }
 
-export const Back: React.FunctionComponent<BackProps> = () => {
+export const Back: React.FunctionComponent<BackProps> = ({ label }) => {
   const router = useRouter();
   return (
     <div
@@ -19,7 +21,7 @@ export const Back: React.FunctionComponent<BackProps> = () => {
       onClick={() => router.back()}
     >
       <ArrowLeftIcon className="h-4" />
-      Previous
+      {label}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { CopyButton } from "@/components/ui/CopyButton";
 import { Fragment } from "react";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 const EMPTY_CELL = " ";
 
@@ -15,7 +16,9 @@ const PAGE_11_LABELS = {
 export const AutomaticReportingTable: React.FunctionComponent<{
   gains: number;
   losses: number;
-}> = ({ gains, losses }) => {
+  dict: Dictionary;
+}> = ({ gains, losses, dict }) => {
+  const arDict = dict.report.automaticReporting;
   const roundedGains = Math.floor(gains);
   const roundedLosses = Math.floor(losses);
   const total = roundedGains - roundedLosses;
@@ -69,6 +72,7 @@ export const AutomaticReportingTable: React.FunctionComponent<{
               <Form2074Cell
                 value={row.gains}
                 copyValue={row.highlight ? roundedGains : undefined}
+                dict={dict}
               />
               <div className="text-center text-base font-medium text-slate-700">
                 -
@@ -78,19 +82,20 @@ export const AutomaticReportingTable: React.FunctionComponent<{
                 copyValue={
                   row.highlight && roundedLosses > 0 ? roundedLosses : undefined
                 }
+                dict={dict}
               />
               <div className="text-center text-base font-medium text-slate-700">
                 =
               </div>
-              <Form2074Cell value={row.subtotal} />
+              <Form2074Cell value={row.subtotal} dict={dict} />
               <div className="text-center text-base font-medium text-slate-700">
                 -
               </div>
-              <Form2074Cell value={row.adjustment} />
+              <Form2074Cell value={row.adjustment} dict={dict} />
               <div className="text-center text-base font-medium text-slate-700">
                 =
               </div>
-              <Form2074Cell value={row.total} />
+              <Form2074Cell value={row.total} dict={dict} />
             </Fragment>
           ))}
           <div className="pt-3 text-base font-semibold">
@@ -98,11 +103,11 @@ export const AutomaticReportingTable: React.FunctionComponent<{
           </div>
           <div className="col-span-8" />
           <div className="pt-3">
-            <Form2074Cell value={total} emphasize />
+            <Form2074Cell value={total} emphasize dict={dict} />
           </div>
           <div className="col-span-9" />
           <div className="pt-2 text-center text-sm font-medium text-blue-800">
-            Automatically reported to 3VG
+            {arDict.automaticReportedTo3VG}
           </div>
         </div>
       </div>
@@ -114,14 +119,15 @@ const Form2074Cell: React.FunctionComponent<{
   value: number | string;
   copyValue?: number;
   emphasize?: boolean;
-}> = ({ value, copyValue, emphasize }) => {
+  dict: Dictionary;
+}> = ({ value, copyValue, emphasize, dict }) => {
   if (copyValue !== undefined) {
     return (
       <div className="flex items-center gap-2">
         <span className="inline-flex h-[30px] min-w-[7rem] items-center justify-end border border-black bg-white px-3 text-right text-base">
           {copyValue}
         </span>
-        <CopyButton value={copyValue} />
+        <CopyButton value={copyValue} dict={dict} />
       </div>
     );
   }

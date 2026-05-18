@@ -29,14 +29,18 @@ import { ReportFr } from "./_ReportFr";
 import type { CountryCode } from "./types";
 import { ReportUs } from "./_ReportUs";
 import { ImportValidation } from "./_ImportValidation";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 export interface ReportResidencyFrProps {
   taxResidency: CountryCode;
+  dict: Dictionary;
 }
 
 export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
   taxResidency,
+  dict,
 }: ReportResidencyFrProps) => {
+  const reportDict = dict.report;
   const [showFractionAssignmentModal, setShowFractionAssignmentModal] =
     useState(false);
   const [gainsAndLosses, setGainsAndLosses] = useState<GainAndLossEvent[]>([]);
@@ -53,9 +57,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
   );
   useEffect(() => {
     if (couldNotFetchRates) {
-      sendErrorToast("could not fetch exchange rates, please retry later");
+      sendErrorToast(reportDict.import.errors.exchangeRates);
     }
-  }, [couldNotFetchRates]);
+  }, [couldNotFetchRates, reportDict.import.errors.exchangeRates]);
 
   const {
     values: symbolPrices,
@@ -64,9 +68,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
   } = useFetchSymbolDaily(gainsAndLosses.map((event) => event.symbol));
   useEffect(() => {
     if (couldNotFetchPrices) {
-      sendErrorToast("could not fetch stock prices, please retry later");
+      sendErrorToast(reportDict.import.errors.stockPrices);
     }
-  }, [couldNotFetchPrices]);
+  }, [couldNotFetchPrices, reportDict.import.errors.stockPrices]);
 
   const isFetching = isFetchingExr || isFetchingPrices;
   const hasError = couldNotFetchRates || couldNotFetchPrices;
@@ -112,6 +116,7 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
       symbolPrices,
       fractions: fractionsFrIncome,
       isFrQualified,
+      explanationsDict: reportDict.fr.explanations,
     });
   }, [
     gainsAndLosses,
@@ -121,42 +126,31 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
     hasError,
     fractionsFrIncome,
     isFrQualified,
+    reportDict.fr.explanations,
   ]);
 
   return (
     <div>
       <div className="print:hidden">
-        <MessageBox level="warning" title="Disclaimer">
+        <MessageBox level="warning" title={reportDict.disclaimer.title}>
+          <p>{reportDict.disclaimer.line1}</p>
+          <p>{reportDict.disclaimer.line2}</p>
           <p>
-            These calculations are for informational purposes only and should
-            not be considered financial advice.
-          </p>
-          <p>
-            Despite all the efforts that were put in creating this tool, it is
-            your responsibility to verify the results.
-          </p>
-          <p>
-            This{" "}
+            {reportDict.disclaimer.guideLinePrefix}
             <Link href="/2021_mc-kenzie-taxes-presentation.pdf" isExternal>
-              guide
-            </Link>{" "}
-            sent by equity team in 2021 was used to create this calculator
+              {reportDict.disclaimer.guideLinkLabel}
+            </Link>
+            {reportDict.disclaimer.guideLineSuffix}
           </p>
         </MessageBox>
-        <div className="my-2">
-          Based on the <b>expanded</b> export of "Gain And Losses" (At Work &gt;
-          My Account &gt; Gains and losses) from ETrade.
-        </div>
-        <div>
-          <b>Note:</b> You can also export the "Benefit History" (At Work &gt;
-          My Account &gt; Benefit History) from ETrade for your own information,
-          but it is not used by this report.
-        </div>
+        <div className="my-2">{reportDict.etradeInstructions.expandedNote}</div>
+        <div>{reportDict.etradeInstructions.benefitHistoryNote}</div>
       </div>
       {gainsAndLosses.length === 0 || fractionsFrIncome.length === 0 ? (
         <div className="flex items-baseline justify-center gap-3">
-          <span>Import the Gains and Losses CSV file: </span>
+          <span>{reportDict.import.prompt}</span>
           <FractionAssignmentModal
+            dict={dict}
             showModal={showFractionAssignmentModal}
             setShowModal={setShowFractionAssignmentModal}
             data={gainsAndLosses}
@@ -176,6 +170,11 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
               .otherwise(() => "ok")}
           />
           <EtradeGainAndLossesFileInput
+            label={reportDict.import.label}
+            errorMessages={{
+              noFile: reportDict.import.errors.noFile,
+              invalidFile: reportDict.import.errors.invalidFile,
+            }}
             setData={(data) => {
               setGainsAndLosses(data);
               if (data.length > 0) {
@@ -185,14 +184,14 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
           />
         </div>
       ) : isFetching ? (
-        <p>Loading...</p>
+        <p>{dict.common.loading}</p>
       ) : (
         <div className="container flex flex-col gap-8">
           <div className="print:hidden">
             <div className="flex items-baseline justify-between gap-3">
-              <span>Gains and Losses</span>
+              <span>{reportDict.gainsAndLosses}</span>
               <Button
-                label="Clear"
+                label={dict.common.clear}
                 color="red"
                 onClick={() => {
                   setGainsAndLosses([]);
@@ -208,30 +207,46 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 checked={isPrintMode}
                 onChange={() => setIsPrintMode(!isPrintMode)}
               />
-              <label htmlFor="printMode">
-                Print mode (expands all sections, e.g. for the tax office)
-              </label>
+              <label htmlFor="printMode">{reportDict.printMode}</label>
             </div>
           </div>
 
-          <Section title="Summary">
+          <Section title={reportDict.sections.summary}>
             <div className="px-6">
               <dl className="grid grid-cols-2 ">
-                <dt className="font-bold">FR qualified SO</dt>
-                <dd>{counts.frQualifiedSo} events</dd>
-                <dt className="font-bold">FR qualified RSU</dt>
-                <dd>{counts.frQualifiedRsu} events</dd>
-                <dt className="font-bold">ESPP</dt>
-                <dd>{counts.espp} events</dd>
-                <dt className="font-bold">FR non qualified SO</dt>
-                <dd>{counts.frNonQualifiedSo} events</dd>
-                <dt className="font-bold">FR non qualified RSU</dt>
-                <dd>{counts.frNonQualifiedRsu} events</dd>
+                <dt className="font-bold">
+                  {reportDict.summary.frQualifiedSo}
+                </dt>
+                <dd>
+                  {counts.frQualifiedSo} {reportDict.summary.events}
+                </dd>
+                <dt className="font-bold">
+                  {reportDict.summary.frQualifiedRsu}
+                </dt>
+                <dd>
+                  {counts.frQualifiedRsu} {reportDict.summary.events}
+                </dd>
+                <dt className="font-bold">{reportDict.summary.espp}</dt>
+                <dd>
+                  {counts.espp} {reportDict.summary.events}
+                </dd>
+                <dt className="font-bold">
+                  {reportDict.summary.frNonQualifiedSo}
+                </dt>
+                <dd>
+                  {counts.frNonQualifiedSo} {reportDict.summary.events}
+                </dd>
+                <dt className="font-bold">
+                  {reportDict.summary.frNonQualifiedRsu}
+                </dt>
+                <dd>
+                  {counts.frNonQualifiedRsu} {reportDict.summary.events}
+                </dd>
               </dl>
             </div>
           </Section>
           <div className="print:hidden">
-            <ImportValidation events={enrichedEvents} />
+            <ImportValidation events={enrichedEvents} dict={dict} />
           </div>
           {match({ taxResidency })
             .with({ taxResidency: "fr" }, () => (
@@ -239,14 +254,15 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 hasSoldShares={gainsAndLosses.length > 0}
                 isPrintMode={isPrintMode}
                 taxes={taxes}
+                dict={dict}
               />
             ))
             .with({ taxResidency: "us" }, () => (
-              <ReportUs isPrintMode={isPrintMode} taxes={taxes} />
+              <ReportUs isPrintMode={isPrintMode} taxes={taxes} dict={dict} />
             ))
             .exhaustive()}
-          <Section title="Source of information">
-            <div>Some external sources are used to compute data:</div>
+          <Section title={reportDict.sections.sourceOfInformation}>
+            <div>{reportDict.sources.intro}</div>
             <ul className="list-disc pl-6 mt-2 flex flex-col gap-y-">
               <li>
                 ETrade Gains and Losses{" "}
@@ -256,9 +272,9 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
               </li>
               <li>
                 <div className="flex">
-                  The exchange rates are fetched from the&nbsp;
+                  {reportDict.sources.ecbLabelPrefix}&nbsp;
                   <Link href="https://data.ecb.europa.eu/help/api/data">
-                    European Central Bank API
+                    {reportDict.sources.ecbLinkLabel}
                   </Link>
                   <Tooltip
                     content={
@@ -271,8 +287,10 @@ export const Report: React.FunctionComponent<ReportResidencyFrProps> = ({
                 </div>
               </li>
               <li>
-                Stock prices are fetched from&nbsp;
-                <Link href="https://finance.yahoo.com/">Yahoo Finance</Link>
+                {reportDict.sources.yahooLabelPrefix}&nbsp;
+                <Link href="https://finance.yahoo.com/">
+                  {reportDict.sources.yahooLinkLabel}
+                </Link>
               </li>
             </ul>
           </Section>

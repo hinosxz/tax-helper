@@ -1,10 +1,13 @@
 import { Drawer } from "@/components/ui/Drawer";
 import { formatNumber } from "@/lib/format-number";
 import type { GainAndLossEventWithRates } from "@/lib/taxes/taxes-rules-fr";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 export const ImportValidation: React.FunctionComponent<{
   events: GainAndLossEventWithRates[];
-}> = ({ events }) => {
+  dict: Dictionary;
+}> = ({ events, dict }) => {
+  const ivDict = dict.report.importValidation;
   if (events.length === 0) return null;
 
   const totalAcqEur = events.reduce(
@@ -17,46 +20,46 @@ export const ImportValidation: React.FunctionComponent<{
   );
 
   return (
-    <Drawer title={<span className="font-bold">Import Validation</span>}>
+    <Drawer title={<span className="font-bold">{ivDict.title}</span>}>
       <div className="overflow-x-auto">
         <table className="text-sm border-collapse w-full">
           <thead>
             <tr className="bg-gray-100">
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                #
+                {ivDict.headers.index}
               </th>
               <th className="border border-gray-300 px-2 py-1 whitespace-nowrap">
-                Acquisition date
+                {ivDict.headers.acquisitionDate}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                $/stock acq.
+                {ivDict.headers.dollarsPerStockAcq}
               </th>
               <th className="border border-gray-300 px-2 py-1 whitespace-nowrap">
-                Sale date
+                {ivDict.headers.saleDate}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                $/stock sold
+                {ivDict.headers.dollarsPerStockSold}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                Qty
+                {ivDict.headers.qty}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                $/€ acq.
+                {ivDict.headers.dollarsPerEuroAcq}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                $/€ sold
+                {ivDict.headers.dollarsPerEuroSold}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                €/stock acq.
+                {ivDict.headers.eurosPerStockAcq}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                €/stock sold
+                {ivDict.headers.eurosPerStockSold}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                Total acq. €
+                {ivDict.headers.totalAcqEur}
               </th>
               <th className="border border-gray-300 px-2 py-1 text-right whitespace-nowrap">
-                Total sold €
+                {ivDict.headers.totalSoldEur}
               </th>
             </tr>
           </thead>
@@ -113,7 +116,7 @@ export const ImportValidation: React.FunctionComponent<{
                 colSpan={10}
                 className="border border-gray-300 px-2 py-1 text-right"
               >
-                Total
+                {dict.common.total}
               </td>
               <td className="border border-gray-300 px-2 py-1 text-right">
                 {formatNumber(totalAcqEur)}
@@ -126,8 +129,8 @@ export const ImportValidation: React.FunctionComponent<{
         </table>
       </div>
       <p className="text-sm text-gray-500 mt-2 px-2">
-        {events.length} operation{events.length !== 1 ? "s" : ""} found in your
-        import file (sorted by sale date).
+        {events.length}{" "}
+        {events.length !== 1 ? ivDict.footerPlural : ivDict.footerSingle}
       </p>
     </Drawer>
   );

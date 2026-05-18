@@ -3,6 +3,7 @@ import { TaxableEventFr } from "@/components/TaxableEventFr";
 import type { TaxableEventFr as TaxableEventFrProps } from "@/lib/taxes/taxable-event-fr";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 export const TaxReportBox: React.FunctionComponent<{
   /** Unique id for the box (1TT, 3VG...) */
@@ -19,7 +20,8 @@ export const TaxReportBox: React.FunctionComponent<{
   }[];
   gainType: "acquisition" | "capital";
   forceOpen?: boolean;
-}> = ({ id, title, amount, explanations, gainType, forceOpen }) => {
+  dict: Dictionary;
+}> = ({ id, title, amount, explanations, gainType, forceOpen, dict }) => {
   const relatedExplanations = explanations.filter(({ box }) => box === id);
   return (
     <div className="bg-blue-200 mb-2 py-1 px-2 print:border print:mb-2">
@@ -37,7 +39,7 @@ export const TaxReportBox: React.FunctionComponent<{
         </Tooltip>
       </div>
       {relatedExplanations.length > 0 && (
-        <Drawer title="Details" forceOpen={forceOpen}>
+        <Drawer title={dict.common.details} forceOpen={forceOpen}>
           <div className="bg-slate-200 m-1 p-1">
             {relatedExplanations.map((explanation) => (
               <div key={explanation.description}>
@@ -56,6 +58,7 @@ export const TaxReportBox: React.FunctionComponent<{
                           showCapitalGains={gainType === "capital"}
                           showAcquisitionGains={gainType === "acquisition"}
                           forceOpen={forceOpen}
+                          dict={dict}
                         />
                       </div>
                     ))}

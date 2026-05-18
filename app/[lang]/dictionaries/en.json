@@ -1,0 +1,237 @@
+{
+  "metadata": {
+    "title": "Tax Helper",
+    "description": "A simple web app to help determine how you should report your taxes to the French and US administrations."
+  },
+  "common": {
+    "previous": "Previous",
+    "next": "Next",
+    "confirm": "Confirm",
+    "clear": "Clear",
+    "loading": "Loading...",
+    "details": "Details",
+    "total": "Total",
+    "copied": "Copied!",
+    "copyToClipboard": "Copy to clipboard",
+    "copyValueToClipboard": "Copy value to clipboard"
+  },
+  "nav": {
+    "back": "Previous",
+    "selectLanguage": "Select language",
+    "forkMessage": {
+      "local": "THIS IS A LOCAL DEV ENVIRONMENT",
+      "forkPrefix": "THIS IS A FORK, OFFICIAL TAX HELPER IS AT "
+    }
+  },
+  "home": {
+    "title": "Tax Helper",
+    "computeReport": "Compute my French tax report"
+  },
+  "report": {
+    "title": "Tax Report",
+    "residency": "Residency:",
+    "disclaimer": {
+      "title": "Disclaimer",
+      "line1": "These calculations are for informational purposes only and should not be considered financial advice.",
+      "line2": "Despite all the efforts that were put in creating this tool, it is your responsibility to verify the results.",
+      "guideLinePrefix": "This ",
+      "guideLinkLabel": "guide",
+      "guideLineSuffix": " sent by equity team in 2021 was used to create this calculator"
+    },
+    "etradeInstructions": {
+      "expandedNote": "Based on the expanded export of \"Gain And Losses\" (At Work > My Account > Gains and losses) from ETrade.",
+      "benefitHistoryNote": "Note: You can also export the \"Benefit History\" (At Work > My Account > Benefit History) from ETrade for your own information, but it is not used by this report."
+    },
+    "import": {
+      "prompt": "Import the Gains and Losses CSV file: ",
+      "label": "Import from ETrade G&L",
+      "errors": {
+        "noFile": "couldn't import file",
+        "invalidFile": "Failed to import, please verify you imported the correct file.",
+        "exchangeRates": "could not fetch exchange rates, please retry later",
+        "stockPrices": "could not fetch stock prices, please retry later"
+      }
+    },
+    "gainsAndLosses": "Gains and Losses",
+    "printMode": "Print mode (expands all sections, e.g. for the tax office)",
+    "planTypes": {
+      "ESPP": "ESPP",
+      "RS": "RSU",
+      "SO": "Stock Options"
+    },
+    "sections": {
+      "summary": "Summary",
+      "selectIncomeSource": "Select Income Source and Annexes",
+      "foreignAccounts": "Foreign accounts",
+      "frenchTaxes": "French Taxes",
+      "form2074": "Form 2074",
+      "sourceOfInformation": "Source of information"
+    },
+    "summary": {
+      "frQualifiedSo": "FR qualified SO",
+      "frQualifiedRsu": "FR qualified RSU",
+      "espp": "ESPP",
+      "frNonQualifiedSo": "FR non qualified SO",
+      "frNonQualifiedRsu": "FR non qualified RSU",
+      "events": "events"
+    },
+    "sources": {
+      "intro": "Some external sources are used to compute data:",
+      "ecbLabelPrefix": "The exchange rates are fetched from the ",
+      "ecbLinkLabel": "European Central Bank API",
+      "yahooLabelPrefix": "Stock prices are fetched from ",
+      "yahooLinkLabel": "Yahoo Finance"
+    },
+    "fr": {
+      "alts": {
+        "selectIncomeBoth": "select 'Salaires, gains d'actionnariat salarié' and 'Plus-values et gains divers'",
+        "selectIncomeCapitalOnly": "select 'Plus-values et gains divers'",
+        "selectIncomeAcquisitionOnly": "select 'Salaires, gains d'actionnariat salarié'",
+        "selectIncomeNoShares": "No specific income selection",
+        "foreignAccount": "Compte a l'etranger",
+        "annexesWithSales": "Select Anexes N° 2074 and N° 3916 - 3916 bis",
+        "annexesWithoutSales": "Select Anexes N° 3916 - 3916 bis",
+        "check8uu": "Check 8UU",
+        "etradeAccountDetails": "profile > account preferences",
+        "foreignAccountForm": "Compte a l'etranger",
+        "form2074Page1": "Form 2074 - Page 1",
+        "form2074ReportActive": "Form 2074 — automatic reporting table: 3VG with report activé"
+      },
+      "foreignAccounts": {
+        "check8uuPrefix": "Make sure you check ",
+        "morganStanleyPrefix": "Find your Morgan Stanley's accounts details in "
+      },
+      "boxes": {
+        "1AJ": "Total income. Depending on your situation, you might use 1BJ instead. WARNING: unqualified options acquisition gain is not yet computed.",
+        "1TT": "Qualified RSUs acquisition gain above 300K€ and qualified Stock options acquisition gain.",
+        "1TZ": "Qualified RSUs acquisition gain below 300K€ with 50% discount.",
+        "1WZ": "Qualified RSUs acquisition gain below 300K€ benefits from a 50% reduction declared here.",
+        "3VG": "Total net taxable capital gains",
+        "3VH": "If you have capital losses from previous years, you can deduct them here."
+      },
+      "form2074": {
+        "reportPagesPrefix": "You must report ",
+        "reportPagesSuffix": " in this form.",
+        "noEvents": "No taxable events to report.",
+        "page": "Page",
+        "automaticReportingTitle": "Automatic reporting from Form 2074",
+        "reportGainsAndLossesPrefix": "You must report ",
+        "reportGainsAndLossesMiddle": " (capital gains) and ",
+        "reportGainsAndLossesLosses": " (capital losses) on line ",
+        "reportGainsOnly": " on line ",
+        "lineSuffix": ".",
+        "noteAtEndPrefix": "Note: At the end of Form 2074, you should have ",
+        "noteAtEndMiddle": " with ",
+        "noteAtEndStatus": "\"report activé\"",
+        "noteAtEndSuffix": " in the automatic reporting table:"
+      },
+      "qualifiedAtLoss": {
+        "drawerTitle": "Some events are not reported in Form 2074, expand to learn why",
+        "explanationPrefix": "The following events are not reported in Form 2074 because the sale price is below the vesting/exercise value. Per ",
+        "legifranceLinkLabel": "Art. 150-0 D §11 / Art. 80 quaterdecies V CGI",
+        "explanationSuffix": ", the loss is deducted from the acquisition gain (1TT/1TZ) instead.",
+        "headers": {
+          "symbol": "Symbol",
+          "dateOfSale": "Date of sale",
+          "qty": "Qty",
+          "salePricePerShare": "Sale price/share",
+          "vestingPricePerShare": "Vesting price/share",
+          "lossPerShare": "Loss/share",
+          "lossDeducted": "Loss deducted from acquisition gain"
+        },
+        "totalRow": "Total loss deducted from acquisition gain"
+      },
+      "explanations": {
+        "esppAcquisitionGain": "Acquisition gains from ESPP sales are due the year of acquisition. Already reported by your employer and not yet available in this tool.",
+        "qualifiedSoAcquisitionGain": "Acquisition gains from Qualified SO sales.",
+        "qualifiedSoCapitalGain": "Capital gains from FR qualified SO sales."
+      }
+    },
+    "fractionAssignmentModal": {
+      "title": "Confirm the origin of your income",
+      "intro": "For each sale, please confirm the % of French income. If you have never moved abroad, it should be 100%.",
+      "headers": {
+        "ticker": "Ticker",
+        "planType": "Plan Type",
+        "grantDate": "Grant Date",
+        "acquisitionDate": "Acquisition Date",
+        "isPlanFrQualified": "Is Plan FR Qualified?",
+        "pctFr": "% FR"
+      },
+      "errors": {
+        "cannotGenerate": "cannot generate report, please retry later"
+      }
+    },
+    "importValidation": {
+      "title": "Import Validation",
+      "headers": {
+        "index": "#",
+        "acquisitionDate": "Acquisition date",
+        "dollarsPerStockAcq": "$/stock acq.",
+        "saleDate": "Sale date",
+        "dollarsPerStockSold": "$/stock sold",
+        "qty": "Qty",
+        "dollarsPerEuroAcq": "$/€ acq.",
+        "dollarsPerEuroSold": "$/€ sold",
+        "eurosPerStockAcq": "€/stock acq.",
+        "eurosPerStockSold": "€/stock sold",
+        "totalAcqEur": "Total acq. €",
+        "totalSoldEur": "Total sold €"
+      },
+      "footerSingle": "operation found in your import file (sorted by sale date).",
+      "footerPlural": "operations found in your import file (sorted by sale date)."
+    },
+    "taxableEvent": {
+      "triggers": {
+        "vesting": "vested",
+        "sell": "sold",
+        "exercise": "exercised"
+      },
+      "headlinePrefix": "On",
+      "capitalGain": "Capital gain",
+      "acquisitionGain": "Acquisition gain",
+      "lines": {
+        "dates": "Dates",
+        "granted": "Granted:",
+        "acquired": "Acquired:",
+        "sold": "Sold:",
+        "acquisitionCost": "Acquisition cost",
+        "acquisitionValue": "Acquisition value",
+        "perShare": "per share.",
+        "perShareWithDesc": "per share",
+        "fractionFrenchOrigin": "% of French Origin",
+        "sellPrice": "Sell price",
+        "symbolPriceTitle": "{symbol} price:",
+        "atOpeningOnAcquisitionDay": "at opening on acquisition day.",
+        "priceNotAvailablePrefix": "price was not available on",
+        "priceNotAvailableMiddle": ", last known price (on",
+        "priceNotAvailableSuffix": ") was used instead."
+      }
+    },
+    "automaticReporting": {
+      "automaticReportedTo3VG": "Automatically reported to 3VG"
+    },
+    "page510Labels": {
+      "511": "Désignation des titres et des intermédiaires financiers",
+      "512": "Date de la cession ou du rachat jj/mm/aaaa",
+      "513": "Nombre de titres cédés ou rachetés",
+      "514": "Valeur unitaire de cession",
+      "515": "Nombre de titres cédés",
+      "516": "Montant global lignes (514 x 515)",
+      "517": "Frais de cession cf. notice",
+      "518": "Prix de cession net lignes (516 - 517)",
+      "519": "Détermination du prix de revient des titres",
+      "520": "Prix ou valeur d'acquisition unitaire cf. notice",
+      "521": "Prix d'acquisition global cf. notice",
+      "522": "Frais d'acquisition",
+      "523": "Prix de revient lignes (521 + 522)",
+      "524": "Résultat précédé du signe + ou - lignes (518 - 523)",
+      "525": "Je demande expressément à bénéficier de l'imputation des moins-values préalablement à l'annulation des titres cf. notice",
+      "526": "Montant des moins-values imputées pour les titres concernés"
+    }
+  },
+  "notImplemented": {
+    "prefix": "not implemented yet, feel free to contribute to ",
+    "linkLabel": "the repository"
+  }
+}

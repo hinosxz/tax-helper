@@ -7,7 +7,12 @@ export interface EtradeGainAndLossesFileInputProps {
   /** Unique identifier for the input. Available for css selector as `#${id}` */
   id?: string;
   /** Label for the input */
-  label?: string;
+  label: string;
+  /** Localized error messages */
+  errorMessages: {
+    noFile: string;
+    invalidFile: string;
+  };
   /** Function called when data are read from the etrade export  */
   setData: (data: GainAndLossEvent[]) => void;
   /** Function called when an error occurs. */
@@ -18,7 +23,8 @@ export const EtradeGainAndLossesFileInput: React.FunctionComponent<
   EtradeGainAndLossesFileInputProps
 > = ({
   id = "import_etrade_g&l",
-  label = "Import from ETrade G&L",
+  label,
+  errorMessages,
   setData,
   handleError = sendErrorToast,
 }) => {
@@ -30,14 +36,13 @@ export const EtradeGainAndLossesFileInput: React.FunctionComponent<
       multiple
       onUpload={async (files) => {
         if (files.length === 0) {
-          return handleError("couldn't import file");
+          return handleError(errorMessages.noFile);
         }
         try {
           const perFile = await Promise.all(files.map(parseEtradeGL));
           setData(perFile.flat());
         } catch (e) {
-          handleError(`Failed to import,
-                please verify you imported the correct file.`);
+          handleError(errorMessages.invalidFile);
         }
       }}
     />

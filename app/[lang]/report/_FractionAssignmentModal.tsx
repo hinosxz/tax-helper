@@ -7,6 +7,7 @@ import { Modal } from "@/components/ui/Modal";
 import { match } from "ts-pattern";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import { MessageBox } from "@/components/ui/MessageBox";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 interface FractionAssignmentModalProps {
   data: GainAndLossEvent[];
@@ -14,6 +15,7 @@ interface FractionAssignmentModalProps {
   setShowModal: (show: boolean) => void;
   confirm: (fractions: number[], isFrQualified: boolean[]) => void;
   state: "loading" | "error" | "ok";
+  dict: Dictionary;
 }
 
 const toKey = (e: GainAndLossEvent) =>
@@ -55,7 +57,9 @@ export const FractionAssignmentModal = ({
   setShowModal,
   confirm,
   state,
+  dict,
 }: FractionAssignmentModalProps) => {
+  const modalDict = dict.report.fractionAssignmentModal;
   // % are the same for each date acquired / date granted pair.
   const [pctMap, setPctMap] = useState<Map<string, number>>(
     new Map<string, number>(),
@@ -76,30 +80,25 @@ export const FractionAssignmentModal = ({
     <Modal show={showModal}>
       <div className="grid grid-cols-1 gap-4">
         <div className="flex justify-between">
-          <div className="text-lg font-bold">
-            Confirm the origin of your income
-          </div>
+          <div className="text-lg font-bold">{modalDict.title}</div>
           <Button
             onClick={() => setShowModal(false)}
             isBorderless
             icon={XMarkIcon}
           />
         </div>
-        <div>
-          For each sale, please confirm the % of French income. If you have
-          never moved abroad, it should be 100%.
-        </div>
+        <div>{modalDict.intro}</div>
         {match(state)
           .with("ok", () => (
             <>
               <div className="grid grid-cols-6 gap-4">
                 {[
-                  "Ticker",
-                  "Plan Type",
-                  "Grant Date",
-                  "Acquisition Date",
-                  "Is Plan FR Qualified?",
-                  "% FR",
+                  modalDict.headers.ticker,
+                  modalDict.headers.planType,
+                  modalDict.headers.grantDate,
+                  modalDict.headers.acquisitionDate,
+                  modalDict.headers.isPlanFrQualified,
+                  modalDict.headers.pctFr,
                 ].map((h) => (
                   <div key={h} className="font-semibold">
                     {h}
@@ -158,7 +157,7 @@ export const FractionAssignmentModal = ({
                     );
                     setShowModal(false);
                   }}
-                  label="Confirm"
+                  label={dict.common.confirm}
                   icon={CheckIcon}
                 />
               </div>
@@ -170,10 +169,7 @@ export const FractionAssignmentModal = ({
             </div>
           ))
           .with("error", () => (
-            <MessageBox
-              level="error"
-              title="cannot generate report, please retry later"
-            />
+            <MessageBox level="error" title={modalDict.errors.cannotGenerate} />
           ))
           .exhaustive()}
       </div>
