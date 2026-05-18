@@ -1,0 +1,245 @@
+{
+  "metadata": {
+    "title": "Assistant Fiscal",
+    "description": "Une application web simple pour vous aider à déterminer comment déclarer vos impôts aux administrations française et américaine."
+  },
+  "common": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "confirm": "Confirmer",
+    "clear": "Effacer",
+    "loading": "Chargement...",
+    "details": "Détails",
+    "total": "Total",
+    "copied": "Copié !",
+    "copyToClipboard": "Copier dans le presse-papiers",
+    "copyValueToClipboard": "Copier la valeur dans le presse-papiers"
+  },
+  "nav": {
+    "back": "Précédent",
+    "forkMessage": {
+      "local": "CECI EST UN ENVIRONNEMENT DE DÉVELOPPEMENT LOCAL",
+      "forkPrefix": "CECI EST UN FORK, L'ASSISTANT FISCAL OFFICIEL EST DISPONIBLE SUR "
+    }
+  },
+  "home": {
+    "title": "Assistant Fiscal",
+    "computeReport": "Calculer ma déclaration d'impôts française"
+  },
+  "report": {
+    "title": "Déclaration d'impôts",
+    "residency": "Résidence :",
+    "residencyFr": "FR",
+    "residencyUs": "US",
+    "disclaimer": {
+      "title": "Avertissement",
+      "line1": "Ces calculs sont fournis à titre informatif uniquement et ne doivent pas être considérés comme un conseil financier.",
+      "line2": "Malgré tous les efforts déployés pour créer cet outil, il est de votre responsabilité de vérifier les résultats.",
+      "guideLinePrefix": "Ce ",
+      "guideLinkLabel": "guide",
+      "guideLineSuffix": " envoyé par l'équipe equity en 2021 a été utilisé pour créer ce calculateur"
+    },
+    "etradeInstructions": {
+      "expandedNote": "Basé sur l'export détaillé de « Gain And Losses » (At Work > My Account > Gains and losses) depuis ETrade.",
+      "benefitHistoryNote": "Note : Vous pouvez également exporter le « Benefit History » (At Work > My Account > Benefit History) depuis ETrade pour votre information personnelle, mais il n'est pas utilisé par ce rapport."
+    },
+    "import": {
+      "prompt": "Importez le fichier CSV des gains et pertes : ",
+      "label": "Importer depuis ETrade G&L",
+      "errors": {
+        "noFile": "impossible d'importer le fichier",
+        "invalidFile": "Échec de l'import, veuillez vérifier que vous avez importé le bon fichier.",
+        "exchangeRates": "impossible de récupérer les taux de change, veuillez réessayer plus tard",
+        "stockPrices": "impossible de récupérer les cours des actions, veuillez réessayer plus tard"
+      }
+    },
+    "gainsAndLosses": "Gains et pertes",
+    "printMode": "Mode impression (déplie toutes les sections, par ex. pour le centre des impôts)",
+    "sections": {
+      "summary": "Résumé",
+      "selectIncomeSource": "Sélectionner la source de revenu et les annexes",
+      "foreignAccounts": "Comptes à l'étranger",
+      "frenchTaxes": "Impôts français",
+      "form2074": "Formulaire 2074",
+      "sourceOfInformation": "Sources d'information"
+    },
+    "summary": {
+      "frQualifiedSo": "SO qualifiées FR",
+      "frQualifiedRsu": "RSU qualifiées FR",
+      "espp": "ESPP",
+      "frNonQualifiedSo": "SO non qualifiées FR",
+      "frNonQualifiedRsu": "RSU non qualifiées FR",
+      "events": "événements"
+    },
+    "sources": {
+      "intro": "Des sources externes sont utilisées pour calculer les données :",
+      "etradeLabel": "ETrade Gains and Losses ",
+      "etradeLinkLabel": "Expanded",
+      "ecbLabelPrefix": "Les taux de change sont récupérés depuis l'",
+      "ecbLinkLabel": "API de la Banque centrale européenne",
+      "yahooLabelPrefix": "Les cours des actions sont récupérés depuis ",
+      "yahooLinkLabel": "Yahoo Finance"
+    },
+    "fr": {
+      "alts": {
+        "selectIncomeBoth": "sélectionner « Salaires, gains d'actionnariat salarié » et « Plus-values et gains divers »",
+        "selectIncomeCapitalOnly": "sélectionner « Plus-values et gains divers »",
+        "selectIncomeAcquisitionOnly": "sélectionner « Salaires, gains d'actionnariat salarié »",
+        "selectIncomeNoShares": "Aucune sélection de revenu spécifique",
+        "foreignAccount": "Compte à l'étranger",
+        "annexesWithSales": "Sélectionner les annexes N° 2074 et N° 3916 - 3916 bis",
+        "annexesWithoutSales": "Sélectionner les annexes N° 3916 - 3916 bis",
+        "check8uu": "Cocher 8UU",
+        "etradeAccountDetails": "profil > préférences du compte",
+        "foreignAccountForm": "Compte à l'étranger",
+        "form2074Page1": "Formulaire 2074 - Page 1",
+        "form2074ReportActive": "Formulaire 2074 — tableau de report automatique : 3VG avec report activé"
+      },
+      "foreignAccounts": {
+        "check8uuPrefix": "Assurez-vous de cocher ",
+        "morganStanleyPrefix": "Trouvez les détails de votre compte Morgan Stanley dans "
+      },
+      "boxes": {
+        "1AJ": "Revenu total. Selon votre situation, vous pourriez utiliser 1BJ à la place. ATTENTION : le gain d'acquisition des options non qualifiées n'est pas encore calculé.",
+        "1TT": "Gain d'acquisition des RSU qualifiées au-dessus de 300K€ et gain d'acquisition des Stock options qualifiées.",
+        "1TZ": "Gain d'acquisition des RSU qualifiées en dessous de 300K€ avec abattement de 50%.",
+        "1WZ": "Le gain d'acquisition des RSU qualifiées en dessous de 300K€ bénéficie d'un abattement de 50 % déclaré ici.",
+        "3VG": "Plus-values nettes imposables totales",
+        "3VH": "Si vous avez des moins-values des années précédentes, vous pouvez les déduire ici."
+      },
+      "form2074": {
+        "reportPagesPrefix": "Vous devez déclarer ",
+        "reportPagesSuffix": " dans ce formulaire.",
+        "noEvents": "Aucun événement imposable à déclarer.",
+        "page": "Page",
+        "automaticReportingTitle": "Report automatique depuis le formulaire 2074",
+        "reportGainsAndLossesPrefix": "Vous devez déclarer ",
+        "reportGainsAndLossesMiddle": " (plus-values) et ",
+        "reportGainsAndLossesLosses": " (moins-values) sur la ligne ",
+        "reportGainsOnly": " sur la ligne ",
+        "lineSuffix": ".",
+        "noteAtEndPrefix": "Note : à la fin du formulaire 2074, vous devriez avoir ",
+        "noteAtEndMiddle": " avec ",
+        "noteAtEndStatus": "« report activé »",
+        "noteAtEndSuffix": " dans le tableau de report automatique :"
+      },
+      "qualifiedAtLoss": {
+        "drawerTitle": "Certains événements ne sont pas déclarés dans le formulaire 2074, dépliez pour en savoir plus",
+        "explanationPrefix": "Les événements suivants ne sont pas déclarés dans le formulaire 2074 car le prix de vente est inférieur à la valeur d'acquisition/d'exercice. Conformément à l'",
+        "legifranceLinkLabel": "Art. 150-0 D §11 / Art. 80 quaterdecies V CGI",
+        "explanationSuffix": ", la moins-value est déduite du gain d'acquisition (1TT/1TZ) à la place.",
+        "headers": {
+          "symbol": "Symbole",
+          "dateOfSale": "Date de vente",
+          "qty": "Qté",
+          "salePricePerShare": "Prix de vente/action",
+          "vestingPricePerShare": "Prix d'acquisition/action",
+          "lossPerShare": "Perte/action",
+          "lossDeducted": "Perte déduite du gain d'acquisition"
+        },
+        "totalRow": "Perte totale déduite du gain d'acquisition",
+        "planTypes": {
+          "SO": "Stock Options",
+          "RS": "RSU",
+          "ESPP": "ESPP"
+        }
+      }
+    },
+    "fractionAssignmentModal": {
+      "title": "Confirmez l'origine de vos revenus",
+      "intro": "Pour chaque vente, veuillez confirmer le % de revenu français. Si vous n'avez jamais déménagé à l'étranger, il devrait être de 100 %.",
+      "headers": {
+        "ticker": "Symbole",
+        "planType": "Type de plan",
+        "grantDate": "Date d'attribution",
+        "acquisitionDate": "Date d'acquisition",
+        "isPlanFrQualified": "Le plan est-il qualifié FR ?",
+        "pctFr": "% FR"
+      },
+      "errors": {
+        "cannotGenerate": "impossible de générer la déclaration, veuillez réessayer plus tard"
+      }
+    },
+    "importValidation": {
+      "title": "Validation de l'import",
+      "headers": {
+        "index": "#",
+        "acquisitionDate": "Date d'acquisition",
+        "dollarsPerStockAcq": "$/action acq.",
+        "saleDate": "Date de vente",
+        "dollarsPerStockSold": "$/action vendue",
+        "qty": "Qté",
+        "dollarsPerEuroAcq": "$/€ acq.",
+        "dollarsPerEuroSold": "$/€ vendue",
+        "eurosPerStockAcq": "€/action acq.",
+        "eurosPerStockSold": "€/action vendue",
+        "totalAcqEur": "Total acq. €",
+        "totalSoldEur": "Total vendu €"
+      },
+      "footerSingle": "opération trouvée dans votre fichier d'import (triée par date de vente).",
+      "footerPlural": "opérations trouvées dans votre fichier d'import (triées par date de vente)."
+    },
+    "taxableEvent": {
+      "assets": {
+        "ESPP": "ESPP",
+        "RS": "RSU",
+        "SO": "Stock options"
+      },
+      "triggers": {
+        "vesting": "acquises",
+        "sell": "vendues",
+        "exercise": "exercées"
+      },
+      "headlinePrefix": "Le",
+      "capitalGain": "Plus-value",
+      "acquisitionGain": "Gain d'acquisition",
+      "lines": {
+        "dates": "Dates",
+        "granted": "Attribuées :",
+        "acquired": "Acquises :",
+        "sold": "Vendues :",
+        "acquisitionCost": "Coût d'acquisition",
+        "acquisitionValue": "Valeur d'acquisition",
+        "perShare": "par action.",
+        "perShareWithDesc": "par action",
+        "fractionFrenchOrigin": "% d'origine française",
+        "sellPrice": "Prix de vente",
+        "symbolPriceSuffix": "cours :",
+        "atOpeningOnAcquisitionDay": "à l'ouverture le jour de l'acquisition.",
+        "priceNotAvailablePrefix": "le cours n'était pas disponible le",
+        "priceNotAvailableMiddle": ", le dernier cours connu (le",
+        "priceNotAvailableSuffix": ") a été utilisé à la place."
+      }
+    },
+    "automaticReporting": {
+      "line1133Description": "Valeurs mobilières, droits sociaux, titres assimilés sans abattement et éligibles à l'abattement de droit commun",
+      "titresA": "Titres A",
+      "titresB": "Titres B",
+      "titresC": "Titres C",
+      "totaux": "Totaux",
+      "automaticReportedTo3VG": "Reporté automatiquement vers 3VG"
+    },
+    "page510Labels": {
+      "511": "Désignation des titres et des intermédiaires financiers",
+      "512": "Date de la cession ou du rachat jj/mm/aaaa",
+      "513": "Nombre de titres cédés ou rachetés",
+      "514": "Valeur unitaire de cession",
+      "515": "Nombre de titres cédés",
+      "516": "Montant global lignes (514 x 515)",
+      "517": "Frais de cession cf. notice",
+      "518": "Prix de cession net lignes (516 - 517)",
+      "519": "Détermination du prix de revient des titres",
+      "520": "Prix ou valeur d'acquisition unitaire cf. notice",
+      "521": "Prix d'acquisition global cf. notice",
+      "522": "Frais d'acquisition",
+      "523": "Prix de revient lignes (521 + 522)",
+      "524": "Résultat précédé du signe + ou - lignes (518 - 523)",
+      "525": "Je demande expressément à bénéficier de l'imputation des moins-values préalablement à l'annulation des titres cf. notice",
+      "526": "Montant des moins-values imputées pour les titres concernés"
+    }
+  },
+  "notImplemented": {
+    "prefix": "pas encore implémenté, n'hésitez pas à contribuer au ",
+    "linkLabel": "dépôt"
+  }
+}

@@ -27,7 +27,7 @@ export async function generateMetadata({
 }
 
 export function generateStaticParams() {
-  return [{ lang: "en" }];
+  return [{ lang: "en" }, { lang: "fr" }];
 }
 
 const inter = Inter({ subsets: ["latin"] });
