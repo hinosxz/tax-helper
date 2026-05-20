@@ -43,7 +43,9 @@ const parseEtradeGLRow = (row: GainAndLossEventXlsxRow): GainAndLossEvent => {
   );
   // For now consider that a non-US qualified plan is FR qualified.
   // FIXME: this is actually wrong, ETrade doesn't fill in the "Qualified Plan" column for qualified RSU plans.
-  const qualifiedIn = row["Qualified Plan"] === "Qualified" ? "us" : "fr";
+  const qualifiedIn =
+    ("Qualified Plan" in row ? row["Qualified Plan"] : row["Qualified Plan?"])
+    === "Qualified" ? "us" : "fr";
 
   // Make sure each row is valid
   return {
