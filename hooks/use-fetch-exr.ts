@@ -7,11 +7,11 @@ import { dayBefore, isWeekend } from "@/lib/date";
 const apiUrl = "/api/euro/{date}";
 
 const fetchExchangeRate = async (date: string): Promise<number> => {
-  return fetch(`${apiUrl.replace("{date}", date)}`)
-    .then((res) => res.json())
-    .then((response: number) => {
-      return response;
-    });
+  const res = await fetch(`${apiUrl.replace("{date}", date)}`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch exchange rate for ${date}: HTTP ${res.status}`);
+  }
+  return res.json();
 };
 
 interface UseExchangeRateResponse {
