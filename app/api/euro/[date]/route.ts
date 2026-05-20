@@ -13,36 +13,49 @@ interface DataSet {
   validFrom: string;
   series: Series;
 }
-interface Response {
+interface EcbResponse {
   dataSets: DataSet[];
 }
 
-const baseFetchExchangeRate = async (date: string): Promise<number> => {
+const dayBefore = (date: string): string => {
+  const [year, month, day] = date.split("-").map(Number);
+  const d = new Date(Date.UTC(year, month - 1, day));
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().substring(0, 10);
+};
+
+const baseFetchExchangeRate = async (
+  date: string,
+  retriesLeft = 5,
+): Promise<number> => {
   const url = new URL(API_BASE_URL);
   url.searchParams.set("format", "jsondata");
   url.searchParams.set("detail", "dataonly");
   url.searchParams.set("startPeriod", date);
   url.searchParams.set("endPeriod", date);
 
-  // Fetch the exchange rate, with no cache to avoid having staled data
-  return fetch(url, { cache: "no-cache" })
-    .then((res) => {
-      try {
-        return res.json();
-      } catch (error) {
-        // Transform the error into a more user-friendly one
-        throw new Error(
-          `${(error as Error).message} for ${date}
-Response status: ${res.statusText} ${res.statusText}
-Response body:
-${res.text()}`,
-        );
-      }
-    })
-    .then(
-      (data: Response) =>
-        data.dataSets[0].series["0:0:0:0:0"].observations[0][0],
-    );
+  const res = await fetch(url, { cache: "no-cache" });
+  const text = await res.text();
+  let observations: EcbResponse["dataSets"][0]["series"]["0:0:0:0:0"]["observations"] | undefined;
+  try {
+    const data: EcbResponse = JSON.parse(text);
+    observations = data.dataSets?.[0]?.series?.["0:0:0:0:0"]?.observations;
+  } catch {
+    // ECB returns empty body (not JSON) when no data exists for the date — treat as no data
+  }
+
+  if (!observations?.["0"]) {
+    // ECB publishes no rate for this date (e.g. Good Friday or other ECB-specific closure).
+    // Fall back to the previous calendar day.
+    if (retriesLeft <= 0) {
+      throw new Error(
+        `No ECB exchange rate found for ${date} or any of the 5 preceding days`,
+      );
+    }
+    return baseFetchExchangeRate(dayBefore(date), retriesLeft - 1);
+  }
+
+  return observations["0"][0];
 };
 
 /**
