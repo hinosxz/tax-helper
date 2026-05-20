@@ -27,7 +27,7 @@ export interface GainAndLossEventXlsxRow2025 {
   "Acquisition Cost Per Share": number;
   "Purchase Date Fair Mkt. Value": string | number;
   "Proceeds Per Share": number;
-  "Qualified Plan": PlanQualification;
+  "Qualified Plan?": PlanQualification;
   "Grant Date": string;
 }
 
