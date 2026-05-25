@@ -12,7 +12,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:e2e": "jest --config jest.e2e.config.ts",
-    "setup-e2e-fixtures": "ts-node --project tsconfig.node.json tests/e2e/setup-fixtures.ts"
+    "setup-e2e-fixtures": "ts-node --project tsconfig.node.json tests/e2e/setup-fixtures.ts",
+    "prefill-exchange-rates": "ts-node --project tsconfig.node.json scripts/prefill-exchange-rates.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
