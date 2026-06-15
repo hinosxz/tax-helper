@@ -1,6 +1,6 @@
 import type { SymbolDailyResponse } from "./symbol-daily.types";
 import { isNil } from "./is-nil";
-import { ONE_SECOND } from "./constants";
+import { ONE_SECOND, ONE_DAY } from "./constants";
 
 const YAHOO_FINANCE_API_URL =
   "https://query1.finance.yahoo.com/v8/finance/chart";
@@ -67,4 +67,34 @@ export const parseStockPricesResponse = (
   }
 
   return data;
+};
+
+const cachedSymbolData: {
+  [symbol: string]: { values: SymbolDailyResponse; cachedTime: number } | null;
+} = {};
+
+export const fetchSymbolDaily = async (
+  symbol: string,
+): Promise<SymbolDailyResponse> => {
+  const cache = cachedSymbolData[symbol];
+  if (!cache || Date.now() - cache.cachedTime > ONE_DAY) {
+    const values = await fetch(buildStockPricesUrl(symbol))
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(
+            `Failed to fetch ${symbol} prices: HTTP ${res.status}`,
+          );
+        }
+        return res.json();
+      })
+      .then((response: YahooFinanceResponse) =>
+        parseStockPricesResponse(symbol, response),
+      );
+    cachedSymbolData[symbol] = { values, cachedTime: Date.now() };
+  }
+
+  if (!cachedSymbolData[symbol]) {
+    throw new Error(`Failed to fetch ${symbol} prices`);
+  }
+  return cachedSymbolData[symbol]!.values;
 };
