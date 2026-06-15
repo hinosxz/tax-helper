@@ -69,32 +69,39 @@ export const parseStockPricesResponse = (
   return data;
 };
 
-const cachedSymbolData: {
-  [symbol: string]: { values: SymbolDailyResponse; cachedTime: number } | null;
-} = {};
+/**
+ * Cache promises (not resolved values) so concurrent calls for the same symbol share one in-flight request.
+ * cachedTime tracks when the promise was created so we can expire after ONE_DAY.
+ */
+const CACHED_SYMBOL_PROMISES = new Map<
+  string,
+  { promise: Promise<SymbolDailyResponse>; cachedTime: number }
+>();
 
-export const fetchSymbolDaily = async (
+export const fetchSymbolDaily = (
   symbol: string,
 ): Promise<SymbolDailyResponse> => {
-  const cache = cachedSymbolData[symbol];
-  if (!cache || Date.now() - cache.cachedTime > ONE_DAY) {
-    const values = await fetch(buildStockPricesUrl(symbol))
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(
-            `Failed to fetch ${symbol} prices: HTTP ${res.status}`,
-          );
-        }
-        return res.json();
-      })
-      .then((response: YahooFinanceResponse) =>
-        parseStockPricesResponse(symbol, response),
-      );
-    cachedSymbolData[symbol] = { values, cachedTime: Date.now() };
+  const cached = CACHED_SYMBOL_PROMISES.get(symbol);
+  if (cached && Date.now() - cached.cachedTime <= ONE_DAY) {
+    return cached.promise;
   }
 
-  if (!cachedSymbolData[symbol]) {
-    throw new Error(`Failed to fetch ${symbol} prices`);
-  }
-  return cachedSymbolData[symbol]!.values;
+  const promise = fetch(buildStockPricesUrl(symbol))
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Failed to fetch ${symbol} prices: HTTP ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((response: YahooFinanceResponse) =>
+      parseStockPricesResponse(symbol, response),
+    );
+
+  CACHED_SYMBOL_PROMISES.set(symbol, { promise, cachedTime: Date.now() });
+
+  promise.catch(() => {
+    CACHED_SYMBOL_PROMISES.delete(symbol);
+  });
+
+  return promise;
 };
