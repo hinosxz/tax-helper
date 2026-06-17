@@ -1,6 +1,6 @@
 import type { SymbolDailyResponse } from "./symbol-daily.types";
 import { isNil } from "./is-nil";
-import { ONE_SECOND } from "./constants";
+import { ONE_SECOND, ONE_DAY } from "./constants";
 
 const YAHOO_FINANCE_API_URL =
   "https://query1.finance.yahoo.com/v8/finance/chart";
@@ -67,4 +67,41 @@ export const parseStockPricesResponse = (
   }
 
   return data;
+};
+
+/**
+ * Cache promises (not resolved values) so concurrent calls for the same symbol share one in-flight request.
+ * cachedTime tracks when the promise was created so we can expire after ONE_DAY.
+ */
+const CACHED_SYMBOL_PROMISES = new Map<
+  string,
+  { promise: Promise<SymbolDailyResponse>; cachedTime: number }
+>();
+
+export const fetchSymbolDaily = (
+  symbol: string,
+): Promise<SymbolDailyResponse> => {
+  const cached = CACHED_SYMBOL_PROMISES.get(symbol);
+  if (cached && Date.now() - cached.cachedTime <= ONE_DAY) {
+    return cached.promise;
+  }
+
+  const promise = fetch(buildStockPricesUrl(symbol))
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Failed to fetch ${symbol} prices: HTTP ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((response: YahooFinanceResponse) =>
+      parseStockPricesResponse(symbol, response),
+    );
+
+  CACHED_SYMBOL_PROMISES.set(symbol, { promise, cachedTime: Date.now() });
+
+  promise.catch(() => {
+    CACHED_SYMBOL_PROMISES.delete(symbol);
+  });
+
+  return promise;
 };
